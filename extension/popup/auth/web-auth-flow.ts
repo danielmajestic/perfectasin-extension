@@ -5,7 +5,7 @@ const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
 // TODO(Kat): Replace with the Web client OAuth Client ID from the Firebase console
 // Firebase project: titleperfect-e3a1c → Project Settings → General → Your apps → Web app → OAuth client ID
 // Format: XXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com
-const GOOGLE_CLIENT_ID = 'TODO_GET_FROM_FIREBASE_CONSOLE';
+const GOOGLE_CLIENT_ID = '119656431080-emhikh9mr0jf0a0guf8v7crfmlkgqihu.apps.googleusercontent.com';
 
 interface StoredAuth {
   token: string;
