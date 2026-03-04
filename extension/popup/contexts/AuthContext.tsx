@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { signIn, signUp, signOut, getStoredToken, getAuthState } from '../auth/web-auth-flow';
+import { signIn, signUp, signOut, signInWithEmail, getStoredToken, getAuthState } from '../auth/web-auth-flow';
 
 interface AuthUser {
   uid: string;
@@ -10,6 +10,7 @@ interface AuthContextType {
   currentUser: AuthUser | null;
   loading: boolean;
   login: () => Promise<void>;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
   signup: () => Promise<void>;
   logout: () => Promise<void>;
   getIdToken: () => Promise<string | null>;
@@ -64,6 +65,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function loginWithEmail(email: string, password: string) {
+    await signInWithEmail(email, password);
+    const state = await getAuthState();
+    if (state.authenticated && state.uid && state.email) {
+      setCurrentUser({ uid: state.uid, email: state.email });
+    }
+  }
+
   async function signup() {
     await signUp();
     const state = await getAuthState();
@@ -85,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentUser,
     loading,
     login,
+    loginWithEmail,
     signup,
     logout,
     getIdToken,

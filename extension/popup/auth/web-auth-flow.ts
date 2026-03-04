@@ -1,5 +1,6 @@
 const REDIRECT_BASE = 'https://nnonechpbchjfeiejonjfgikgdajacmj.chromiumapp.org/';
 const AUTH_BASE = 'https://perfectasin.com/auth.html';
+const API_BASE = 'https://api.titleperfect.app';
 const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
 
 interface StoredAuth {
@@ -7,6 +8,38 @@ interface StoredAuth {
   uid: string;
   email: string;
   expiresAt: number;
+}
+
+/**
+ * Inline email/password sign-in — POST to backend, store returned token.
+ * No Firebase SDK, no popup. Track 1 auth path.
+ */
+export async function signInWithEmail(email: string, password: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) {
+    throw new Error(data?.message || data?.error || 'Incorrect email or password.');
+  }
+
+  const token = data.token ?? data.id_token ?? data.idToken ?? data.access_token;
+  if (!token) throw new Error('Invalid response from server.');
+
+  const uid: string = data.uid ?? data.user_id ?? data.userId ?? email;
+
+  const stored: StoredAuth = {
+    token,
+    uid,
+    email,
+    expiresAt: Date.now() + TOKEN_EXPIRY_MS,
+  };
+
+  await chrome.storage.local.set({ tp_auth: stored });
 }
 
 /** Open sign-in page via launchWebAuthFlow; store returned token/uid/email. */
