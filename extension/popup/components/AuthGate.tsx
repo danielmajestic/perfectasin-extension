@@ -79,6 +79,11 @@ export default function AuthGate({ children }: AuthGateProps) {
 
           {/* Branding */}
           <div className="text-center mb-6">
+            <img
+              src="/icons/icon-128.png"
+              alt="PerfectASIN"
+              className="w-16 h-16 mx-auto mb-3"
+            />
             <h1 className="text-xl font-bold text-gray-800">PerfectASIN™</h1>
             <p className="text-xs text-gray-500 mt-1">AI-Powered Amazon Listing Optimization</p>
           </div>
