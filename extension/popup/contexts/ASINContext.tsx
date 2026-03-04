@@ -327,10 +327,24 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     });
   }, [currentAsin]);
 
-  // Poll on mount and whenever ASIN changes
+  // BUG-F26: On sidepanel open, inject content script first so the initial
+  // sendMessage succeeds instead of silently failing (content script not yet injected).
   useEffect(() => {
-    fetchProductInfo();
-  }, []);
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+      const tab = tabs[0];
+      if (tab?.id) {
+        try {
+          await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ['content/content.js'],
+          });
+        } catch {
+          // Non-fatal — script may already be injected
+        }
+      }
+      fetchProductInfo();
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const interval = setInterval(fetchProductInfo, 2000);

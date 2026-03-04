@@ -2,30 +2,24 @@ import { useState, useEffect } from 'react';
 
 interface LoadingStateProps {
   dimensions: string[];
-  estimatedSeconds: number;
+  estimatedSeconds?: number; // no longer used — kept for call-site compatibility
   message?: string;
 }
 
 export default function LoadingState({
   dimensions,
-  estimatedSeconds,
   message = 'Analyzing…',
 }: LoadingStateProps) {
-  const [countdown, setCountdown] = useState(estimatedSeconds);
+  const [elapsed, setElapsed] = useState(0);
 
+  // BUG-F13/F16: live elapsed timer — counts up from 0 when analysis starts
   useEffect(() => {
-    setCountdown(estimatedSeconds);
+    setElapsed(0);
     const id = setInterval(() => {
-      setCountdown(prev => {
-        if (prev <= 1) {
-          clearInterval(id);
-          return 0;
-        }
-        return prev - 1;
-      });
+      setElapsed(prev => prev + 1);
     }, 1000);
     return () => clearInterval(id);
-  }, [estimatedSeconds]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-10">
@@ -59,7 +53,7 @@ export default function LoadingState({
           </ul>
         )}
         <p className="text-xs text-gray-400">
-          {countdown > 0 ? `~${countdown}s remaining` : 'Almost done...'}
+          Analyzing... {elapsed}s
         </p>
       </div>
     </div>

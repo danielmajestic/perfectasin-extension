@@ -84,9 +84,15 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
             </svg>
             <div>
               <h3 className="text-sm font-semibold text-yellow-900 mb-1">No Product Detected</h3>
-              <p className="text-sm text-yellow-800">
-                Please navigate to an Amazon product page to use PerfectASIN™.
+              <p className="text-sm text-yellow-800 mb-3">
+                No Amazon product detected. Navigate to a product page and tap Refresh.
               </p>
+              <button
+                onClick={refreshProduct}
+                className="inline-flex items-center gap-1.5 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-semibold px-3 py-1.5 rounded-lg transition-colors"
+              >
+                🔄 Refresh
+              </button>
             </div>
           </div>
         </div>
