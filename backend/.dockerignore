@@ -1,0 +1,31 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Secrets — never bake into image
+.env
+.env.*
+*service-account*.json
+*credentials*.json
+firebase-credntials.txt
+
+# VCS / IDE
+.git
+.gitignore
+.vscode/
+.idea/
+
+# Test artifacts
+.pytest_cache/
+htmlcov/
+.coverage
+*.log
+
+README.md

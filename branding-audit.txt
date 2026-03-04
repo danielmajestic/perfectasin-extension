@@ -1,0 +1,226 @@
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:1:# Chrome Web Store Listing — TitlePerfect
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:9:TitlePerfect — AI Amazon Title Optimizer for Sellers (Conversion Up +15%)
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:33:TitlePerfect analyzes your Amazon product titles and generates optimized alternatives using Claude AI. Stop guessing — get data-driven title recommendations that improve search rank, Rufus AI compatibility, and buyer conversion.
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:55:TitlePerfect generates 5 optimized title alternatives, each with a different strategic angle:
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:69:TitlePerfect identifies your product's ideal customer and tailors every recommendation accordingly:
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:83:Over 80% of Amazon shoppers browse on mobile, where titles truncate at approximately 80 characters. TitlePerfect shows exactly how your title appears in mobile search results — including product image, price, star rating, and the critical first 80 characters that determine whether shoppers tap through.
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:96:2. Click the TitlePerfect icon to open the side panel
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:100:TitlePerfect automatically extracts your product's ASIN, title, price, brand, category, and bullet points — no manual data entry needed.
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:112:WHY TITLEPERFECT
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:130:TitlePerfect is expanding into the PerfectASIN Suite with new optimization tabs: Bullet Points, Product Description, Hero Image Analysis, and Price Intelligence. Pro subscribers get access to all new features at no additional cost.
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:136:Questions or suggestions? Reach us at support@titleperfect.app
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:137:Learn more: titleperfect.app
+/home/dan/projects/titleperfect/sprint-plan/CWS-Listing-Copy-v1.md:153:- **Privacy Policy URL**: Required — must be live at titleperfect.app/privacy before submission
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:12:- `titleperfect.app` is the existing marketing site + CWS listing URL
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:13:- Plan: clone `titleperfect-site` → rebrand as PerfectASIN suite landing page
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:14:- TitlePerfect is the first of five tools in the suite
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:23:| `titleperfect.app` | **Stays live as-is** — CWS listing URL + existing rankings | "Amazon title optimizer", "AI title optimizer Amazon" | ✅ Keep intact — NO redirect |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:25:**Dan's decision:** `titleperfect.app` stays live unchanged. It supports the existing CWS listing URL and protects current search rankings. No 301 redirect. No changes to `titleperfect.app`.
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:27:**`perfectasin.com` is the new primary suite destination.** Cross-link between the two sites (e.g., `perfectasin.com` links to the Chrome extension, which points users to `titleperfect.app` for the CWS install).
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:29:**Support email:** `support@perfectasin.com` (confirmed — replace all instances of `support@titleperfect.app` on the new site)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:44:| Support email `support@titleperfect.app` | **Replace with `support@perfectasin.com`** on perfectasin.com (confirmed ✅) |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:49:| Element | Old (titleperfect.app) | New (perfectasin.com) |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:53:| Product name in hero | TitlePerfect | PerfectASIN Suite |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:57:| Nav logo | TitlePerfect logo | PerfectASIN logo |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:58:| Page `<title>` tag | "TitlePerfect — AI Amazon Title Optimizer" | "PerfectASIN — AI Amazon Listing Optimization Suite" |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:60:| Footer product name | TitlePerfect | PerfectASIN |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:97:Each card: tool name, icon, 2-sentence description, "Available Now" or "In Beta" badge. This section replaces the single "coming soon" teaser from titleperfect.app.
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:144:- **"What's the difference between TitlePerfect and PerfectASIN?"** → TitlePerfect is the title optimization tool; PerfectASIN is the full suite. Same extension, same subscription.
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:169:- `perfectasin.com/title` → TitlePerfect tool page (targets "Amazon title optimizer")
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:176:### `titleperfect.app` — Decision: STAYS LIVE (no redirect)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:178:`titleperfect.app` remains unchanged. It serves the CWS listing URL, protects existing "Amazon title optimizer" search rankings, and continues to function as the TitlePerfect product page. No redirect, no Cloudflare rule needed.
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:180:Cross-link strategy: `perfectasin.com` links to the Chrome extension install (via `titleperfect.app` CWS URL) in its CTAs. `titleperfect.app` can optionally add a top banner: "Part of the PerfectASIN Suite → perfectasin.com" once the suite is fully positioned.
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:190:| Message | TitlePerfect (old) | PerfectASIN (new) |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:198:| Support email | support@titleperfect.app | **support@perfectasin.com** (confirmed ✅) |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:206:| Redirect `titleperfect.app` to `perfectasin.com`? | **NO** — stays live, supports CWS listing |
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:215:Clone `titleperfect-site` repo into `perfectasin-site`. Then make the following changes:
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:220:- [ ] Replace all instances of "TitlePerfect" with "PerfectASIN" in nav, hero, footer (keep one mention: "Formerly launched as TitlePerfect" in FAQ if needed)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:223:- [ ] Update support email everywhere: `support@titleperfect.app` → `support@perfectasin.com`
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:224:- [ ] Update CWS install button URL if it links to the extension (keep pointing to CWS, but the `titleperfect.app` URL stays as-is — just update any copy that says "TitlePerfect")
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:244:- [ ] Add `canonical` tags (since `perfectasin.com` and `titleperfect.app` will have some duplicate content, point canonical at `perfectasin.com` for the new site)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:245:- [ ] Add Google Analytics (or copy existing GA tag from `titleperfect.app`)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:247:- [ ] Privacy policy: copy `titleperfect.app/privacy` to `perfectasin.com/privacy` (update product name references)
+/home/dan/projects/titleperfect/sprint-plan/perfectasin-site-rebrand-plan.md:253:- Any changes to `titleperfect.app` itself
+/home/dan/projects/titleperfect/sprint-plan/PerfectASIN-Sprint-Breakdown.md:250:**Goal**: Prepare everything needed to submit TitlePerfect (Title tab only) to Chrome Web Store.
+/home/dan/projects/titleperfect/sprint-plan/PerfectASIN-Sprint-Breakdown.md:260:| Extension Name | TitlePerfect — AI Amazon Title Optimizer |
+/home/dan/projects/titleperfect/STRIPE-TIER-SETUP.md:23:2. Find the old **TitlePerfect Pro** product (price IDs below)
+/home/dan/projects/titleperfect/STRIPE-TIER-SETUP.md:105:- ✅ Old TitlePerfect Pro product — archived (not deleted)
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:1:# TitlePerfect - Claude Code Execution Guide
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:25:mkdir C:\Projects\titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:26:cd C:\Projects\titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:36:cd C:\Projects\titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:278:cd C:\Projects\titleperfect\backend
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:282:cd C:\Projects\titleperfect\extension
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:337:gcloud run deploy titleperfect-api --source . --region us-central1 --allow-unauthenticated
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:339:# Note the URL (e.g., https://titleperfect-api-xxxxx.run.app)
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:472:mkdir C:\Projects\titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:473:cd C:\Projects\titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_ClaudeCode_Instructions.md:597:*Good luck building TitlePerfect! 🚀*
+/home/dan/projects/titleperfect/SETUP-STRIPE.md:1:# TitlePerfect Stripe Setup
+/home/dan/projects/titleperfect/SETUP-STRIPE.md:12:### Product: TitlePerfect Pro
+/home/dan/projects/titleperfect/SETUP-STRIPE.md:16:| Name        | TitlePerfect Pro      | TitlePerfect Pro                |
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:1:# TitlePerfect — GCP Cloud Run Deployment Runbook
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:3:**Project:** `titleperfect-e3a1c`
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:4:**Service:** `titleperfect-api`
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:6:**Domain:** `api.titleperfect.app` (auto-HTTPS via Cloud Run)
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:17:gcloud config set project titleperfect-e3a1c
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:37:gcloud artifacts repositories create titleperfect \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:40:  --description="TitlePerfect container images"
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:70:CB_SA="$(gcloud projects describe titleperfect-e3a1c --format='value(projectNumber)')@cloudbuild.gserviceaccount.com"
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:73:CR_SA="$(gcloud projects describe titleperfect-e3a1c --format='value(projectNumber)')-compute@developer.gserviceaccount.com"
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:83:gcloud projects add-iam-policy-binding titleperfect-e3a1c \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:87:gcloud projects add-iam-policy-binding titleperfect-e3a1c \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:94:## Step 4 — Domain mapping for api.titleperfect.app (one-time)
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:99:gcloud run deploy titleperfect-api \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:100:  --project titleperfect-e3a1c \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:101:  --image us-central1-docker.pkg.dev/titleperfect-e3a1c/titleperfect/api:latest \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:113:  --service titleperfect-api \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:114:  --domain api.titleperfect.app \
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:116:  --project titleperfect-e3a1c
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:137:1. **Connect repository:** `danielmajestic/titleperfect` (GitHub)
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:143:   - `_FRONTEND_URL` = `https://titleperfect.app`
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:154:curl https://api.titleperfect.app/health
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:158:curl https://api.titleperfect.app/api/health
+/home/dan/projects/titleperfect/deploy/DEPLOY.md:162:gcloud run services describe titleperfect-api \
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1:# TitlePerfect - Product Requirements Document v2.2
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:39:TitlePerfect is an AI-powered Chrome extension that helps Amazon sellers create optimized product titles by analyzing their current title, extracting competitor titles from SERP, and generating high-converting alternatives using Claude AI. Unlike existing tools that bury title optimization within complex suites, TitlePerfect is laser-focused on the single highest-impact text element of an Amazon listing (18% of conversion potential per Robert Prime's analysis).
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:64:### 2.2 Why This Matters for TitlePerfect
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:66:Even if Rufus doesn't matter much today, it will likely matter in the future. Rufus-based listing optimization will be something sellers need to understand. Our competitive advantage lies in building "Rufus-Ready" optimization into TitlePerfect from day one.
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:83:TitlePerfect includes a "Rufus Score" alongside traditional SEO metrics:
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:151:| Feature | TitlePerfect | AmzGPT | Amalytix | Helium 10 |
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:501:titleperfect-extension/
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:537:  "name": "TitlePerfect - Amazon Title Optimizer",
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:553:    "https://api.titleperfect.com/*"
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:584:titleperfect-api/
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:616:│  🎯 TitlePerfect                              [Pro] [⚙️]    │
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:940:You are TitlePerfect AI, an expert Amazon listing title optimizer. You understand both traditional Amazon SEO (A9 algorithm, keyword optimization) AND the emerging importance of semantic search and Rufus AI optimization.
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1088:TitlePerfect is Phase 1 of the PerfectASIN tool suite. All tools incorporate Rufus-Ready optimization from the start.
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1092:| 1 | TitlePerfect | Weeks 1-4 | Title optimization (this PRD) |
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1093:| 2 | TitlePerfect Pro | Weeks 3-4 | ASIN input, competitors, A/B export |
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1216:This section provides step-by-step prompts for Claude Code to build TitlePerfect. Execute these prompts sequentially. Each prompt builds on the previous one.
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1220:**For Windows users:** See the separate **"TitlePerfect_ClaudeCode_Instructions.md"** document for Windows PowerShell commands to run between prompts (npm install, git commit, etc.).
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1231:I'm building a Chrome extension called "TitlePerfect" - an AI-powered Amazon 
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1246:titleperfect/
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1444:You are TitlePerfect AI, an expert Amazon listing title optimizer...
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1559:Set up deployment for TitlePerfect:
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1569:   - Configure custom domain (api.titleperfect.com or api.perfectasin.com/title)
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1576:     - Title: "TitlePerfect - Amazon Title Optimizer"
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v2.2_Complete.md:1594:Create comprehensive tests for TitlePerfect:
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:1:# TitlePerfect - Developer Instructions v3.0
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:8:**For:** Developers working on TitlePerfect Chrome Extension
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:46:git clone https://github.com/danielmajestic/titleperfect.git
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:47:cd titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:104:titleperfect/
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:156:├── TitlePerfect_PRD_v3_ConversionScore.md
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:157:├── TitlePerfect_PRD_v2.2_Complete.md
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:158:├── TitlePerfect_DevInstructions_v3.md (this file)
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:250:4. Click refresh icon on TitlePerfect extension
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:680:  production: 'https://api.titleperfect.com',
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:725:docker build -t titleperfect-api .
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:730:docker tag titleperfect-api gcr.io/[PROJECT_ID]/titleperfect-api
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:735:docker push gcr.io/[PROJECT_ID]/titleperfect-api
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:740:gcloud run deploy titleperfect-api \
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:741:  --image gcr.io/[PROJECT_ID]/titleperfect-api \
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:750:gcloud run services describe titleperfect-api \
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:783:Compress-Archive -Path * -DestinationPath titleperfect-v3.0.zip
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:786:zip -r titleperfect-v3.0.zip *
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:794:  - Name: "TitlePerfect - Amazon Title Optimizer"
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:875:  production: 'https://api.titleperfect.com',
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:976:chrome://extensions/ → Refresh icon on TitlePerfect
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:990:- GitHub: https://github.com/danielmajestic/titleperfect
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:993:- PRD v3.0: TitlePerfect_PRD_v3_ConversionScore.md
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:994:- PRD v2.2: TitlePerfect_PRD_v2.2_Complete.md
+/home/dan/projects/titleperfect/TitlePerfect_DevInstructions_v3.md:996:- This guide: TitlePerfect_DevInstructions_v3.md
+/home/dan/projects/titleperfect/firebase-service-account.json:3:  "project_id": "titleperfect-e3a1c",
+/home/dan/projects/titleperfect/firebase-service-account.json:6:  "client_email": "firebase-adminsdk-fbsvc@titleperfect-e3a1c.iam.gserviceaccount.com",
+/home/dan/projects/titleperfect/firebase-service-account.json:11:  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40titleperfect-e3a1c.iam.gserviceaccount.com",
+/home/dan/projects/titleperfect/CLAUDE.md:1:# TitlePerfect Project
+/home/dan/projects/titleperfect/extension/icons/README.md:11:You can create these icons using any image editor or online icon generator. The icons should represent the TitlePerfect brand and be clear and recognizable at different sizes.
+/home/dan/projects/titleperfect/extension/package.json:2:  "name": "titleperfect-extension",
+/home/dan/projects/titleperfect/extension/node_modules/.package-lock.json:2:  "name": "titleperfect-extension",
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:1:# TitlePerfect — Chrome Web Store Listing
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:4:TitlePerfect — AI Amazon Title Optimizer for Rufus & Conversions
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:13:TitlePerfect analyzes your Amazon product titles and generates optimized variations that score higher for SEO, Amazon Rufus AI compatibility, and buyer conversions.
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:17:2. Open TitlePerfect from the side panel
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:34:TitlePerfect only reads product data from Amazon pages you visit. We do not collect browsing history or personal data beyond what is needed for the service. See our full privacy policy at https://titleperfect.app/privacy.
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:43:https://titleperfect.app/privacy
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:46:https://titleperfect.app
+/home/dan/projects/titleperfect/extension/assets/STORE-LISTING.md:49:support@titleperfect.app
+/home/dan/projects/titleperfect/extension/manifest.json:3:  "name": "TitlePerfect",
+/home/dan/projects/titleperfect/extension/manifest.json:26:    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com https://api.titleperfect.app"
+/home/dan/projects/titleperfect/extension/manifest.json:29:    "default_title": "Open TitlePerfect",
+/home/dan/projects/titleperfect/extension/utils/errorHandling.ts:108:  console.error(`[TitlePerfect] ${context}:`, error);
+/home/dan/projects/titleperfect/extension/utils/api.ts:2: * API client for TitlePerfect backend
+/home/dan/projects/titleperfect/extension/utils/api.ts:12:  production: 'https://api.titleperfect.app',
+/home/dan/projects/titleperfect/extension/dist/icons/README.md:11:You can create these icons using any image editor or online icon generator. The icons should represent the TitlePerfect brand and be clear and recognizable at different sizes.
+/home/dan/projects/titleperfect/extension/dist/manifest.json:3:  "name": "TitlePerfect",
+/home/dan/projects/titleperfect/extension/dist/manifest.json:26:    "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://*.googleapis.com https://*.firebaseio.com https://*.firebaseapp.com https://firebaseinstallations.googleapis.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com https://www.google-analytics.com https://api.titleperfect.app"
+/home/dan/projects/titleperfect/extension/dist/manifest.json:29:    "default_title": "Open TitlePerfect",
+/home/dan/projects/titleperfect/extension/dist/sidepanel/index.html:6:    <title>TitlePerfect</title>
+/home/dan/projects/titleperfect/extension/dist/popup/index.html:6:    <title>TitlePerfect</title>
+/home/dan/projects/titleperfect/extension/package-lock.json:2:  "name": "titleperfect-extension",
+/home/dan/projects/titleperfect/extension/package-lock.json:8:      "name": "titleperfect-extension",
+/home/dan/projects/titleperfect/extension/sidepanel/index.html:6:    <title>TitlePerfect</title>
+/home/dan/projects/titleperfect/extension/content/content.ts:515:    console.error('[TitlePerfect] getHeroImageData failed:', err);
+/home/dan/projects/titleperfect/extension/popup/firebase-config.ts:7:  authDomain: 'titleperfect-e3a1c.firebaseapp.com',
+/home/dan/projects/titleperfect/extension/popup/firebase-config.ts:8:  projectId: 'titleperfect-e3a1c',
+/home/dan/projects/titleperfect/extension/popup/firebase-config.ts:9:  storageBucket: 'titleperfect-e3a1c.firebasestorage.app',
+/home/dan/projects/titleperfect/extension/popup/components/tabs/TitleTab.tsx:86:                Please navigate to an Amazon product page to use TitlePerfect.
+/home/dan/projects/titleperfect/extension/popup/components/VariationList.tsx:174:      text += `TitlePerfect Analysis - ${asin}\n`;
+/home/dan/projects/titleperfect/extension/popup/components/VariationList.tsx:197:      text += 'Powered by TitlePerfect | titleperfect.app\n';
+/home/dan/projects/titleperfect/extension/popup/components/VariationList.tsx:277:                  href="https://titleperfect.app/demo"
+/home/dan/projects/titleperfect/extension/popup/components/AuthGate.tsx:36:            <h1 className="text-xl font-bold text-gray-800">TitlePerfect</h1>
+/home/dan/projects/titleperfect/extension/popup/components/UpgradeCTA.tsx:57:        success_url: 'https://titleperfect.app/checkout/success',
+/home/dan/projects/titleperfect/extension/popup/components/UpgradeCTA.tsx:58:        cancel_url: 'https://titleperfect.app/checkout/cancel',
+/home/dan/projects/titleperfect/extension/popup/components/AccountSettings.tsx:55:        success_url: 'https://titleperfect.app/checkout/success',
+/home/dan/projects/titleperfect/extension/popup/components/AccountSettings.tsx:56:        cancel_url: 'https://titleperfect.app/checkout/cancel',
+/home/dan/projects/titleperfect/extension/popup/utils/analytics.ts:2: * GA4 event tracking for TitlePerfect Chrome Extension.
+/home/dan/projects/titleperfect/extension/popup/App.tsx:72:            <h1 className="text-lg sm:text-xl font-bold text-gray-800 truncate">TitlePerfect</h1>
+/home/dan/projects/titleperfect/extension/popup/index.html:6:    <title>TitlePerfect</title>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:6:  <title>Privacy Policy — TitlePerfect</title>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:25:<p>TitlePerfect ("we", "us", "our") operates the TitlePerfect Chrome browser extension and related services at titleperfect.app. This Privacy Policy explains how we collect, use, store, and protect your information.</p>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:33:<p>When you use TitlePerfect on an Amazon product page, the extension reads publicly visible product information from that page, including:</p>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:122:<p>TitlePerfect is not intended for children under 13. We do not knowingly collect information from children. If we learn that we have collected data from a child under 13, we will delete it promptly.</p>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:125:<p>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated revision date. Continued use of TitlePerfect after changes constitutes acceptance of the revised policy.</p>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:130:  <li>Email: <a href="mailto:privacy@titleperfect.app">privacy@titleperfect.app</a></li>
+/home/dan/projects/titleperfect/extension/privacy-policy.html:131:  <li>Website: <a href="https://titleperfect.app">https://titleperfect.app</a></li>
+/home/dan/projects/titleperfect/landing/index.html:6:  <title>TitlePerfect — AI Amazon Title Optimizer for Rufus & Conversions</title>
+/home/dan/projects/titleperfect/landing/index.html:7:  <meta name="description" content="Score higher on Amazon SEO, Rufus AI, and conversions. TitlePerfect analyzes and optimizes your product titles in seconds.">
+/home/dan/projects/titleperfect/landing/index.html:8:  <link rel="canonical" href="https://titleperfect.app">
+/home/dan/projects/titleperfect/landing/index.html:11:  <meta property="og:title" content="TitlePerfect — AI Amazon Title Optimizer for Rufus & Conversions">
+/home/dan/projects/titleperfect/landing/index.html:14:  <meta property="og:url" content="https://titleperfect.app">
+/home/dan/projects/titleperfect/landing/index.html:21:    "name": "TitlePerfect",
+/home/dan/projects/titleperfect/landing/index.html:39:    "url": "https://titleperfect.app"
+/home/dan/projects/titleperfect/landing/index.html:177:        TitlePerfect
+/home/dan/projects/titleperfect/landing/index.html:310:                  <p class="text-gray-600 text-sm leading-relaxed">TitlePerfect scores your title on SEO, Rufus AI compatibility, and buyer conversion instantly. No guesswork, just numbers you can act on.</p>
+/home/dan/projects/titleperfect/landing/index.html:328:                  <p class="text-gray-600 text-sm leading-relaxed">No tab switching. No copy-pasting. TitlePerfect runs as a Chrome extension directly on your listing page. Analyze. Optimize. Publish.</p>
+/home/dan/projects/titleperfect/landing/index.html:499:            <p class="text-gray-600 text-sm leading-relaxed mb-5">"Ran TitlePerfect on my top 20 ASINs and rewrote every title in an afternoon. Sessions went up 22% the following week. Wish I'd found this sooner."</p>
+/home/dan/projects/titleperfect/landing/index.html:548:        <p class="text-center text-gray-400 text-sm font-medium">Join 2,000+ sellers optimizing their titles with TitlePerfect</p>
+/home/dan/projects/titleperfect/landing/index.html:651:              <span class="font-semibold text-gray-900 text-sm sm:text-base pr-4">How does TitlePerfect analyze my titles?</span>
+/home/dan/projects/titleperfect/landing/index.html:655:              <p class="pb-5">TitlePerfect uses AI models to evaluate your Amazon product title across multiple dimensions: keyword placement and density for A9 SEO, natural-language patterns for Rufus AI compatibility, buyer-appeal signals for conversion scoring, and category-specific rules for compliance. Each dimension gets a score from 0-100 with specific, actionable recommendations.</p>
+/home/dan/projects/titleperfect/landing/index.html:666:              <p class="pb-5">Rufus is Amazon's AI shopping assistant that helps customers find products by answering natural-language questions. When a shopper asks Rufus "What's the best protein powder for keto?", it scans listing titles and content to recommend products. If your title doesn't include the signals Rufus looks for, your product gets skipped. TitlePerfect scores your Rufus compatibility so you can fix this.</p>
+/home/dan/projects/titleperfect/landing/index.html:688:              <p class="pb-5">Yes. TitlePerfect processes your title text to generate scores and recommendations, but we do not store your product data, ASINs, or listing details on our servers. Analysis happens in real time and results are delivered directly to your browser. We never share, sell, or use your data for any purpose beyond providing the analysis you requested.</p>
+/home/dan/projects/titleperfect/landing/index.html:735:            <li><a href="mailto:support@titleperfect.app" class="text-gray-400 text-sm hover:text-white transition-colors">support@titleperfect.app</a></li>
+/home/dan/projects/titleperfect/landing/index.html:741:        <p class="text-gray-500 text-xs text-center">&copy; 2026 TitlePerfect. All rights reserved.</p>
+/home/dan/projects/titleperfect/README.md:1:# TitlePerfect
+/home/dan/projects/titleperfect/README.md:8:titleperfect/
+/home/dan/projects/titleperfect/README.md:120:2. Click the TitlePerfect extension icon
+/home/dan/projects/titleperfect/README.md:162:docker build -t titleperfect-backend .
+/home/dan/projects/titleperfect/README.md:163:docker run -p 8000:8000 -e ANTHROPIC_API_KEY=your_key_here titleperfect-backend
+/home/dan/projects/titleperfect/README.md:169:gcloud run deploy titleperfect-backend \
+/home/dan/projects/titleperfect/CONTRIBUTING.md:1:# Contributing to TitlePerfect
+/home/dan/projects/titleperfect/CONTRIBUTING.md:3:Thank you for considering contributing to TitlePerfect! This document provides guidelines and instructions for contributing.
+/home/dan/projects/titleperfect/package-lock.json:2:  "name": "titleperfect",
+/home/dan/projects/titleperfect/SETUP-FIREBASE.md:1:# TitlePerfect Firebase Setup
+/home/dan/projects/titleperfect/SETUP-FIREBASE.md:6:2. Create project: **titleperfect** (or reuse existing GCP project)
+/home/dan/projects/titleperfect/SETUP-FIREBASE.md:17:   export GOOGLE_APPLICATION_CREDENTIALS="/path/to/titleperfect-firebase-sa.json"
+/home/dan/projects/titleperfect/SETUP-FIREBASE.md:21:   GOOGLE_APPLICATION_CREDENTIALS=/path/to/titleperfect-firebase-sa.json
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v3_ConversionScore.md:1:# TitlePerfect - Product Requirements Document v3.0
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v3_ConversionScore.md:74:TitlePerfect is an AI-powered Chrome extension that helps Amazon sellers create optimized product titles. Version 3.0 introduces a revolutionary **Conversion Score** that measures how well a title appeals to the Ideal Customer Profile (ICP), adding conversion optimization to our existing SEO and Rufus AI scoring.
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v3_ConversionScore.md:245:│ TitlePerfect        Usage: 3/10 │ ← UsageGauge (10 segments)
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v3_ConversionScore.md:347:TitlePerfect Analysis - B08N5WRWNW
+/home/dan/projects/titleperfect/TitlePerfect_PRD_v3_ConversionScore.md:377:Powered by TitlePerfect | perfectasin.com
+/home/dan/projects/titleperfect/.wrangler/cache/pages.json:3:  "project_name": "titleperfect"
+/home/dan/projects/titleperfect/.claude/settings.local.json:17:      "Bash(dir /s /b \"C:\\\\projects\\\\titleperfect\")",
+/home/dan/projects/titleperfect/.claude/settings.local.json:19:      "Bash(ls -la \"C:\\\\projects\\\\titleperfect\\\\extension\"\" | grep -E \".json)",
+/home/dan/projects/titleperfect/.claude/settings.local.json:21:      "Bash(ls -la \"C:\\\\projects\\\\titleperfect\\\\backend\"\" | grep -E \"Dockerfile)",
