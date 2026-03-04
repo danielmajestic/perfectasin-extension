@@ -312,7 +312,7 @@ export default function VariationList({
 
       let text = '';
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-      text += `PerfectASIN Analysis - ${asin}\n`;
+      text += `PerfectASIN™ Analysis - ${asin}\n`;
       text += `Generated: ${dateStr}\n`;
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
       text += 'ORIGINAL TITLE:\n';
@@ -335,7 +335,7 @@ export default function VariationList({
       });
 
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-      text += 'Powered by PerfectASIN | perfectasin.com\n';
+      text += 'Powered by PerfectASIN™ | perfectasin.com\n';
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
 
       await navigator.clipboard.writeText(text);

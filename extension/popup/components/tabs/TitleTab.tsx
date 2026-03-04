@@ -85,7 +85,7 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
             <div>
               <h3 className="text-sm font-semibold text-yellow-900 mb-1">No Product Detected</h3>
               <p className="text-sm text-yellow-800">
-                Please navigate to an Amazon product page to use PerfectASIN.
+                Please navigate to an Amazon product page to use PerfectASIN™.
               </p>
             </div>
           </div>

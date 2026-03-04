@@ -56,7 +56,7 @@ function AppContent() {
               </div>
               <h3 className="text-base font-bold text-gray-800 mb-1">Coming Soon</h3>
               <p className="text-sm text-gray-500 max-w-[220px] mx-auto">
-                This PerfectASIN feature is under development. Stay tuned!
+                This PerfectASIN™ feature is under development. Stay tuned!
               </p>
             </div>
           </div>
@@ -70,7 +70,7 @@ function AppContent() {
       <div className="flex-shrink-0 px-3 sm:px-4 pt-3 sm:pt-4 pb-3 border-b border-gray-200 bg-white/50 backdrop-blur">
         <div className="flex items-center justify-between mb-2">
           <div className="flex-1 min-w-0">
-            <h1 className="text-lg sm:text-xl font-bold text-gray-800 truncate">PerfectASIN</h1>
+            <h1 className="text-lg sm:text-xl font-bold text-gray-800 truncate">PerfectASIN™</h1>
             <p className="text-xs text-gray-600 truncate">AI Amazon Listing Optimizer</p>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">

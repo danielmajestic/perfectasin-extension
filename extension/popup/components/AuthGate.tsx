@@ -32,7 +32,7 @@ export default function AuthGate({ children }: AuthGateProps) {
         <div className="w-full max-w-sm">
           {/* Branding */}
           <div className="text-center mb-6">
-            <h1 className="text-xl font-bold text-gray-800">PerfectASIN</h1>
+            <h1 className="text-xl font-bold text-gray-800">PerfectASIN™</h1>
             <p className="text-xs text-gray-500 mt-1">AI-Powered Amazon Listing Optimization</p>
           </div>
 

@@ -115,8 +115,8 @@ function VariationSetCard({
 
   // B12: Unique to PerfectASIN badge
   const uniqueBadge =
-    strategyKey === 'mobile' ? '📱 Unique to PerfectASIN' :
-    strategyKey === 'rufus'  ? '🤖 Unique to PerfectASIN' :
+    strategyKey === 'mobile' ? '📱 Unique to PerfectASIN™' :
+    strategyKey === 'rufus'  ? '🤖 Unique to PerfectASIN™' :
     null;
 
   // B15: avg character count across all bullets
