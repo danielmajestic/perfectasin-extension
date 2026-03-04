@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { signIn, signUp, signOut, signInWithEmail, getStoredToken, getAuthState } from '../auth/web-auth-flow';
+import { signInWithGoogle, signUp, signOut, signInWithEmail, getStoredToken, getAuthState } from '../auth/web-auth-flow';
 
 interface AuthUser {
   uid: string;
@@ -58,7 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login() {
-    await signIn();
+    await signInWithGoogle();
     const state = await getAuthState();
     if (state.authenticated && state.uid && state.email) {
       setCurrentUser({ uid: state.uid, email: state.email });

@@ -1,7 +1,11 @@
-const REDIRECT_BASE = 'https://nnonechpbchjfeiejonjfgikgdajacmj.chromiumapp.org/';
 const AUTH_BASE = 'https://perfectasin.com/auth.html';
 const API_BASE = 'https://api.titleperfect.app';
 const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
+
+// TODO(Kat): Replace with the Web client OAuth Client ID from the Firebase console
+// Firebase project: titleperfect-e3a1c → Project Settings → General → Your apps → Web app → OAuth client ID
+// Format: XXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com
+const GOOGLE_CLIENT_ID = 'TODO_GET_FROM_FIREBASE_CONSOLE';
 
 interface StoredAuth {
   token: string;
@@ -42,16 +46,81 @@ export async function signInWithEmail(email: string, password: string): Promise<
   await chrome.storage.local.set({ tp_auth: stored });
 }
 
-/** Open sign-in page via launchWebAuthFlow; store returned token/uid/email. */
-export async function signIn(): Promise<void> {
-  const redirectUrl = await launchAuthFlow(`${AUTH_BASE}?mode=signin`);
-  parseAndStore(redirectUrl);
+/**
+ * Google Sign-In via direct OAuth endpoint.
+ * Uses launchWebAuthFlow → accounts.google.com (NOT auth.html).
+ * Exchanges Google access_token for backend token via POST /api/auth/google.
+ * Stores result in chrome.storage.local.
+ *
+ * Requires backend: POST /api/auth/google { access_token } → { token, uid, email }
+ * Requires: GOOGLE_CLIENT_ID set to Web client OAuth ID from Firebase console.
+ */
+export async function signInWithGoogle(): Promise<void> {
+  const redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
+
+  const authUrl = new URL('https://accounts.google.com/o/oauth2/auth');
+  authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
+  authUrl.searchParams.set('response_type', 'token');
+  authUrl.searchParams.set('redirect_uri', redirectUri);
+  authUrl.searchParams.set('scope', 'email profile');
+
+  return new Promise((resolve, reject) => {
+    chrome.identity.launchWebAuthFlow(
+      { url: authUrl.toString(), interactive: true },
+      async (redirectUrl) => {
+        if (chrome.runtime.lastError || !redirectUrl) {
+          reject(new Error(chrome.runtime.lastError?.message ?? 'Authentication cancelled'));
+          return;
+        }
+
+        // Access token is in the URL hash, not query params
+        const hashParams = new URLSearchParams(new URL(redirectUrl).hash.slice(1));
+        const accessToken = hashParams.get('access_token');
+        if (!accessToken) {
+          reject(new Error('No access token in Google response'));
+          return;
+        }
+
+        // Exchange Google access token for backend token
+        try {
+          const res = await fetch(`${API_BASE}/api/auth/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ access_token: accessToken }),
+          });
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok || !data.token) {
+            reject(new Error(data?.message || data?.error || 'Backend token exchange failed'));
+            return;
+          }
+
+          const stored: StoredAuth = {
+            token: data.token,
+            uid: data.uid ?? data.user_id ?? '',
+            email: data.email ?? '',
+            expiresAt: Date.now() + TOKEN_EXPIRY_MS,
+          };
+
+          await chrome.storage.local.set({ tp_auth: stored });
+          resolve();
+        } catch (err) {
+          reject(err instanceof Error ? err : new Error('Google sign-in failed'));
+        }
+      },
+    );
+  });
 }
 
-/** Open sign-up page via launchWebAuthFlow; store returned token/uid/email. */
+/** @deprecated — was used to open auth.html via launchWebAuthFlow. Use signInWithGoogle() instead. */
+export async function signIn(): Promise<void> {
+  return signInWithGoogle();
+}
+
+/** Open sign-up page in a new tab (email sign-up handled on perfectasin.com). */
 export async function signUp(): Promise<void> {
-  const redirectUrl = await launchAuthFlow(`${AUTH_BASE}?mode=signup`);
-  parseAndStore(redirectUrl);
+  chrome.tabs.create({ url: `${AUTH_BASE}?mode=signup` });
 }
 
 /** Open password-reset page in a new tab (no redirect needed). */
@@ -94,46 +163,6 @@ export async function getAuthState(): Promise<{
 }
 
 // ─── Internals ────────────────────────────────────────────────────────────────
-
-function launchAuthFlow(url: string): Promise<string> {
-  const fullUrl = `${url}&redirect_uri=${encodeURIComponent(REDIRECT_BASE)}`;
-  return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow(
-      { url: fullUrl, interactive: true },
-      (redirectUrl) => {
-        const err = chrome.runtime.lastError;
-        if (err || !redirectUrl) {
-          reject(new Error(err?.message ?? 'Authentication cancelled'));
-          return;
-        }
-        resolve(redirectUrl);
-      },
-    );
-  });
-}
-
-function parseAndStore(redirectUrl: string): void {
-  const url = new URL(redirectUrl);
-  const error = url.searchParams.get('error');
-  if (error) throw new Error(decodeURIComponent(error));
-
-  const token = url.searchParams.get('token');
-  const uid = url.searchParams.get('uid');
-  const email = url.searchParams.get('email');
-
-  if (!token || !uid || !email) {
-    throw new Error('Invalid auth response: missing token, uid, or email');
-  }
-
-  const stored: StoredAuth = {
-    token,
-    uid,
-    email: decodeURIComponent(email),
-    expiresAt: Date.now() + TOKEN_EXPIRY_MS,
-  };
-
-  chrome.storage.local.set({ tp_auth: stored });
-}
 
 async function getStoredAuth(): Promise<StoredAuth | null> {
   const result = await chrome.storage.local.get(['tp_auth']);
