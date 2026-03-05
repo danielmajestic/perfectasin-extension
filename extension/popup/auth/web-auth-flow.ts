@@ -60,10 +60,9 @@ export async function signInWithGoogle(): Promise<void> {
 
   const authUrl = new URL('https://accounts.google.com/o/oauth2/auth');
   authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
-  authUrl.searchParams.set('response_type', 'id_token');
+  authUrl.searchParams.set('response_type', 'token');
   authUrl.searchParams.set('redirect_uri', redirectUri);
   authUrl.searchParams.set('scope', 'email profile');
-  authUrl.searchParams.set('nonce', crypto.randomUUID());
 
   return new Promise((resolve, reject) => {
     chrome.identity.launchWebAuthFlow(
@@ -74,20 +73,20 @@ export async function signInWithGoogle(): Promise<void> {
           return;
         }
 
-        // id_token is in the URL hash, not query params
+        // Access token is in the URL hash, not query params
         const hashParams = new URLSearchParams(new URL(redirectUrl).hash.slice(1));
-        const idToken = hashParams.get('id_token');
-        if (!idToken) {
-          reject(new Error('No id_token in Google response'));
+        const accessToken = hashParams.get('access_token');
+        if (!accessToken) {
+          reject(new Error('No access token in Google response'));
           return;
         }
 
-        // Exchange Google id_token for backend token
+        // Exchange Google access token for backend token
         try {
           const res = await fetch(`${API_BASE}/api/auth/google`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id_token: idToken }),
+            body: JSON.stringify({ access_token: accessToken }),
           });
 
           const data = await res.json().catch(() => ({}));
