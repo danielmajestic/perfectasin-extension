@@ -23,6 +23,10 @@
     "https://*.amazon.in/*",
     "https://*.amazon.co.jp/*"
   ],
+  "oauth2": {
+    "client_id": "119656431080-emhikh9mr0jf0a0guf8v7crfmlkgqihu.apps.googleusercontent.com",
+    "scopes": ["openid", "email", "profile"]
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
