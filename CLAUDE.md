@@ -1,3 +1,15 @@
+## REPO BOUNDARIES — READ FIRST
+This is the PerfectASIN extension repo: ~/projects/perfectasin-extension/
+- Extension ID: mijefckkcmoohngednoefjelimbnjdme
+- GitHub: danielmajestic/perfectasin-extension
+- ALL extension work goes here
+
+~/projects/titleperfect/ is FROZEN. It is the old TitlePerfect repo.
+- NEVER commit to titleperfect for PerfectASIN work
+- NEVER edit files in titleperfect thinking they are PerfectASIN
+- The two repos are SEPARATE Chrome extensions with DIFFERENT extension IDs
+- Backend is SHARED at ~/projects/titleperfect/backend/ — that is the ONLY part of titleperfect that is still active
+
 # TitlePerfect Project
 
 ## Tech Stack
