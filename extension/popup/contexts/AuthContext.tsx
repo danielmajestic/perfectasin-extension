@@ -58,11 +58,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   async function login() {
-    await signInWithGoogle();
-    const state = await getAuthState();
-    if (state.authenticated && state.uid && state.email) {
-      setCurrentUser({ uid: state.uid, email: state.email });
-    }
+    const { token, uid, email } = await signInWithGoogle();
+    await chrome.storage.local.set({
+      tp_auth: { token, uid, email, expiresAt: Date.now() + 55 * 60 * 1000 },
+    });
+    setCurrentUser({ uid, email });
   }
 
   async function loginWithEmail(email: string, password: string) {
