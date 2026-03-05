@@ -2,10 +2,6 @@ const AUTH_BASE = 'https://perfectasin.com/auth.html';
 const API_BASE = 'https://api.titleperfect.app';
 const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
 
-// TODO(Kat): Replace with the Web client OAuth Client ID from the Firebase console
-// Firebase project: titleperfect-e3a1c → Project Settings → General → Your apps → Web app → OAuth client ID
-// Format: XXXXXXXXXX-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX.apps.googleusercontent.com
-const GOOGLE_CLIENT_ID = '119656431080-emhikh9mr0jf0a0guf8v7crfmlkgqihu.apps.googleusercontent.com';
 
 interface StoredAuth {
   token: string;
@@ -46,76 +42,41 @@ export async function signInWithEmail(email: string, password: string): Promise<
   await chrome.storage.local.set({ tp_auth: stored });
 }
 
-/**
- * Google Sign-In via direct OAuth endpoint.
- * Uses launchWebAuthFlow → accounts.google.com (NOT auth.html).
- * Exchanges Google access_token for backend token via POST /api/auth/google.
- * Stores result in chrome.storage.local.
- *
- * Requires backend: POST /api/auth/google { access_token } → { token, uid, email }
- * Requires: GOOGLE_CLIENT_ID set to Web client OAuth ID from Firebase console.
- */
-export async function signInWithGoogle(): Promise<void> {
-  const redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
-
-  const authUrl = new URL('https://accounts.google.com/o/oauth2/auth');
-  authUrl.searchParams.set('client_id', GOOGLE_CLIENT_ID);
-  authUrl.searchParams.set('response_type', 'token');
-  authUrl.searchParams.set('redirect_uri', redirectUri);
-  authUrl.searchParams.set('scope', 'email profile');
-
-  return new Promise((resolve, reject) => {
-    chrome.identity.launchWebAuthFlow(
-      { url: authUrl.toString(), interactive: true },
-      async (redirectUrl) => {
-        if (chrome.runtime.lastError || !redirectUrl) {
-          reject(new Error(chrome.runtime.lastError?.message ?? 'Authentication cancelled'));
-          return;
-        }
-
-        // Access token is in the URL hash, not query params
-        const hashParams = new URLSearchParams(new URL(redirectUrl).hash.slice(1));
-        const accessToken = hashParams.get('access_token');
-        if (!accessToken) {
-          reject(new Error('No access token in Google response'));
-          return;
-        }
-
-        // Exchange Google access token for backend token
-        try {
-          const res = await fetch(`${API_BASE}/api/auth/google`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ access_token: accessToken }),
-          });
-
-          const data = await res.json().catch(() => ({}));
-
-          if (!res.ok || !data.token) {
-            reject(new Error(data?.message || data?.error || 'Backend token exchange failed'));
-            return;
-          }
-
-          const stored: StoredAuth = {
-            token: data.token,
-            uid: data.uid ?? data.user_id ?? '',
-            email: data.email ?? '',
-            expiresAt: Date.now() + TOKEN_EXPIRY_MS,
-          };
-
-          await chrome.storage.local.set({ tp_auth: stored });
-          resolve();
-        } catch (err) {
-          reject(err instanceof Error ? err : new Error('Google sign-in failed'));
-        }
-      },
-    );
+export async function signInWithGoogle(): Promise<{token: string, uid: string, email: string}> {
+  const accessToken = await new Promise<string>((resolve, reject) => {
+    chrome.identity.getAuthToken({ interactive: true }, (token) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+      if (!token) {
+        reject(new Error('No token returned'));
+        return;
+      }
+      resolve(token);
+    });
   });
+
+  const res = await fetch('https://api.titleperfect.app/api/auth/google', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ access_token: accessToken })
+  });
+
+  if (!res.ok) {
+    await new Promise<void>((resolve) => {
+      chrome.identity.removeCachedAuthToken({ token: accessToken }, resolve);
+    });
+    throw new Error('Backend auth exchange failed');
+  }
+
+  const data = await res.json();
+  return { token: data.token, uid: data.uid, email: data.email };
 }
 
-/** @deprecated — was used to open auth.html via launchWebAuthFlow. Use signInWithGoogle() instead. */
+/** @deprecated — use signInWithGoogle() instead. */
 export async function signIn(): Promise<void> {
-  return signInWithGoogle();
+  await signInWithGoogle();
 }
 
 /** Open sign-up page in a new tab (email sign-up handled on perfectasin.com). */
