@@ -26,10 +26,24 @@ function AppContent() {
   const [showSettings, setShowSettings] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('title');
+  const { refresh } = useSubscription();
 
   useEffect(() => {
     initAnalytics('G-ZDZDVRF41G');
   }, []);
+
+  // Post-checkout refresh: when the extension panel regains visibility after the
+  // user completes (or cancels) the Stripe checkout in a browser tab, re-fetch
+  // subscription status so Pro features unlock immediately without re-login.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        refresh();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [refresh]);
 
   const handleUpgradeClick = () => setShowUpgradeCTA(true);
 

@@ -484,6 +484,37 @@ function getHeroImageData(): HeroImageData {
       '#altImages li.item[data-csa-c-type="image"]',
     );
 
+    // Extra strategy: count li.item nodes that contain an img element (catches
+    // thumbnails that lazy-load into the DOM but lack data-csa-c-type="image").
+    // :has() is supported in all Chrome versions the extension targets.
+    const itemsWithImg = document.querySelectorAll('#altImages li.item:has(img)');
+
+    // Secondary thumbnail containers used on some Amazon page variants
+    const secondaryThumbs = document.querySelectorAll(
+      '#imageBlockThumbs li, #ivThumbs li',
+    );
+
+    // Attempt to read the image count from Amazon's embedded colorImages JSON,
+    // which is the most authoritative source (includes images not yet in DOM).
+    let colorImagesCount = 0;
+    try {
+      const scripts = Array.from(document.querySelectorAll('script'));
+      for (const s of scripts) {
+        const t = s.textContent || '';
+        const m = t.match(/'colorImages'\s*:\s*(\{"initial":\s*\[[\s\S]*?\])/);
+        if (m) {
+          const arr = JSON.parse(m[1] + '}');
+          if (Array.isArray(arr.initial)) {
+            colorImagesCount = arr.initial.filter(
+              (img: { hiRes?: string; large?: string; main?: string }) =>
+                img.hiRes || img.large || img.main,
+            ).length;
+          }
+          break;
+        }
+      }
+    } catch { /* ignore — JSON parse failures are non-fatal */ }
+
     // Strategy 1: data-csa-c-type="video" on li.item (most reliable, modern Amazon)
     const cscVideoItems = document.querySelectorAll(
       '#altImages li.item[data-csa-c-type="video"]',
@@ -541,10 +572,19 @@ function getHeroImageData(): HeroImageData {
       textVideoCount,
     );
 
-    // Static image count: use typed items, fall back to non-video items in rail
+    // Static image count — take the highest credible count across all strategies:
+    // 1. colorImages JSON  (most authoritative; includes images not yet in DOM)
+    // 2. :has(img) items minus video items (catches lazy-loaded thumbnails)
+    // 3. data-csa-c-type="image" typed items
+    // 4. Secondary containers (#imageBlockThumbs, #ivThumbs)
+    // 5. All li.item minus video items (broadest fallback)
+    const itemsWithImgCount = Math.max(itemsWithImg.length - videoCount, 0);
     const imageCount = Math.max(
-      staticImageItems.length ||
-        Math.max(allGalleryItems.length - videoCount, 1),
+      colorImagesCount,
+      itemsWithImgCount,
+      staticImageItems.length,
+      secondaryThumbs.length > 0 ? secondaryThumbs.length - videoCount : 0,
+      Math.max(allGalleryItems.length - videoCount, 1),
       1,
     );
 
@@ -696,11 +736,12 @@ function extractSerpData(): SerpData | null {
  */
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
   if (request.action === 'GET_PRODUCT_INFO') {
-    // Async handler: data-old-hires on hero image can lazy-load.
-    // If missing on first scrape, wait 500ms and retry ONCE — then give up.
+    // Async handler: gallery thumbnails and data-old-hires can lazy-load.
+    // Always wait 500ms for DOM to settle before reading hero image data so
+    // thumbnail counts (imageCount) and hires URL are fully populated.
     (async () => {
       const productInfo = extractProductInfo();
-      if (productInfo?.heroImageData && !productInfo.heroImageData.heroHiresUrl) {
+      if (productInfo?.heroImageData) {
         await new Promise<void>((resolve) => setTimeout(resolve, 500));
         productInfo.heroImageData = getHeroImageData();
       }

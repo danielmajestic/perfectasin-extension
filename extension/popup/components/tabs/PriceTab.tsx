@@ -252,6 +252,7 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
           'Buy Box & Visibility',
         ]}
         estimatedSeconds={18}
+        timeEstimate="This typically takes 15-30 seconds"
       />
     );
   }

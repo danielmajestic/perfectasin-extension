@@ -73,13 +73,9 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
       apiClient.setAuthToken(token);
 
       const planParam = `${tier}_${cycle}`;
-      const priceId = cycle === 'monthly'
-        ? TIERS[tier].stripePriceMonthly
-        : TIERS[tier].stripePriceAnnual;
 
-      const data: { checkout_url: string } = await apiClient.post('/api/checkout/create-session', {
+      const data: { checkout_url: string } = await apiClient.post('/api/stripe/create-checkout-session', {
         plan: planParam,
-        price_id: priceId,
         success_url: 'https://perfectasin.com/checkout/success',
         cancel_url: 'https://perfectasin.com/checkout/cancel',
       });

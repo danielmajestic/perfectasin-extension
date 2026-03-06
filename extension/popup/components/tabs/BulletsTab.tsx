@@ -367,6 +367,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
           'Rufus AI',
         ]}
         estimatedSeconds={60}
+        timeEstimate="This typically takes 30-45 seconds"
       />
     );
   }

@@ -4,11 +4,13 @@ interface LoadingStateProps {
   dimensions: string[];
   estimatedSeconds?: number; // no longer used — kept for call-site compatibility
   message?: string;
+  timeEstimate?: string;
 }
 
 export default function LoadingState({
   dimensions,
   message = 'Analyzing…',
+  timeEstimate,
 }: LoadingStateProps) {
   const [elapsed, setElapsed] = useState(0);
 
@@ -51,6 +53,9 @@ export default function LoadingState({
               </li>
             ))}
           </ul>
+        )}
+        {timeEstimate && (
+          <p className="text-xs text-gray-500 mb-1">{timeEstimate}</p>
         )}
         <p className="text-xs text-gray-400">
           Analyzing... {elapsed}s

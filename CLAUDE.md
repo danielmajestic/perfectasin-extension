@@ -69,6 +69,13 @@ Building from PRD v2.2 - currently on Phase 16.4 (Popup UI)
 - Flag blockers early, don't spin wheels
 - Remind Dan of cheats/protocols when they'd help
 
+## DEV RULES
+
+### Commit hygiene
+- Always run `git status` before committing to verify all modified files are staged
+- Run `git diff --stat` after commit to confirm what actually shipped
+- If you edited multiple files, `git add .` is safer than `git add <single file>`
+
 ## Related Projects (Same Owner)
 - PerfectASIN Suite (parent project - Title Perfect is first tool)
 - Bullet Perfect (next after Title Perfect)

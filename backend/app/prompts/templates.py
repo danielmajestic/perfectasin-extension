@@ -634,7 +634,7 @@ Strategy 3 — infographic (Feature Infographic):
 Product with labeled feature callouts, key specs/dimensions, comparison elements. Clean flat-lay or 3/4 view.
 
 For each prompt:
-- prompt: Full descriptive text (generic — works with Midjourney, DALL-E 3, Google AI Studio)
+- prompt: Full descriptive text that names the specific product ("{title}" — use this exact product name, NOT generic placeholders like "slim aluminum laptop computer"). Works with Midjourney, DALL-E 3, Google AI Studio.
 - nano_banana: Nested JSON object for Google AI Studio / Gemini Image Generation (NOT a string)
 - strategy_note: One sentence on fit + end with: "Works with any AI image tool — or paste Nano Banana JSON into Google AI Studio."
 

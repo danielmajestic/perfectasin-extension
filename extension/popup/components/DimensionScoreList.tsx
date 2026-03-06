@@ -77,19 +77,19 @@ function DimensionRow({
         )}
       </div>
 
-      {/* Expanded details */}
+      {/* Expanded details — full-width below the score bar */}
       {open && hasDetails && (
-        <div className="mt-2 ml-[8.5rem] space-y-1.5 text-xs">
+        <div className="mt-2 space-y-1.5 text-xs">
           {(dim.strengths ?? []).map((s, i) => (
-            <div key={`s${i}`} className="flex items-start gap-1.5 text-green-700">
+            <div key={`s${i}`} className="flex items-start gap-1.5 text-green-700 bg-green-50 rounded px-2 py-1">
               <span className="flex-shrink-0 mt-0.5">✓</span>
-              <span>{s}</span>
+              <span className="leading-relaxed">{s}</span>
             </div>
           ))}
           {(dim.issues ?? []).map((issue, i) => (
-            <div key={`i${i}`} className="flex items-start gap-1.5 text-red-600">
+            <div key={`i${i}`} className="flex items-start gap-1.5 text-red-600 bg-red-50 rounded px-2 py-1">
               <span className="flex-shrink-0 mt-0.5">✗</span>
-              <span>{issue}</span>
+              <span className="leading-relaxed">{issue}</span>
             </div>
           ))}
         </div>

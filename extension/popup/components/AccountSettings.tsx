@@ -50,7 +50,7 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
     try {
       const token = await getIdToken();
       apiClient.setAuthToken(token);
-      const data: { checkout_url: string } = await apiClient.post('/api/checkout/create-session', {
+      const data: { checkout_url: string } = await apiClient.post('/api/stripe/create-checkout-session', {
         plan: 'owner_monthly',
         success_url: 'https://perfectasin.com/checkout/success',
         cancel_url: 'https://perfectasin.com/checkout/cancel',

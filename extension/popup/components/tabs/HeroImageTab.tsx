@@ -97,6 +97,7 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
           'Secondary Image Intelligence',
         ]}
         estimatedSeconds={60}
+        timeEstimate="This typically takes 15-30 seconds"
       />
     );
   }
@@ -219,7 +220,7 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
               }))}
               expandable
             />
-            <p className="text-xs text-gray-400 mt-3">Click the arrow on any dimension to see finding and recommendation.</p>
+            <p className="text-xs text-gray-400 mt-3">Tap any score to see what's working and what to fix.</p>
           </div>
 
           {/* Critical issues + quick wins + recommendations */}
@@ -255,7 +256,7 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
                     </div>
                     <p className="text-sm font-semibold text-gray-800 mb-1">🔒 Pro Image Strategies</p>
                     <p className="text-xs text-gray-500 mb-3 max-w-[220px] mx-auto">
-                      Get 3 AI-generated prompts — White Background, Lifestyle, and Infographic — each with Nano Banana JSON for Google AI Studio.
+                      Unlock 3 more AI image prompts — Lifestyle Scene, Feature Infographic, and Comparison Shot — ready to paste into Google AI Studio.
                     </p>
                     <button
                       onClick={onUpgradeClick}
