@@ -1,5 +1,5 @@
 const AUTH_BASE = 'https://perfectasin.com/auth.html';
-const API_BASE = 'https://api.titleperfect.app';
+const API_BASE = 'https://api.perfectasin.com';
 const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
 
 
@@ -57,7 +57,7 @@ export async function signInWithGoogle(): Promise<{token: string, uid: string, e
     });
   });
 
-  const res = await fetch('https://api.titleperfect.app/api/auth/google', {
+  const res = await fetch('https://api.perfectasin.com/api/auth/google', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ access_token: accessToken })

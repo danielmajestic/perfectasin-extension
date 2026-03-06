@@ -9,7 +9,7 @@ const API_CONFIG = {
   development: (import.meta.env.MODE === 'development' && import.meta.env.VITE_API_URL)
     ? (import.meta.env.VITE_API_URL as string)
     : 'http://localhost:8000',
-  production: 'https://api.titleperfect.app',
+  production: 'https://api.perfectasin.com',
 };
 
 const getApiBaseUrl = (): string => {

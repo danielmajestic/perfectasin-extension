@@ -13,6 +13,8 @@
     "identity"
   ],
   "host_permissions": [
+    "https://api.perfectasin.com/*",
+    "https://api.titleperfect.app/*",
     "https://*.amazon.com/*",
     "https://*.amazon.co.uk/*",
     "https://*.amazon.ca/*",
