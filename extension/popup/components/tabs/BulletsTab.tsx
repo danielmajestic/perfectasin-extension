@@ -311,8 +311,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
 
   const isDepletedFree = !isOwnerOrAbove && usageCount >= usageLimit;
   const hasVariations = (analysisResult?.variations?.length ?? 0) > 0;
-  const isFirstPro = analysisResult?.is_first_pro_analysis === true;
-  const showVariations = hasVariations && (isOwnerOrAbove || isFirstPro);
+  const showVariations = hasVariations;
 
   const currentBulletScore = analysisResult?.overall_score ?? null;
 
@@ -493,16 +492,6 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
         <>
           {/* B3: invisible scroll anchor */}
           <div ref={resultsRef} />
-
-          {/* First-analysis Pro banner */}
-          {isFirstPro && !isOwnerOrAbove && (
-            <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-3 flex items-start gap-2.5">
-              <span className="text-xl leading-none mt-0.5">🎁</span>
-              <p className="text-xs font-semibold text-purple-800 leading-relaxed">
-                Your First Bullets Analysis Includes Pro Features — AI Variation Sets Unlocked!
-              </p>
-            </div>
-          )}
 
           {/* Overall score */}
           <OverallScoreCard score={analysisResult.overall_score} />

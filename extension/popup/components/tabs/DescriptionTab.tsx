@@ -285,8 +285,7 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
   const isDepletedFree = !isOwnerOrAbove && usageCount >= usageLimit;
   const effectiveDescription = product?.description || manualDescription;
   const hasVariations = (analysisResult?.variations?.length ?? 0) > 0;
-  const isFirstPro = analysisResult?.is_first_pro_analysis === true;
-  const showVariations = hasVariations && (isOwnerOrAbove || isFirstPro);
+  const showVariations = hasVariations;
 
   // ─── Gate: no product ─────────────────────────────────────────────────────
 
@@ -475,16 +474,6 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
       {/* ─── Results ──────────────────────────────────────────────────────── */}
       {analysisResult && (
         <>
-          {/* First-analysis Pro banner */}
-          {isFirstPro && !isOwnerOrAbove && (
-            <div className="bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-lg p-3 flex items-start gap-2.5">
-              <span className="text-xl leading-none mt-0.5">🎁</span>
-              <p className="text-xs font-semibold text-emerald-800 leading-relaxed">
-                Your First Description Analysis Includes Pro Features — AI Rewrite Variations Unlocked!
-              </p>
-            </div>
-          )}
-
           {/* Overall score */}
           <OverallScoreCard
             score={analysisResult.overallScore}

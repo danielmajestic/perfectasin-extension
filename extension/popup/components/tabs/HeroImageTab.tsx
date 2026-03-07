@@ -26,7 +26,7 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
   const isDepletedFree = !isOwnerOrAbove && usageCount >= usageLimit;
   const isFirstPro = analysisResult?.is_first_pro_analysis === true;
   const hasProPrompts = (analysisResult?.prompts?.length ?? 0) > 1;
-  const showProPrompts = hasProPrompts && (isOwnerOrAbove || isFirstPro);
+  const showProPrompts = hasProPrompts;
 
   // ─── Gate: no product ───────────────────────────────────────────────────────
 
@@ -174,16 +174,6 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
       {/* ─── Results ─────────────────────────────────────────────────────────── */}
       {analysisResult && (
         <>
-          {/* First-analysis Pro banner */}
-          {isFirstPro && !isOwnerOrAbove && (
-            <div className="bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-200 rounded-lg p-3 flex items-start gap-2.5">
-              <span className="text-xl leading-none mt-0.5">🎁</span>
-              <p className="text-xs font-semibold text-orange-800 leading-relaxed">
-                Your First Hero Image Analysis Includes Pro Features — 3 AI Prompt Strategies Unlocked!
-              </p>
-            </div>
-          )}
-
           {/* Overall score + thumbnail */}
           <HeroScoreCard
             heroImageUrl={heroImageData.heroImageUrl}

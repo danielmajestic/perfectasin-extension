@@ -26,7 +26,6 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
   const {
     asinData,
     newProductDetected,
-    firstAnalysisDone,
     titleState,
     startTitleAnalysis,
     refreshProduct,
@@ -134,16 +133,6 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
         </div>
       )}
 
-      {/* First-analysis full Pro banner */}
-      {analysisResult && lastTier === 'full' && !isOwnerOrAbove && !firstAnalysisDone && (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2.5">
-          <span className="text-xl leading-none mt-0.5">🎁</span>
-          <p className="text-xs font-semibold text-blue-800 leading-relaxed">
-            Your First Analysis Includes Full Pro Features — Scores, AI Variations, ICP Report
-          </p>
-        </div>
-      )}
-
       {/* Current title */}
       <TitleInput
         title={productInfo.title}
@@ -244,8 +233,8 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
           <FullICPReport
             data={analysisResult.fullIcp ?? null}
             icpSummary={analysisResult.icp}
-            isPro={isOwnerOrAbove}
-            isFullTier={analysisResult.tier === 'full' || isOwnerOrAbove}
+            isPro={true}
+            isFullTier={true}
             onUpgradeClick={onUpgradeClick}
           />
 
@@ -265,7 +254,7 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
               seo: analysisResult.seoScore,
             }}
             originalCharCount={productInfo.title.length}
-            isFreeTier={analysisResult.tier === 'free' && !isOwnerOrAbove}
+            isFreeTier={false}
             onUpgradeClick={onUpgradeClick}
           />
         </>
@@ -287,7 +276,7 @@ export default function TitleTab({ onUpgradeClick }: TitleTabProps) {
               <span className="font-medium">Brand:</span> {productInfo.brand}
             </div>
           )}
-          {analysisResult?.icp && (analysisResult.tier === 'full' || isOwnerOrAbove) && (
+          {analysisResult?.icp && (
             <div className="col-span-2">
               <span className="font-semibold">ICP:</span>{' '}
               {/* T11: click to smooth-scroll up to full ICP report */}

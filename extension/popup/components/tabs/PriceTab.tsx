@@ -158,16 +158,14 @@ function CompetitorTable({ competitors, userPriceNumeric }: {
 
 export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
   const { asinData, priceState, startPriceAnalysis } = useASIN();
-  const { isOwnerOrAbove, tier, analysesUsed, analysisLimit } = useSubscription();
+  const { tier, analysesUsed, analysisLimit } = useSubscription();
 
   const product = asinData?.product;
   const priceAnalysis = asinData?.priceAnalysis;
   const titleAnalysis = asinData?.titleAnalysis;
   const { loading, serpFetching, serpFailed, error } = priceState;
 
-  const isPro = isOwnerOrAbove;
-  const isFirstPro = priceAnalysis?.is_first_pro_analysis === true;
-  const showProContent = isPro || isFirstPro;
+  const showProContent = true;
 
   // Gate: no product
   if (!product) {
@@ -312,21 +310,6 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
 
   return (
     <div className="space-y-4">
-      {/* First-analysis Pro banner */}
-      {isFirstPro && !isPro && (
-        <div className="rounded-lg border border-orange-200 bg-orange-50 p-3 flex items-start gap-2">
-          <span className="text-base flex-shrink-0">🎁</span>
-          <div>
-            <p className="text-xs font-semibold text-orange-800">
-              First analysis — full Pro results unlocked!
-            </p>
-            <p className="text-xs text-orange-700 mt-0.5">
-              Upgrade to Pro to always get price recommendations and psychological tactics.
-            </p>
-          </div>
-        </div>
-      )}
-
       {/* Overall score card */}
       <div className="rounded-lg border border-gray-200 bg-white p-4 space-y-3">
         <div className="flex items-center justify-between">
@@ -429,9 +412,9 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
             Competitive Price Ladder
           </h4>
           <p className="text-[10px] text-gray-400 mb-2">
-            {isPro ? 'Hover competitors for details.' : 'Upgrade to Pro for competitor details on hover.'}
+            {'Hover competitors for details.'}
           </p>
-          <PriceLadder result={priceAnalysis} isPro={isPro} />
+          <PriceLadder result={priceAnalysis} isPro={true} />
           {/* W2: Outliers removed before analysis */}
           {(priceAnalysis.outliersRemoved?.length ?? 0) > 0 && (
             <div className="mt-2">
