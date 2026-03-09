@@ -77,7 +77,7 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
           <div className="h-full rounded-full" style={{ width: '100%', backgroundColor: '#ef4444' }} />
         </div>
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} analyses · {asinsUsed}/{asinLimit === Infinity ? '∞' : asinLimit} ASINs</span>
+          <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} analyses used — Resets {resetDate}</span>
           {nextTier && (
             <button
               onClick={onUpgradeClick}

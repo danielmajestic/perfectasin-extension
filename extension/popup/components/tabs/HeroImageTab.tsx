@@ -97,7 +97,7 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
           'Secondary Image Intelligence',
         ]}
         estimatedSeconds={60}
-        timeEstimate="This typically takes 15-30 seconds"
+        timeEstimate="This typically takes 45-90 seconds"
       />
     );
   }

@@ -250,7 +250,7 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
           'Buy Box & Visibility',
         ]}
         estimatedSeconds={18}
-        timeEstimate="This typically takes 15-30 seconds"
+        timeEstimate="This typically takes 30-60 seconds"
       />
     );
   }
@@ -360,7 +360,7 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
             <div>
               <span className="text-gray-500">Market median: </span>
               <span className="font-semibold text-gray-800">
-                ${priceAnalysis.marketMedian.toFixed(2)}
+                ${priceAnalysis.marketMedian.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
             </div>
           )}
@@ -411,10 +411,8 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
           <h4 className="text-xs font-semibold text-gray-700 mb-1">
             Competitive Price Ladder
           </h4>
-          <p className="text-[10px] text-gray-400 mb-2">
-            {'Hover competitors for details.'}
-          </p>
           <PriceLadder result={priceAnalysis} isPro={true} />
+          <p className="text-[10px] text-gray-400 mt-1.5">Hover over price points for details</p>
           {/* W2: Outliers removed before analysis */}
           {(priceAnalysis.outliersRemoved?.length ?? 0) > 0 && (
             <div className="mt-2">
