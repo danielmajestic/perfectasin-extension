@@ -15,7 +15,7 @@ const CROBanner: React.FC<CROBannerProps> = ({ tier, usageCount, onUpgradeClick 
   if (usageCount === 0) {
     return (
       <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3 font-medium text-amber-700 text-xs">
-        ⭐ Your first analysis unlocks the full Pro report — make it count!
+        ⭐ Your 5 free analyses are FULL Pro — use them all on your #1 ASIN for a complete audit!
       </div>
     );
   }

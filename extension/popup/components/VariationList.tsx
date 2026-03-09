@@ -222,6 +222,9 @@ function VariationItem({
               <span className="text-gray-400 font-light">{variation.title.slice(80)}</span>
             )}
           </p>
+          {variation.title.length > 80 && (
+            <p className="mt-1 text-[10px] text-gray-400">Grey text = truncated on mobile</p>
+          )}
 
           {/* T6: Keyword coverage */}
           {totalKeywords > 0 && (
