@@ -94,7 +94,7 @@ export const TIERS = {
   owner: {
     asins:              50,
     analyses:           200,
-    priceMonthly:       19.95,
+    priceMonthly:       29.95,
     priceAnnual:        191.40,
     stripePriceMonthly: 'price_1T5rhkD0k6gutq2Q0UaYqAO0',
     stripePriceAnnual:  'price_1T5rhkD0k6gutq2QjRREuzEW',
