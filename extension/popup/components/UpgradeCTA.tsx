@@ -6,7 +6,7 @@ import { trackEvent } from '../utils/analytics';
 import { TIERS } from '../../../src/shared/scoringConstants';
 
 // Founder launch prices shown as strikethrough (the "was" price)
-const FOUNDER_ORIGINAL_PRICE = { owner: 29.95, consultant: 79 } as const;
+const FOUNDER_ORIGINAL_PRICE = { owner: 49.95, consultant: 79 } as const;
 
 interface UpgradeCTAProps {
   isOpen: boolean;
