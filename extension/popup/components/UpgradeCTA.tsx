@@ -17,8 +17,7 @@ type CheckoutTier = 'owner' | 'consultant';
 type BillingCycle = 'monthly' | 'annual';
 
 const OWNER_BENEFITS = [
-  '50 ASINs per month',
-  '200 AI analyses',
+  '50 AI analyses',
   'AI variations & ICP reports',
   '90-day analysis history',
 ];
@@ -27,9 +26,9 @@ const CONSULTANT_BENEFITS = [
   '150 ASINs per month',
   '600 AI analyses',
   'Everything in Pro Plan, plus:',
-  'Competitor ASIN analysis',
-  'PDF export reports',
-  'CSV bulk import',
+  'Competitor ASIN analysis (coming soon)',
+  'PDF export reports (coming soon)',
+  'CSV bulk import (coming soon)',
   'Unlimited history',
 ];
 
@@ -119,14 +118,17 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
             <p className="text-sm text-gray-600 mt-1">Unlock competitor analysis, PDF exports, and more.</p>
           </div>
           <ul className="space-y-2 mb-5">
-            {CONSULTANT_BENEFITS.map((b) => (
-              <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
-                <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-                {b}
-              </li>
-            ))}
+            {CONSULTANT_BENEFITS.map((b) => {
+              const [label, suffix] = b.includes(' (coming soon)') ? [b.replace(' (coming soon)', ''), ' (coming soon)'] : [b, ''];
+              return (
+                <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
+                  <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                  {label}{suffix && <span className="text-gray-400 font-normal">{suffix}</span>}
+                </li>
+              );
+            })}
           </ul>
 
           {/* Billing toggle */}
@@ -277,14 +279,17 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
               )}
             </div>
             <ul className="space-y-1.5 mb-5 flex-1">
-              {CONSULTANT_BENEFITS.map((b) => (
-                <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
-                  <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                  </svg>
-                  {b}
-                </li>
-              ))}
+              {CONSULTANT_BENEFITS.map((b) => {
+                const [label, suffix] = b.includes(' (coming soon)') ? [b.replace(' (coming soon)', ''), ' (coming soon)'] : [b, ''];
+                return (
+                  <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
+                    <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                    </svg>
+                    {label}{suffix && <span className="text-gray-400 font-normal">{suffix}</span>}
+                  </li>
+                );
+              })}
             </ul>
             <button
               onClick={() => handleCheckout('consultant', billingCycle)}
