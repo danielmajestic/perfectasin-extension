@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import apiClient from '../../utils/api';
 import { useAuth } from '../contexts/AuthContext';
 import { useSubscription } from '../contexts/SubscriptionContext';
+import { useASIN } from '../contexts/ASINContext';
 import { trackEvent } from '../utils/analytics';
 import { TIERS } from '../../../src/shared/scoringConstants';
 
@@ -39,6 +40,8 @@ function annualPerMonth(tier: CheckoutTier): number {
 export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
   const { getIdToken } = useAuth();
   const { tier: currentTier } = useSubscription();
+  const { asinData } = useASIN();
+  const currentAsin = asinData?.product?.asin ?? null;
   const [loading, setLoading] = useState<`${CheckoutTier}-${BillingCycle}` | null>(null);
   const [error, setError] = useState('');
   const [billingCycle, setBillingCycle] = useState<BillingCycle>('monthly');
@@ -75,8 +78,8 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
 
       const data: { checkout_url: string } = await apiClient.post('/api/stripe/create-checkout-session', {
         plan: planParam,
-        success_url: 'https://perfectasin.com/checkout/success',
-        cancel_url: 'https://perfectasin.com/checkout/cancel',
+        success_url: `https://perfectasin.com/checkout-success?session_id={CHECKOUT_SESSION_ID}${currentAsin ? `&asin=${currentAsin}` : ''}`,
+        cancel_url: 'https://perfectasin.com/checkout-cancel.html',
       });
 
       chrome.tabs.create({ url: data.checkout_url });
@@ -264,7 +267,7 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
               <span className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">⭐ MOST POPULAR</span>
             </div>
             <div className="mb-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">⭐⭐ Consultant Plan</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">⭐⭐ Pro Consultant Plan</p>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <span className="text-sm text-gray-400 line-through">${FOUNDER_ORIGINAL_PRICE.consultant}</span>
                 <span className="text-2xl font-bold text-gray-900">

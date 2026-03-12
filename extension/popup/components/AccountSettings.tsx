@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useSubscription } from '../contexts/SubscriptionContext';
+import { useASIN } from '../contexts/ASINContext';
 import apiClient from '../../utils/api';
 import { TIER_NAMES, TIER_STARS, ANNUAL_SAVINGS } from '../utils/pricingConstants';
 
@@ -22,6 +23,8 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
     billingCycle,
     currentPeriodEnd,
   } = useSubscription();
+  const { asinData } = useASIN();
+  const currentAsin = asinData?.product?.asin ?? null;
   const [billingLoading, setBillingLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -52,8 +55,8 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
       apiClient.setAuthToken(token);
       const data: { checkout_url: string } = await apiClient.post('/api/stripe/create-checkout-session', {
         plan: 'owner_monthly',
-        success_url: 'https://perfectasin.com/checkout/success',
-        cancel_url: 'https://perfectasin.com/checkout/cancel',
+        success_url: `https://perfectasin.com/checkout-success?session_id={CHECKOUT_SESSION_ID}${currentAsin ? `&asin=${currentAsin}` : ''}`,
+        cancel_url: 'https://perfectasin.com/checkout-cancel.html',
       });
       chrome.tabs.create({ url: data.checkout_url });
       onClose();
