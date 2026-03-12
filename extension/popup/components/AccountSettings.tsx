@@ -18,8 +18,6 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
     isOwnerOrAbove,
     analysesUsed,
     analysisLimit,
-    asinsUsed,
-    asinLimit,
     billingCycle,
     currentPeriodEnd,
   } = useSubscription();
@@ -86,7 +84,6 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
     : null;
 
   const analysisLimitDisplay = analysisLimit === Infinity ? '∞' : analysisLimit;
-  const asinLimitDisplay = asinLimit === Infinity ? '∞' : asinLimit;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
@@ -133,7 +130,7 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
               <p className="text-sm text-gray-800">Unlimited</p>
             ) : (
               <p className="text-sm text-gray-800">
-                {analysesUsed}/{analysisLimitDisplay} analyses · {asinsUsed}/{asinLimitDisplay} ASINs
+                {analysesUsed}/{analysisLimitDisplay} analyses
               </p>
             )}
           </div>

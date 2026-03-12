@@ -6,8 +6,8 @@ export type SubscriptionTier = 'free' | 'owner' | 'consultant' | 'agency';
 export const TIER_NAMES: Record<SubscriptionTier, string> = {
   free: 'Starter',
   owner: 'Pro',
-  consultant: 'Consultant',
-  agency: 'Agency',
+  consultant: 'Pro Consultant',
+  agency: 'Pro Agency',
 };
 
 export const TIER_STARS: Record<SubscriptionTier, string> = {
