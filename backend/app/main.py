@@ -17,6 +17,7 @@ from app.routers import analyze_bullets
 from app.routers import analyze_description
 from app.routers import analyze_hero_image
 from app.routers import analyze_price
+from app.routers import auth
 
 # Configure logging
 logging.basicConfig(
@@ -78,6 +79,7 @@ app.include_router(admin.router)
 app.include_router(analyze_bullets.router)
 app.include_router(analyze_description.router)
 app.include_router(analyze_hero_image.router)
+app.include_router(auth.router)
 app.include_router(analyze_price.router)
 
 

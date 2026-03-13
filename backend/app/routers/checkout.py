@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(tags=["checkout"])
 
 TIER_METADATA = {
-    "owner":      {"asin_limit": 50,  "analysis_limit": 200},
+    "owner":      {"asin_limit": 50,  "analysis_limit": 50},
     "consultant": {"asin_limit": 150, "analysis_limit": 600},
 }
 
@@ -237,7 +237,7 @@ async def get_subscription(current_user: dict = Depends(get_current_user)):
         # ── Flat fields the frontend SubscriptionContext reads ──────────────
         # plan is sent as tier so parseTier() resolves correctly for free users
         # (subscription doc may have null plan before first purchase)
-        "plan": plan or tier,
+        "plan": tier,
         "is_pro": tier not in ("free",),
         "status": sub_status,
         "usage_count": analyses_used,       # gauge reads this directly

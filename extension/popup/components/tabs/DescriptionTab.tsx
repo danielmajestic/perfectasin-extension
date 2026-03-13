@@ -321,7 +321,7 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
           'Rufus AI Compatibility',
           'ICP Alignment',
         ]}
-        estimatedSeconds={30}
+        estimatedSeconds={90}
       />
     );
   }

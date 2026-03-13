@@ -52,9 +52,8 @@ async def list_analyses(
     query = (
         db.collection("analyses")
         .where("uid", "==", uid)
-        .where("deleted", "==", False)
         .order_by("timestamp", direction="DESCENDING")
-        .limit(limit)
+        .limit(limit * 2)  # over-fetch to compensate for deleted filtering
     )
 
     # Cursor-based pagination
@@ -69,18 +68,27 @@ async def list_analyses(
     last_id = None
     for doc in docs:
         data = doc.to_dict()
+        if data.get("deleted"):
+            continue
         last_id = doc.id
+        scores = data.get("scores", {})
         results.append({
             "id": doc.id,
             "asin": data.get("asin"),
             "title": data.get("title"),
-            "scores": data.get("scores"),
-            "icp": data.get("icp"),
-            "timestamp": data.get("timestamp"),
+            "overall_score": scores.get("overall", 0),
+            "seo_score": scores.get("seo", 0),
+            "rufus_score": scores.get("rufus", 0),
+            "conversion_score": scores.get("conversion", 0),
+            "created_at": data.get("timestamp"),
+            "variations_count": len(data.get("variations", [])),
         })
+        if len(results) >= limit:
+            break
 
     return {
-        "analyses": results,
+        "items": results,
+        "has_more": len(results) == limit,
         "next_cursor": last_id if len(results) == limit else None,
     }
 

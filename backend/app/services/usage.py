@@ -17,8 +17,8 @@ logger = logging.getLogger(__name__)
 # Tier limits — canonical definition used by all endpoints + checkout
 TIER_LIMITS: dict[str, dict[str, int]] = {
     "free":       {"asins": 3,      "analyses": 5},
-    "owner":      {"asins": 50,     "analyses": 200},
-    "pro":        {"asins": 50,     "analyses": 200},  # legacy alias for owner
+    "owner":      {"asins": 50,     "analyses": 50},
+    "pro":        {"asins": 50,     "analyses": 50},  # legacy alias for owner
     "consultant": {"asins": 150,    "analyses": 600},
     "agency":     {"asins": 999999, "analyses": 999999},
 }

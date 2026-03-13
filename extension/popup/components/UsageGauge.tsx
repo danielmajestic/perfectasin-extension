@@ -140,7 +140,7 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
           <>
             <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} analyses</span>
             <span className="text-gray-300">·</span>
-            <span>{asinsUsed}/{asinLimit === Infinity ? '∞' : asinLimit} ASINs</span>
+            {/* ASIN counter removed — gate disabled */}
           </>
         )}
       </div>

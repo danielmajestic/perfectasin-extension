@@ -23,6 +23,7 @@ from app.services.claude import get_claude_service, ClaudeService
 from app.services.usage import get_user_tier, check_rate_limit, increment_usage
 from app.config import get_settings
 from app.middleware.auth import get_current_user
+from app.firebase import db
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1", tags=["price"])
