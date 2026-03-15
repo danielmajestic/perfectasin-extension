@@ -18,7 +18,7 @@ router = APIRouter(tags=["webhooks"])
 
 # Tier metadata: limits written to Firestore subscription doc
 _TIER_LIMITS = {
-    "owner":      {"asinLimit": 50,     "analysisLimit": 200},
+    "owner":      {"asinLimit": 50,     "analysisLimit": 50},
     "consultant": {"asinLimit": 150,    "analysisLimit": 600},
     "agency":     {"asinLimit": 999999, "analysisLimit": 999999},
     "free":       {"asinLimit": 3,      "analysisLimit": 5},
