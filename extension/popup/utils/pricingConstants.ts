@@ -4,7 +4,7 @@
 export type SubscriptionTier = 'free' | 'owner' | 'consultant' | 'agency';
 
 export const TIER_NAMES: Record<SubscriptionTier, string> = {
-  free: 'Starter',
+  free: 'Free',
   owner: 'Pro',
   consultant: 'Consultant',
   agency: 'Agency',
@@ -26,7 +26,7 @@ export const ASIN_LIMITS: Record<SubscriptionTier, number> = {
 
 export const ANALYSIS_LIMITS: Record<SubscriptionTier, number> = {
   free: 5,
-  owner: 200,
+  owner: 50,
   consultant: 600,
   agency: Infinity,
 };
