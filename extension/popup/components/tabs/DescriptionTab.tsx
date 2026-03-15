@@ -322,6 +322,7 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
           'ICP Alignment',
         ]}
         estimatedSeconds={90}
+        timeEstimate="Description analysis typically takes 90-120 seconds"
       />
     );
   }
