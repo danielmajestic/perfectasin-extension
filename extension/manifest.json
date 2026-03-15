@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PerfectASIN",
   "short_name": "PerfectASIN",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "AI-powered Amazon listing optimizer. Analyze and optimize all 5 listing elements — Title, Bullets, Description, Hero Image, and Price. Powered by Claude AI.",
   "permissions": [
     "activeTab",
