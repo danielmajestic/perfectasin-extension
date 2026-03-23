@@ -5,6 +5,7 @@ import CROBanner from './components/CROBanner';
 import AccountSettings from './components/AccountSettings';
 import HistoryPanel from './components/HistoryPanel';
 import ReportButton from './components/report/ReportButton';
+import ReportProgress from './components/report/ReportProgress';
 import { mockGenerateReport } from './components/report/mockReportApi';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
@@ -30,8 +31,11 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('title');
   const { refresh } = useSubscription();
 
-  // Report generation state (Ticket 7)
+  // Report generation state (Tickets 7-8)
   const [reportLoading, setReportLoading] = useState(false);
+  const [reportComplete, setReportComplete] = useState(false);
+  const [reportError, setReportError] = useState(false);
+  const [showReportProgress, setShowReportProgress] = useState(false);
 
   useEffect(() => {
     initAnalytics('G-ZDZDVRF41G');
@@ -55,6 +59,9 @@ function AppContent() {
   const handleGenerateReport = useCallback(async () => {
     if (!asinData?.product) return;
     setReportLoading(true);
+    setReportComplete(false);
+    setReportError(false);
+    setShowReportProgress(true);
 
     try {
       // TODO: Replace mockGenerateReport with real API call when Kat deploys
@@ -72,12 +79,23 @@ function AppContent() {
           currentPrice: asinData.product.price || null,
         },
       });
+      setReportComplete(true);
     } catch {
-      // Error handling added in Ticket 8
+      setReportError(true);
     } finally {
       setReportLoading(false);
     }
   }, [asinData]);
+
+  const handleReportReady = useCallback(() => {
+    setShowReportProgress(false);
+  }, []);
+
+  const handleReportRetry = useCallback(() => {
+    setShowReportProgress(false);
+    setReportError(false);
+    handleGenerateReport();
+  }, [handleGenerateReport]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -218,6 +236,14 @@ function AppContent() {
       <HistoryPanel
         isOpen={showHistory}
         onClose={() => setShowHistory(false)}
+      />
+      <ReportProgress
+        isOpen={showReportProgress}
+        isComplete={reportComplete}
+        isError={reportError}
+        onRetry={handleReportRetry}
+        onClose={() => setShowReportProgress(false)}
+        onReady={handleReportReady}
       />
     </div>
   );
