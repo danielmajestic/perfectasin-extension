@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import UsageGauge from './components/UsageGauge';
 import UpgradeCTA from './components/UpgradeCTA';
 import CROBanner from './components/CROBanner';
 import AccountSettings from './components/AccountSettings';
 import HistoryPanel from './components/HistoryPanel';
+import ReportButton from './components/report/ReportButton';
+import { mockGenerateReport } from './components/report/mockReportApi';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
 import { ASINProvider, useASIN } from './contexts/ASINContext';
@@ -28,6 +30,9 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('title');
   const { refresh } = useSubscription();
 
+  // Report generation state (Ticket 7)
+  const [reportLoading, setReportLoading] = useState(false);
+
   useEffect(() => {
     initAnalytics('G-ZDZDVRF41G');
   }, []);
@@ -46,6 +51,33 @@ function AppContent() {
   }, [refresh]);
 
   const handleUpgradeClick = () => setShowUpgradeCTA(true);
+
+  const handleGenerateReport = useCallback(async () => {
+    if (!asinData?.product) return;
+    setReportLoading(true);
+
+    try {
+      // TODO: Replace mockGenerateReport with real API call when Kat deploys
+      await mockGenerateReport({
+        asin: asinData.product.asin,
+        marketplace: 'US',
+        format: 'both',
+        scrapedData: {
+          title: asinData.product.title,
+          category: asinData.product.category,
+          brand: asinData.product.brand,
+          bulletPoints: asinData.product.bullets || [],
+          description: asinData.product.description || '',
+          heroImageUrl: asinData.product.heroImageData?.heroImageUrl || null,
+          currentPrice: asinData.product.price || null,
+        },
+      });
+    } catch {
+      // Error handling added in Ticket 8
+    } finally {
+      setReportLoading(false);
+    }
+  }, [asinData]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -165,6 +197,13 @@ function AppContent() {
       {/* Scrollable tab content */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4">
         {renderTabContent()}
+
+        {/* Report button — appears after all 5 modules scored */}
+        <ReportButton
+          onClick={handleGenerateReport}
+          loading={reportLoading}
+          disabled={reportLoading}
+        />
       </div>
 
       {/* Modals / panels */}
