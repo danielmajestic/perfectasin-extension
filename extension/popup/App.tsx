@@ -6,7 +6,8 @@ import AccountSettings from './components/AccountSettings';
 import HistoryPanel from './components/HistoryPanel';
 import ReportButton from './components/report/ReportButton';
 import ReportProgress from './components/report/ReportProgress';
-import { mockGenerateReport } from './components/report/mockReportApi';
+import ReportDownloadDialog from './components/report/ReportDownloadDialog';
+import { mockGenerateReport, type GenerateReportResponse } from './components/report/mockReportApi';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
 import { ASINProvider, useASIN } from './contexts/ASINContext';
@@ -31,11 +32,13 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState<TabId>('title');
   const { refresh } = useSubscription();
 
-  // Report generation state (Tickets 7-8)
+  // Report generation state (Tickets 7-9)
   const [reportLoading, setReportLoading] = useState(false);
   const [reportComplete, setReportComplete] = useState(false);
   const [reportError, setReportError] = useState(false);
   const [showReportProgress, setShowReportProgress] = useState(false);
+  const [showReportDownload, setShowReportDownload] = useState(false);
+  const [reportData, setReportData] = useState<GenerateReportResponse | null>(null);
 
   useEffect(() => {
     initAnalytics('G-ZDZDVRF41G');
@@ -61,11 +64,12 @@ function AppContent() {
     setReportLoading(true);
     setReportComplete(false);
     setReportError(false);
+    setReportData(null);
     setShowReportProgress(true);
 
     try {
       // TODO: Replace mockGenerateReport with real API call when Kat deploys
-      await mockGenerateReport({
+      const response = await mockGenerateReport({
         asin: asinData.product.asin,
         marketplace: 'US',
         format: 'both',
@@ -79,6 +83,7 @@ function AppContent() {
           currentPrice: asinData.product.price || null,
         },
       });
+      setReportData(response);
       setReportComplete(true);
     } catch {
       setReportError(true);
@@ -89,6 +94,7 @@ function AppContent() {
 
   const handleReportReady = useCallback(() => {
     setShowReportProgress(false);
+    setShowReportDownload(true);
   }, []);
 
   const handleReportRetry = useCallback(() => {
@@ -244,6 +250,12 @@ function AppContent() {
         onRetry={handleReportRetry}
         onClose={() => setShowReportProgress(false)}
         onReady={handleReportReady}
+      />
+      <ReportDownloadDialog
+        isOpen={showReportDownload}
+        onClose={() => setShowReportDownload(false)}
+        report={reportData}
+        asin={asinData?.product?.asin || ''}
       />
     </div>
   );
