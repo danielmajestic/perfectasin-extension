@@ -1,20 +1,29 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type ProgressStage = 'analyzing' | 'building' | 'finishing' | 'ready' | 'error';
+type ProgressStage = 'title' | 'bullets' | 'description' | 'hero' | 'price' | 'ready' | 'error';
 
 const STAGE_MESSAGES: Record<ProgressStage, string> = {
-  analyzing: 'Analyzing your listing...',
-  building: 'Building your report...',
-  finishing: 'Almost done...',
-  ready: 'Report ready!',
-  error: 'Report generation failed. Please try again.',
+  title: 'Analyzing Title... typically 60-90 seconds',
+  bullets: 'Analyzing Bullets... typically 90-120 seconds',
+  description: 'Analyzing Description... typically 90-120 seconds',
+  hero: 'Analyzing Hero Image... typically 60-90 seconds',
+  price: 'Analyzing Price Intelligence... typically 45-90 seconds',
+  ready: 'Your $5k Audit™ is ready!',
+  error: 'Audit generation failed. Please try again.',
 };
 
-const STAGE_TIMING_MS = {
-  analyzing: 0,
-  building: 3000,
-  finishing: 6000,
+const ANALYSIS_STAGES: readonly ProgressStage[] = ['title', 'bullets', 'description', 'hero', 'price'];
+
+// Approximate cumulative timing for each stage transition (ms)
+const STAGE_TIMING_MS: Record<string, number> = {
+  title: 0,
+  bullets: 75000,    // ~75s (after title 60-90s)
+  description: 180000, // ~3 min
+  hero: 285000,       // ~4.75 min
+  price: 375000,      // ~6.25 min
 };
+
+const PERSISTENT_MESSAGE = '\u2615 Full audit typically takes 7-10 minutes. Grab a coffee \u2014 we\u2019re running $5,000 worth of analysis.';
 
 interface ReportProgressProps {
   isOpen: boolean;
@@ -27,9 +36,10 @@ interface ReportProgressProps {
 }
 
 /**
- * Ticket 8 — Progress overlay during report generation.
- * Shows staged messages. Minimum 3s display even if response is instant.
- * Timeout after 60s with graceful error.
+ * Ticket 8 — Progress overlay during $5k Audit™ generation.
+ * Shows per-tab analysis messages with persistent coffee message.
+ * Minimum 3s display even if response is instant.
+ * Timeout after 10 minutes with graceful error.
  */
 export default function ReportProgress({
   isOpen,
@@ -39,7 +49,7 @@ export default function ReportProgress({
   onClose,
   onReady,
 }: ReportProgressProps) {
-  const [stage, setStage] = useState<ProgressStage>('analyzing');
+  const [stage, setStage] = useState<ProgressStage>('title');
   const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
 
@@ -47,21 +57,20 @@ export default function ReportProgress({
   useEffect(() => {
     if (!isOpen || isError || timedOut) return;
 
-    const timers = [
-      setTimeout(() => setStage('building'), STAGE_TIMING_MS.building),
-      setTimeout(() => setStage('finishing'), STAGE_TIMING_MS.finishing),
-    ];
+    const timers = ANALYSIS_STAGES.slice(1).map((s) =>
+      setTimeout(() => setStage(s), STAGE_TIMING_MS[s]),
+    );
 
     return () => timers.forEach(clearTimeout);
   }, [isOpen, isError, timedOut]);
 
-  // 60s timeout
+  // 10 minute timeout (audit takes 7-10 min)
   useEffect(() => {
     if (!isOpen) return;
     const timer = setTimeout(() => {
       setTimedOut(true);
       setStage('error');
-    }, 60000);
+    }, 600000);
     return () => clearTimeout(timer);
   }, [isOpen]);
 
@@ -113,6 +122,7 @@ export default function ReportProgress({
   if (!isOpen) return null;
 
   const showError = stage === 'error' || timedOut;
+  const currentStageIndex = ANALYSIS_STAGES.indexOf(stage);
 
   return (
     <div
@@ -132,11 +142,11 @@ export default function ReportProgress({
               </svg>
             </div>
             <h3 className="text-base font-bold text-gray-800 mb-2">
-              {timedOut ? 'Report generation timed out' : STAGE_MESSAGES.error}
+              {timedOut ? 'Audit generation timed out' : STAGE_MESSAGES.error}
             </h3>
             <p className="text-sm text-gray-500 mb-4">
               {timedOut
-                ? 'The report took too long to generate. Please try again.'
+                ? 'The audit took too long to generate. Please try again.'
                 : 'Something went wrong. Check your connection and try again.'}
             </p>
             <div className="flex gap-2">
@@ -170,7 +180,7 @@ export default function ReportProgress({
         ) : (
           <>
             {/* Spinner */}
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4" style={{ background: '#1B2A4A' + '1a' }}>
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4" style={{ background: '#1B2A4A1a' }}>
               <svg
                 className="animate-spin w-7 h-7"
                 style={{ color: '#1B2A4A' }}
@@ -184,28 +194,23 @@ export default function ReportProgress({
             <h3 className="text-base font-bold text-gray-800 mb-1">
               {STAGE_MESSAGES[stage]}
             </h3>
-            <p className="text-sm text-gray-500">
-              This usually takes 30-45 seconds.
+            <p className="text-xs text-gray-500 mt-3 px-2 leading-relaxed">
+              {PERSISTENT_MESSAGE}
             </p>
 
-            {/* Progress dots */}
+            {/* Progress dots — one per analysis module */}
             <div className="flex items-center justify-center gap-2 mt-4">
-              {(['analyzing', 'building', 'finishing'] as const).map((s, i) => {
-                const stageOrder = ['analyzing', 'building', 'finishing'];
-                const currentIndex = stageOrder.indexOf(stage);
-                const isActive = i <= currentIndex;
-                return (
-                  <div
-                    key={s}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      isActive ? 'scale-110' : 'scale-100'
-                    }`}
-                    style={{
-                      background: isActive ? '#1B2A4A' : '#d1d5db',
-                    }}
-                  />
-                );
-              })}
+              {ANALYSIS_STAGES.map((s, i) => (
+                <div
+                  key={s}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                    i <= currentStageIndex ? 'scale-110' : 'scale-100'
+                  }`}
+                  style={{
+                    background: i <= currentStageIndex ? '#1B2A4A' : '#d1d5db',
+                  }}
+                />
+              ))}
             </div>
           </>
         )}

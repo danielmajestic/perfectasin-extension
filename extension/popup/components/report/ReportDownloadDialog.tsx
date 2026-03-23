@@ -64,7 +64,7 @@ export default function ReportDownloadDialog({
     const blob = new Blob([byteArray], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     const dateStr = new Date().toISOString().slice(0, 10);
-    const filename = `PerfectASIN-Report-${asin}-${dateStr}.pdf`;
+    const filename = `PerfectASIN-5k-Audit-${asin}-${dateStr}.pdf`;
 
     // Use chrome.downloads if available, otherwise fallback to link click
     if (chrome?.downloads?.download) {

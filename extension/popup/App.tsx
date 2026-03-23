@@ -225,6 +225,7 @@ function AppContent() {
         {/* Report button — appears after all 5 modules scored */}
         <ReportButton
           onClick={handleGenerateReport}
+          onUpgradeClick={handleUpgradeClick}
           loading={reportLoading}
           disabled={reportLoading}
         />
