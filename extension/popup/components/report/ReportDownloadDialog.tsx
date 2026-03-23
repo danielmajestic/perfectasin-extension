@@ -111,7 +111,7 @@ export default function ReportDownloadDialog({
             {report.overallGrade}
           </div>
           <h3 className="text-base font-bold text-gray-800">
-            Your Report Is Ready
+            $5,000 Full ASIN Audit™
           </h3>
           <p className="text-sm text-gray-500 mt-1">
             Overall Score: <span className="font-bold" style={{ color: gradeColor }}>{report.overallScore}/100</span>
