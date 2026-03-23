@@ -7,6 +7,7 @@ import HistoryPanel from './components/HistoryPanel';
 import ReportButton from './components/report/ReportButton';
 import ReportProgress from './components/report/ReportProgress';
 import ReportDownloadDialog from './components/report/ReportDownloadDialog';
+import ReportTaggingForm from './components/report/ReportTaggingForm';
 import { mockGenerateReport, type GenerateReportResponse } from './components/report/mockReportApi';
 import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
@@ -38,6 +39,7 @@ function AppContent() {
   const [reportError, setReportError] = useState(false);
   const [showReportProgress, setShowReportProgress] = useState(false);
   const [showReportDownload, setShowReportDownload] = useState(false);
+  const [showReportTagging, setShowReportTagging] = useState(false);
   const [reportData, setReportData] = useState<GenerateReportResponse | null>(null);
 
   useEffect(() => {
@@ -94,6 +96,16 @@ function AppContent() {
 
   const handleReportReady = useCallback(() => {
     setShowReportProgress(false);
+    setShowReportTagging(true);
+  }, []);
+
+  const handleTagsSaved = useCallback(() => {
+    setShowReportTagging(false);
+    setShowReportDownload(true);
+  }, []);
+
+  const handleTagsSkipped = useCallback(() => {
+    setShowReportTagging(false);
     setShowReportDownload(true);
   }, []);
 
@@ -251,6 +263,12 @@ function AppContent() {
         onRetry={handleReportRetry}
         onClose={() => setShowReportProgress(false)}
         onReady={handleReportReady}
+      />
+      <ReportTaggingForm
+        isOpen={showReportTagging}
+        reportId={reportData?.reportId || ''}
+        onSave={handleTagsSaved}
+        onSkip={handleTagsSkipped}
       />
       <ReportDownloadDialog
         isOpen={showReportDownload}
