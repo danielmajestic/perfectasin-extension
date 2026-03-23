@@ -81,6 +81,23 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
     chrome.tabs.create({ url });
   }, []);
 
+  const handleDownloadPdf = useCallback((report: ReportSummary) => {
+    if (!report.pdfBase64) return;
+    const byteChars = atob(report.pdfBase64);
+    const byteNumbers = new Array(byteChars.length);
+    for (let i = 0; i < byteChars.length; i++) byteNumbers[i] = byteChars.charCodeAt(i);
+    const blob = new Blob([new Uint8Array(byteNumbers)], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const date = new Date().toISOString().split('T')[0];
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `PerfectASIN-5k-Audit-${report.asin}-${date}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }, []);
+
+  const [editingTagsId, setEditingTagsId] = useState<string | null>(null);
+
   // Escape key
   useEffect(() => {
     if (!isOpen) return;
@@ -296,13 +313,61 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
                           View
                         </button>
                         <button
+                          onClick={() => handleDownloadPdf(report)}
+                          disabled={!report.pdfBase64}
+                          className="px-2.5 py-1 rounded text-xs font-medium text-white transition-colors disabled:opacity-40"
+                          style={{ background: '#1B2A4A' }}
+                        >
+                          PDF
+                        </button>
+                        <button
                           onClick={() => handleCopyShareLink(report.reportId)}
-                          className="px-2.5 py-1 rounded text-xs font-medium border transition-colors relative"
+                          className="px-2.5 py-1 rounded text-xs font-medium border transition-colors"
                           style={{ borderColor: '#2563EB', color: '#2563EB' }}
                         >
                           {copiedId === report.reportId ? 'Copied!' : 'Share'}
                         </button>
+                        <button
+                          onClick={() => setEditingTagsId(editingTagsId === report.reportId ? null : report.reportId)}
+                          className="px-2.5 py-1 rounded text-xs font-medium border border-gray-300 text-gray-600 transition-colors hover:bg-gray-100"
+                        >
+                          {editingTagsId === report.reportId ? 'Close' : 'Edit Tags'}
+                        </button>
                       </div>
+
+                      {/* Inline tag editing */}
+                      {editingTagsId === report.reportId && (
+                        <div className="mt-2 p-2 bg-white rounded-lg border border-gray-200 space-y-1.5">
+                          <input
+                            type="text"
+                            placeholder="LinkedIn Name"
+                            defaultValue={report.tags?.linkedinName || ''}
+                            className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Company"
+                            defaultValue={report.tags?.company || ''}
+                            className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+                          />
+                          <input
+                            type="text"
+                            placeholder="Notes"
+                            defaultValue={report.tags?.notes || ''}
+                            className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
+                          />
+                          <button
+                            onClick={() => {
+                              // TODO: Wire to PATCH /api/v1/report/{reportId}/tags
+                              setEditingTagsId(null);
+                            }}
+                            className="px-3 py-1 rounded text-xs font-semibold text-white"
+                            style={{ background: '#D4A843' }}
+                          >
+                            Save Tags
+                          </button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
