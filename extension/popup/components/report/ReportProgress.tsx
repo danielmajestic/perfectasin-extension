@@ -1,88 +1,141 @@
 import { useState, useEffect, useCallback } from 'react';
 
-type ProgressStage = 'title' | 'bullets' | 'description' | 'hero' | 'price' | 'ready' | 'error';
+type ModuleId = 'title' | 'bullets' | 'description' | 'hero' | 'price';
+type ModuleStatus = 'pending' | 'running' | 'done' | 'error';
+type OverallStage = 'analyzing' | 'building' | 'ready' | 'error';
 
-const STAGE_MESSAGES: Record<ProgressStage, string> = {
-  title: 'Analyzing Title... typically 60-90 seconds',
-  bullets: 'Analyzing Bullets... typically 90-120 seconds',
-  description: 'Analyzing Description... typically 90-120 seconds',
-  hero: 'Analyzing Hero Image... typically 60-90 seconds',
-  price: 'Analyzing Price Intelligence... typically 45-90 seconds',
-  ready: 'Your $5k Audit™ is ready!',
-  error: 'Audit generation failed. Please try again.',
-};
+interface ModuleState {
+  id: ModuleId;
+  label: string;
+  message: string;
+  status: ModuleStatus;
+}
 
-const ANALYSIS_STAGES: readonly ProgressStage[] = ['title', 'bullets', 'description', 'hero', 'price'];
+const INITIAL_MODULES: ModuleState[] = [
+  { id: 'title', label: 'Title', message: 'Analyzing Title... typically 60-90 seconds', status: 'pending' },
+  { id: 'bullets', label: 'Bullets', message: 'Analyzing Bullets... typically 90-120 seconds', status: 'pending' },
+  { id: 'description', label: 'Description', message: 'Analyzing Description... typically 90-120 seconds', status: 'pending' },
+  { id: 'hero', label: 'Hero Image', message: 'Analyzing Hero Image... typically 60-90 seconds', status: 'pending' },
+  { id: 'price', label: 'Price Intelligence', message: 'Analyzing Price Intelligence... typically 45-90 seconds', status: 'pending' },
+];
 
-// Approximate cumulative timing for each stage transition (ms)
-const STAGE_TIMING_MS: Record<string, number> = {
+// Cumulative time (ms) when each module transitions to "running"
+const MODULE_START_TIMES: Record<ModuleId, number> = {
   title: 0,
-  bullets: 75000,    // ~75s (after title 60-90s)
-  description: 180000, // ~3 min
-  hero: 285000,       // ~4.75 min
-  price: 375000,      // ~6.25 min
+  bullets: 75000,
+  description: 180000,
+  hero: 285000,
+  price: 375000,
 };
 
-const PERSISTENT_MESSAGE = '\u2615 Full audit typically takes 7-10 minutes. Grab a coffee \u2014 we\u2019re running $5,000 worth of analysis.';
+// Time (ms) when each module transitions to "done" (start of next module)
+const MODULE_DONE_TIMES: Record<ModuleId, number> = {
+  title: 74000,
+  bullets: 179000,
+  description: 284000,
+  hero: 374000,
+  price: 435000,
+};
+
+const PERSISTENT_FOOTER = '\u2615 Full audit typically takes 7-10 minutes. Grab a coffee \u2014 we\u2019re running $5,000 worth of analysis.';
 
 interface ReportProgressProps {
   isOpen: boolean;
   isComplete: boolean;
   isError: boolean;
+  /** Which module failed (if known). Undefined = general error. */
+  failedModule?: ModuleId;
   onRetry: () => void;
+  /** Retry a specific failed module only */
+  onRetryModule?: (moduleId: ModuleId) => void;
   onClose: () => void;
-  /** Called once the minimum display time has passed AND the report is ready */
   onReady: () => void;
 }
 
 /**
- * Ticket 8 — Progress overlay during $5k Audit™ generation.
- * Shows per-tab analysis messages with persistent coffee message.
- * Minimum 3s display even if response is instant.
- * Timeout after 10 minutes with graceful error.
+ * Ticket 13 — Enhanced progress indicator for $5k Audit™.
+ * Progress bar (0-100%), tab status checklist with icons,
+ * per-module error/retry, "Building your report..." state,
+ * 15 minute timeout.
  */
 export default function ReportProgress({
   isOpen,
   isComplete,
   isError,
+  failedModule,
   onRetry,
+  onRetryModule,
   onClose,
   onReady,
 }: ReportProgressProps) {
-  const [stage, setStage] = useState<ProgressStage>('title');
+  const [modules, setModules] = useState<ModuleState[]>(INITIAL_MODULES.map(m => ({ ...m })));
+  const [overallStage, setOverallStage] = useState<OverallStage>('analyzing');
   const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
 
-  // Stage progression based on time elapsed
+  // Reset state when opened
   useEffect(() => {
-    if (!isOpen || isError || timedOut) return;
+    if (isOpen) {
+      setModules(INITIAL_MODULES.map(m => ({ ...m })));
+      setOverallStage('analyzing');
+      setTimedOut(false);
+    }
+  }, [isOpen]);
 
-    const timers = ANALYSIS_STAGES.slice(1).map((s) =>
-      setTimeout(() => setStage(s), STAGE_TIMING_MS[s]),
-    );
+  // Simulated module progression based on elapsed time
+  useEffect(() => {
+    if (!isOpen || overallStage !== 'analyzing' || timedOut) return;
+
+    const timers: ReturnType<typeof setTimeout>[] = [];
+
+    // Set each module to "running" at its start time
+    for (const mod of INITIAL_MODULES) {
+      timers.push(
+        setTimeout(() => {
+          setModules(prev => prev.map(m =>
+            m.id === mod.id && m.status === 'pending' ? { ...m, status: 'running' } : m
+          ));
+        }, MODULE_START_TIMES[mod.id]),
+      );
+
+      // Set each module to "done" at its done time
+      timers.push(
+        setTimeout(() => {
+          setModules(prev => prev.map(m =>
+            m.id === mod.id && m.status === 'running' ? { ...m, status: 'done' } : m
+          ));
+        }, MODULE_DONE_TIMES[mod.id]),
+      );
+    }
 
     return () => timers.forEach(clearTimeout);
-  }, [isOpen, isError, timedOut]);
+  }, [isOpen, overallStage, timedOut]);
 
-  // 10 minute timeout (audit takes 7-10 min)
+  // 15 minute timeout
   useEffect(() => {
     if (!isOpen) return;
     const timer = setTimeout(() => {
       setTimedOut(true);
-      setStage('error');
-    }, 600000);
+      setOverallStage('error');
+    }, 900000);
     return () => clearTimeout(timer);
   }, [isOpen]);
 
-  // Handle completion — enforce minimum 3s display
+  // Handle completion — enforce minimum 3s display, show "Building your report..." first
   const handleComplete = useCallback(() => {
     const elapsed = Date.now() - startTime;
     const remaining = Math.max(0, 3000 - elapsed);
 
     setTimeout(() => {
-      setStage('ready');
-      // Brief pause on "ready" before transitioning to download dialog
-      setTimeout(onReady, 600);
+      // Mark all modules as done
+      setModules(prev => prev.map(m => m.status !== 'error' ? { ...m, status: 'done' } : m));
+      setOverallStage('building');
+
+      // After 2s "building" state, transition to ready
+      setTimeout(() => {
+        setOverallStage('ready');
+        setTimeout(onReady, 600);
+      }, 2000);
     }, remaining);
   }, [startTime, onReady]);
 
@@ -92,12 +145,18 @@ export default function ReportProgress({
     }
   }, [isComplete, isError, handleComplete]);
 
-  // Handle error state
+  // Handle error state — mark specific module if known
   useEffect(() => {
     if (isError) {
-      setStage('error');
+      if (failedModule) {
+        setModules(prev => prev.map(m =>
+          m.id === failedModule ? { ...m, status: 'error' } : m
+        ));
+      } else {
+        setOverallStage('error');
+      }
     }
-  }, [isError]);
+  }, [isError, failedModule]);
 
   // Escape key
   useEffect(() => {
@@ -121,96 +180,170 @@ export default function ReportProgress({
 
   if (!isOpen) return null;
 
-  const showError = stage === 'error' || timedOut;
-  const currentStageIndex = ANALYSIS_STAGES.indexOf(stage);
+  // Calculate progress percentage
+  const doneCount = modules.filter(m => m.status === 'done').length;
+  const progressPercent = overallStage === 'ready' ? 100
+    : overallStage === 'building' ? 100
+    : Math.round((doneCount / 5) * 100);
 
+  const showGlobalError = (overallStage === 'error') || timedOut;
+  const hasModuleError = modules.some(m => m.status === 'error');
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 text-center"
+        className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-5 relative"
         onClick={(e) => e.stopPropagation()}
       >
-        {showError ? (
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          <svg className="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {showGlobalError ? (
           <>
-            {/* Error icon */}
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-red-50 mb-4">
-              <svg className="w-7 h-7 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-red-50 mb-3 mx-auto block">
+              <svg className="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
               </svg>
             </div>
-            <h3 className="text-base font-bold text-gray-800 mb-2">
-              {timedOut ? 'Audit generation timed out' : STAGE_MESSAGES.error}
+            <h3 className="text-sm font-bold text-gray-800 mb-1 text-center">
+              {timedOut ? 'Audit timed out' : 'Audit generation failed'}
             </h3>
-            <p className="text-sm text-gray-500 mb-4">
+            <p className="text-xs text-gray-500 mb-4 text-center">
               {timedOut
-                ? 'The audit took too long to generate. Please try again.'
+                ? 'The audit took longer than 15 minutes. Please try again.'
                 : 'Something went wrong. Check your connection and try again.'}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={onClose}
-                className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 rounded-lg transition-colors text-sm"
+                className="flex-1 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-2 rounded-lg transition-colors text-xs"
               >
                 Close
               </button>
               <button
                 onClick={onRetry}
-                className="flex-1 font-semibold py-2 rounded-lg transition-all text-sm text-white"
+                className="flex-1 font-semibold py-2 rounded-lg transition-all text-xs text-white"
                 style={{ background: '#1B2A4A' }}
               >
                 Try Again
               </button>
             </div>
           </>
-        ) : stage === 'ready' ? (
-          <>
-            {/* Success icon */}
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-green-50 mb-4">
-              <svg className="w-7 h-7 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        ) : overallStage === 'ready' ? (
+          <div className="text-center py-2">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-50 mb-3">
+              <svg className="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-base font-bold text-gray-800">
-              {STAGE_MESSAGES.ready}
+            <h3 className="text-sm font-bold text-gray-800">
+              Your $5k Audit™ is ready!
             </h3>
-          </>
+          </div>
         ) : (
           <>
-            {/* Spinner */}
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full mb-4" style={{ background: '#1B2A4A1a' }}>
-              <svg
-                className="animate-spin w-7 h-7"
-                style={{ color: '#1B2A4A' }}
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-              </svg>
-            </div>
-            <h3 className="text-base font-bold text-gray-800 mb-1">
-              {STAGE_MESSAGES[stage]}
+            {/* Header */}
+            <h3 className="text-sm font-bold text-gray-800 mb-3 pr-6">
+              {overallStage === 'building'
+                ? 'Building your report...'
+                : '$5k Audit™ in progress'}
             </h3>
-            <p className="text-xs text-gray-500 mt-3 px-2 leading-relaxed">
-              {PERSISTENT_MESSAGE}
-            </p>
 
-            {/* Progress dots — one per analysis module */}
-            <div className="flex items-center justify-center gap-2 mt-4">
-              {ANALYSIS_STAGES.map((s, i) => (
-                <div
-                  key={s}
-                  className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                    i <= currentStageIndex ? 'scale-110' : 'scale-100'
-                  }`}
-                  style={{
-                    background: i <= currentStageIndex ? '#1B2A4A' : '#d1d5db',
-                  }}
-                />
+            {/* Progress bar */}
+            <div className="w-full h-2 bg-gray-100 rounded-full mb-1 overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700 ease-out"
+                style={{
+                  width: `${progressPercent}%`,
+                  background: hasModuleError
+                    ? '#F97316'
+                    : 'linear-gradient(90deg, #2563EB, #1B2A4A)',
+                }}
+              />
+            </div>
+            <p className="text-xs text-gray-400 text-right mb-4">{progressPercent}%</p>
+
+            {/* Module checklist */}
+            <div className="space-y-2 mb-4">
+              {modules.map((mod) => (
+                <div key={mod.id} className="flex items-center gap-2.5">
+                  {/* Status icon */}
+                  {mod.status === 'done' ? (
+                    <div className="w-5 h-5 flex-shrink-0 rounded-full flex items-center justify-center" style={{ background: '#22C55E' }}>
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  ) : mod.status === 'running' ? (
+                    <div className="w-5 h-5 flex-shrink-0">
+                      <svg className="animate-spin w-5 h-5" style={{ color: '#2563EB' }} fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                    </div>
+                  ) : mod.status === 'error' ? (
+                    <div className="w-5 h-5 flex-shrink-0 rounded-full bg-red-100 flex items-center justify-center">
+                      <svg className="w-3 h-3 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </div>
+                  ) : (
+                    <div className="w-5 h-5 flex-shrink-0 rounded-full bg-gray-200" />
+                  )}
+
+                  {/* Label + message */}
+                  <div className="flex-1 min-w-0">
+                    <span className={`text-xs font-medium ${
+                      mod.status === 'running' ? 'text-gray-800'
+                        : mod.status === 'done' ? 'text-gray-500'
+                        : mod.status === 'error' ? 'text-red-600'
+                        : 'text-gray-400'
+                    }`}>
+                      {mod.status === 'running' ? mod.message
+                        : mod.status === 'error' ? `${mod.label} — failed`
+                        : mod.label}
+                    </span>
+                  </div>
+
+                  {/* Per-module retry button */}
+                  {mod.status === 'error' && onRetryModule && (
+                    <button
+                      onClick={() => onRetryModule(mod.id)}
+                      className="flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded text-white"
+                      style={{ background: '#1B2A4A' }}
+                    >
+                      Retry
+                    </button>
+                  )}
+                </div>
               ))}
+            </div>
+
+            {/* "Building your report..." spinner */}
+            {overallStage === 'building' && (
+              <div className="flex items-center justify-center gap-2 py-2 mb-3 bg-gray-50 rounded-lg">
+                <svg className="animate-spin w-4 h-4" style={{ color: '#1B2A4A' }} fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                </svg>
+                <span className="text-xs font-medium text-gray-600">Compiling report... 1-3 minutes</span>
+              </div>
+            )}
+
+            {/* Persistent footer */}
+            <div className="border-t border-gray-100 pt-3">
+              <p className="text-xs text-gray-400 leading-relaxed text-center">
+                {PERSISTENT_FOOTER}
+              </p>
             </div>
           </>
         )}
