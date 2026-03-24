@@ -1,15 +1,15 @@
 import { useState, useCallback } from 'react';
 
 const SOURCE_OPTIONS = [
-  'LinkedIn Carousel',
-  'LinkedIn DM',
-  'Direct Outreach',
-  'Client Request',
-  'Personal Audit',
-  'Other',
+  { value: 'linkedin_carousel', label: 'LinkedIn Carousel' },
+  { value: 'linkedin_dm', label: 'LinkedIn DM' },
+  { value: 'direct_outreach', label: 'Direct Outreach' },
+  { value: 'client_request', label: 'Client Request' },
+  { value: 'personal_audit', label: 'Personal Audit' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
-export type ReportSource = typeof SOURCE_OPTIONS[number];
+export type ReportSource = typeof SOURCE_OPTIONS[number]['value'];
 
 export interface ReportTags {
   linkedinName: string;
@@ -111,7 +111,7 @@ export default function ReportTaggingForm({
             >
               <option value="">Select source...</option>
               {SOURCE_OPTIONS.map((opt) => (
-                <option key={opt} value={opt}>{opt}</option>
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
               ))}
             </select>
           </div>

@@ -9,6 +9,15 @@ const GRADE_COLORS: Record<string, string> = {
   F: '#EF4444',
 };
 
+const SOURCE_LABELS: Record<string, string> = {
+  linkedin_carousel: 'LinkedIn Carousel',
+  linkedin_dm: 'LinkedIn DM',
+  direct_outreach: 'Direct Outreach',
+  client_request: 'Client Request',
+  personal_audit: 'Personal Audit',
+  other: 'Other',
+};
+
 const GRADE_FILTERS = ['All', 'A', 'B', 'C', 'D', 'F'] as const;
 const SORT_OPTIONS = [
   { value: 'newest' as const, label: 'Newest' },
@@ -298,7 +307,7 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
                       {/* Tags */}
                       {report.tags && (
                         <div className="text-xs text-gray-500 mb-3 space-y-0.5">
-                          {report.tags.source && <p>Source: <span className="text-gray-700">{report.tags.source}</span></p>}
+                          {report.tags.source && <p>Source: <span className="text-gray-700">{SOURCE_LABELS[report.tags.source] || report.tags.source}</span></p>}
                           {report.tags.notes && <p>Notes: <span className="text-gray-700">{report.tags.notes}</span></p>}
                         </div>
                       )}
