@@ -1,12 +1,14 @@
 import { useState, useCallback } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { saveReportTags } from './reportApi';
 
 const SOURCE_OPTIONS = [
-  { value: 'linkedin_carousel', label: 'LinkedIn Carousel' },
-  { value: 'linkedin_dm', label: 'LinkedIn DM' },
-  { value: 'direct_outreach', label: 'Direct Outreach' },
-  { value: 'client_request', label: 'Client Request' },
-  { value: 'personal_audit', label: 'Personal Audit' },
-  { value: 'other', label: 'Other' },
+  { value: 'LinkedIn Carousel', label: 'LinkedIn Carousel' },
+  { value: 'LinkedIn DM', label: 'LinkedIn DM' },
+  { value: 'Cold Outreach', label: 'Cold Outreach' },
+  { value: 'Client Request', label: 'Client Request' },
+  { value: 'Personal Audit', label: 'Personal Audit' },
+  { value: 'Other', label: 'Other' },
 ] as const;
 
 export type ReportSource = typeof SOURCE_OPTIONS[number]['value'];
@@ -35,6 +37,7 @@ export default function ReportTaggingForm({
   onSave,
   onSkip,
 }: ReportTaggingFormProps) {
+  const { getIdToken } = useAuth();
   const [linkedinName, setLinkedinName] = useState('');
   const [company, setCompany] = useState('');
   const [source, setSource] = useState<ReportSource | ''>('');
@@ -44,14 +47,24 @@ export default function ReportTaggingForm({
   const handleSave = useCallback(async () => {
     setSaving(true);
     try {
-      // TODO: POST tags to API when Kat's Ticket 14 endpoint is deployed
-      // await apiClient.patch(`/api/v1/report/${reportId}/tags`, { linkedinName, company, source, notes });
-      void reportId; // used when wired to real API
+      const token = await getIdToken();
+      if (token && reportId) {
+        await saveReportTags(
+          reportId,
+          {
+            linkedinName: linkedinName || undefined,
+            company: company || undefined,
+            source: source || undefined,
+            notes: notes || undefined,
+          },
+          token,
+        );
+      }
       onSave({ linkedinName, company, source, notes });
     } finally {
       setSaving(false);
     }
-  }, [reportId, linkedinName, company, source, notes, onSave]);
+  }, [reportId, linkedinName, company, source, notes, onSave, getIdToken]);
 
   if (!isOpen) return null;
 

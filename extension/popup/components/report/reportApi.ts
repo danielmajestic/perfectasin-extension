@@ -66,7 +66,7 @@ export interface GenerateReportResponse {
   modulesTotal: 5;
 }
 
-// ─── API call ────────────────────────────────────────────────────────────────
+// ─── API calls ───────────────────────────────────────────────────────────────
 
 export async function generateReport(
   request: GenerateReportRequest,
@@ -98,5 +98,41 @@ export async function generateReport(
     throw new Error(data.error || data.detail || `Report generation failed (${response.status}).`);
   }
 
-  return response.json();
+  const raw = await response.json();
+
+  // Backend nests analysis data inside reportJson — flatten so the
+  // frontend can read report.executiveSummary, report.sections, etc.
+  const rj = raw.reportJson as Record<string, unknown> | undefined;
+  if (rj) {
+    if (rj.executiveSummary && !raw.executiveSummary) raw.executiveSummary = rj.executiveSummary;
+    if (rj.sections && !raw.sections) raw.sections = rj.sections;
+    if (rj.actionPlan && !raw.actionPlan) raw.actionPlan = rj.actionPlan;
+    if (rj.copyBlocks && !raw.copyBlocks) raw.copyBlocks = rj.copyBlocks;
+  }
+
+  return raw as GenerateReportResponse;
+}
+
+/**
+ * Save tags (LinkedIn Name, Company, Source, Notes) to a report.
+ */
+export async function saveReportTags(
+  reportId: string,
+  tags: { linkedinName?: string; company?: string; source?: string; notes?: string },
+  idToken: string,
+): Promise<void> {
+  const baseUrl = REPORT_API_URL.replace('/api/v1/report/generate', '');
+  const response = await fetch(`${baseUrl}/api/v1/report/${reportId}/tags`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${idToken}`,
+    },
+    body: JSON.stringify({ tags }),
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || data.detail || 'Failed to save tags.');
+  }
 }

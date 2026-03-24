@@ -65,10 +65,8 @@ export default function ReportDownloadDialog({
   }, [isOpen]);
 
   const handleViewReport = useCallback(() => {
-    if (!report?.htmlContent) return;
-    const blob = new Blob([report.htmlContent], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    chrome.tabs.create({ url });
+    if (!report?.htmlUrl) return;
+    chrome.tabs.create({ url: report.htmlUrl });
   }, [report]);
 
   const handleDownloadPdf = useCallback(() => {
@@ -103,7 +101,7 @@ export default function ReportDownloadDialog({
       // await apiClient.patch(`/api/v1/report/${report.reportId}/share`, { password: sharePassword });
     }
 
-    const shareUrl = `${SHARE_BASE_URL}/${report.reportId}`;
+    const shareUrl = `${SHARE_BASE_URL}/${report.shareToken || report.reportId}`;
     await navigator.clipboard.writeText(shareUrl);
     setLinkCopied(true);
 
@@ -153,10 +151,12 @@ export default function ReportDownloadDialog({
         </div>
 
         {/* Executive summary preview */}
-        <div className="bg-gray-50 rounded-lg p-3 mb-4 text-xs text-gray-600 leading-relaxed">
-          <p className="font-semibold text-gray-700 mb-1">Key Finding:</p>
-          <p>{report.executiveSummary.biggestWeakness}</p>
-        </div>
+        {report.executiveSummary?.biggestWeakness && (
+          <div className="bg-gray-50 rounded-lg p-3 mb-4 text-xs text-gray-600 leading-relaxed">
+            <p className="font-semibold text-gray-700 mb-1">Key Finding:</p>
+            <p>{report.executiveSummary.biggestWeakness}</p>
+          </div>
+        )}
 
         {/* Action buttons */}
         <div className="flex flex-col gap-2 mb-3">
