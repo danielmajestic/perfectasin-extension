@@ -11,24 +11,17 @@ interface ReportButtonProps {
 
 /**
  * Ticket 7 — "$5k Audit™" button.
- * Appears after all 5 modules are scored. Auth-gated.
+ * Visible when an ASIN is detected and user is on a paid tier.
+ * Mode A (ASIN-only) — backend runs all 5 analyses automatically.
  * Gold background with navy text, blue left-border accent.
- * Locked state for non-Consultant tier users.
  */
 export default function ReportButton({ onClick, onUpgradeClick, disabled, loading }: ReportButtonProps) {
   const { asinData } = useASIN();
   const { currentUser } = useAuth();
   const { isOwnerOrAbove } = useSubscription();
 
-  // Only show when all 5 analyses are complete
-  const allModulesScored =
-    asinData?.titleAnalysis != null &&
-    asinData?.bulletsAnalysis != null &&
-    asinData?.descAnalysis != null &&
-    asinData?.heroAnalysis != null &&
-    asinData?.priceAnalysis != null;
-
-  if (!allModulesScored || !currentUser) return null;
+  // Only show when an ASIN is detected on the page
+  if (!asinData?.product?.asin || !currentUser) return null;
 
   // Locked state for non-paid tiers (owner, consultant, agency all qualify)
   if (!isOwnerOrAbove) {
