@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { GenerateReportResponse } from './mockReportApi';
+import type { GenerateReportResponse } from './reportApi';
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',

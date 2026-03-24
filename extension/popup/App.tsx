@@ -9,8 +9,8 @@ import ReportProgress from './components/report/ReportProgress';
 import ReportDownloadDialog from './components/report/ReportDownloadDialog';
 import ReportTaggingForm from './components/report/ReportTaggingForm';
 import MyReportsPanel from './components/report/MyReportsPanel';
-import { mockGenerateReport, type GenerateReportResponse } from './components/report/mockReportApi';
-import { AuthProvider } from './contexts/AuthContext';
+import { generateReport, type GenerateReportResponse } from './components/report/reportApi';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
 import { ASINProvider, useASIN } from './contexts/ASINContext';
 import AuthGate from './components/AuthGate';
@@ -27,6 +27,7 @@ import { useEffect } from 'react';
 function AppContent() {
   const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd } = useSubscription();
   const { asinData, refreshProduct } = useASIN();
+  const { getIdToken } = useAuth();
 
   const [showUpgradeCTA, setShowUpgradeCTA] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -65,28 +66,58 @@ function AppContent() {
 
   const handleGenerateReport = useCallback(async () => {
     if (!asinData?.product) return;
+
+    const token = await getIdToken();
+    if (!token) {
+      setReportError(true);
+      return;
+    }
+
     setReportLoading(true);
     setReportComplete(false);
     setReportError(false);
     setReportData(null);
     setShowReportProgress(true);
 
+    const product = asinData.product;
+    const hero = product.heroImageData;
+    const priceExt = product.priceData;
+
     try {
-      // TODO: Replace mockGenerateReport with real API call when Kat deploys
-      const response = await mockGenerateReport({
-        asin: asinData.product.asin,
-        marketplace: 'US',
-        format: 'both',
-        scrapedData: {
-          title: asinData.product.title,
-          category: asinData.product.category,
-          brand: asinData.product.brand,
-          bulletPoints: asinData.product.bullets || [],
-          description: asinData.product.description || '',
-          heroImageUrl: asinData.product.heroImageData?.heroImageUrl || null,
-          currentPrice: asinData.product.price || null,
+      const response = await generateReport(
+        {
+          asin: product.asin,
+          marketplace: 'US',
+          mode: 'full',
+          format: 'both',
+          scrapedData: {
+            title: product.title,
+            category: product.category,
+            brand: product.brand,
+            bullets: product.bullets || [],
+            description: product.description || '',
+            heroImageUrl: hero?.heroImageUrl || null,
+            heroHiresUrl: hero?.heroHiresUrl || null,
+            zoomEligible: hero?.zoomEligible ?? false,
+            heroAlt: hero?.heroAlt || null,
+            imageCount: hero?.imageCount ?? 0,
+            videoCount: hero?.videoCount ?? 0,
+            hasVideo: hero?.hasVideo ?? false,
+            has360: hero?.has360 ?? false,
+            hasAplus: hero?.hasAPlus ?? false,
+            galleryAltTexts: hero?.galleryAltTexts || [],
+            currentPrice: product.price || null,
+            listPrice: priceExt?.listPrice || null,
+            dealBadgeText: priceExt?.dealBadgeText || null,
+            couponText: priceExt?.couponText || null,
+            subscribeSavePrice: priceExt?.subscribeAndSavePrice || null,
+            buyBoxStatus: priceExt?.buyBoxStatus || 'unknown',
+            rating: product.rating,
+            reviewCount: product.reviewCount ? parseInt(product.reviewCount, 10) || null : null,
+          },
         },
-      });
+        token,
+      );
       setReportData(response);
       setReportComplete(true);
     } catch {
@@ -94,7 +125,7 @@ function AppContent() {
     } finally {
       setReportLoading(false);
     }
-  }, [asinData]);
+  }, [asinData, getIdToken]);
 
   const handleReportReady = useCallback(() => {
     setShowReportProgress(false);
