@@ -3,12 +3,12 @@ import { useAuth } from '../../contexts/AuthContext';
 import { saveReportTags } from './reportApi';
 
 const SOURCE_OPTIONS = [
-  { value: 'LinkedIn Carousel', label: 'LinkedIn Carousel' },
-  { value: 'LinkedIn DM', label: 'LinkedIn DM' },
-  { value: 'Cold Outreach', label: 'Cold Outreach' },
-  { value: 'Client Request', label: 'Client Request' },
-  { value: 'Personal Audit', label: 'Personal Audit' },
-  { value: 'Other', label: 'Other' },
+  { value: 'linkedin_dm', label: 'LinkedIn DM' },
+  { value: 'linkedin_post', label: 'LinkedIn Post' },
+  { value: 'cold_email', label: 'Cold Email' },
+  { value: 'referral', label: 'Referral' },
+  { value: 'website', label: 'Website' },
+  { value: 'other', label: 'Other' },
 ] as const;
 
 export type ReportSource = typeof SOURCE_OPTIONS[number]['value'];
@@ -43,9 +43,11 @@ export default function ReportTaggingForm({
   const [source, setSource] = useState<ReportSource | ''>('');
   const [notes, setNotes] = useState('');
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   const handleSave = useCallback(async () => {
     setSaving(true);
+    setSaveError('');
     try {
       const token = await getIdToken();
       if (token && reportId) {
@@ -61,6 +63,9 @@ export default function ReportTaggingForm({
         );
       }
       onSave({ linkedinName, company, source, notes });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to save tags.';
+      setSaveError(msg);
     } finally {
       setSaving(false);
     }
@@ -145,6 +150,13 @@ export default function ReportTaggingForm({
             <p className="text-xs text-gray-400 text-right mt-0.5">{notes.length}/500</p>
           </div>
         </div>
+
+        {/* Error message */}
+        {saveError && (
+          <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2 border border-red-200 mt-3">
+            {saveError}
+          </p>
+        )}
 
         {/* Actions */}
         <div className="mt-4 space-y-2">
