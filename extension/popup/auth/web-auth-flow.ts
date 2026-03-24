@@ -1,5 +1,4 @@
 const AUTH_BASE = 'https://perfectasin.com/auth.html';
-const API_BASE = 'https://api.perfectasin.com';
 const TOKEN_EXPIRY_MS = 55 * 60 * 1000; // 55 minutes
 
 
@@ -10,32 +9,46 @@ interface StoredAuth {
   expiresAt: number;
 }
 
+const FIREBASE_API_KEY = 'AIzaSyD9bhupwn_19wSDYDdoaPYAfbOCzBN-TFQ';
+const FIREBASE_SIGN_IN_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${FIREBASE_API_KEY}`;
+
 /**
- * Inline email/password sign-in — POST to backend, store returned token.
- * No Firebase SDK, no popup. Track 1 auth path.
+ * Inline email/password sign-in via Firebase REST API (no SDK).
+ * Stores the idToken the same way Google OAuth does.
  */
 export async function signInWithEmail(email: string, password: string): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/auth/login`, {
+  const res = await fetch(FIREBASE_SIGN_IN_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ email, password, returnSecureToken: true }),
   });
 
   const data = await res.json().catch(() => ({}));
 
   if (!res.ok) {
-    throw new Error(data?.message || data?.error || 'Incorrect email or password.');
+    // Firebase REST API error messages
+    const code = data?.error?.message || '';
+    if (code === 'EMAIL_NOT_FOUND' || code === 'INVALID_PASSWORD' || code === 'INVALID_LOGIN_CREDENTIALS') {
+      throw new Error('Incorrect email or password.');
+    }
+    if (code === 'USER_DISABLED') {
+      throw new Error('This account has been disabled.');
+    }
+    if (code.startsWith('TOO_MANY_ATTEMPTS')) {
+      throw new Error('Too many failed attempts. Please try again later.');
+    }
+    throw new Error(data?.error?.message || 'Sign-in failed. Please try again.');
   }
 
-  const token = data.token ?? data.id_token ?? data.idToken ?? data.access_token;
+  const token = data.idToken;
   if (!token) throw new Error('Invalid response from server.');
 
-  const uid: string = data.uid ?? data.user_id ?? data.userId ?? email;
+  const uid: string = data.localId || email;
 
   const stored: StoredAuth = {
     token,
     uid,
-    email,
+    email: data.email || email,
     expiresAt: Date.now() + TOKEN_EXPIRY_MS,
   };
 
