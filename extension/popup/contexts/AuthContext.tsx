@@ -59,6 +59,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function login() {
     const { token, uid, email } = await signInWithGoogle();
+    // Clear stale subscription cache so tier is re-fetched from backend
+    await chrome.storage.local.remove(['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_billingCycle', 'tp_currentPeriodEnd']);
     await chrome.storage.local.set({
       tp_auth: { token, uid, email, expiresAt: Date.now() + 55 * 60 * 1000 },
     });
@@ -66,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   async function loginWithEmail(email: string, password: string) {
+    // Clear stale subscription cache so tier is re-fetched from backend
+    await chrome.storage.local.remove(['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_billingCycle', 'tp_currentPeriodEnd']);
     await signInWithEmail(email, password);
     const state = await getAuthState();
     if (state.authenticated && state.uid && state.email) {

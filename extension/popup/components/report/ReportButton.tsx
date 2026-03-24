@@ -18,7 +18,7 @@ interface ReportButtonProps {
 export default function ReportButton({ onClick, onUpgradeClick, disabled, loading }: ReportButtonProps) {
   const { asinData } = useASIN();
   const { currentUser } = useAuth();
-  const { isConsultantOrAbove } = useSubscription();
+  const { isOwnerOrAbove } = useSubscription();
 
   // Only show when all 5 analyses are complete
   const allModulesScored =
@@ -30,8 +30,8 @@ export default function ReportButton({ onClick, onUpgradeClick, disabled, loadin
 
   if (!allModulesScored || !currentUser) return null;
 
-  // Locked state for non-Consultant tier
-  if (!isConsultantOrAbove) {
+  // Locked state for non-paid tiers (owner, consultant, agency all qualify)
+  if (!isOwnerOrAbove) {
     return (
       <button
         onClick={onUpgradeClick}
