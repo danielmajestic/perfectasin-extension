@@ -40,6 +40,15 @@ interface SerpPriceData {
   totalOrganic: number;
 }
 
+interface AplusContentData {
+  hasAplusContent: boolean;
+  aplusModuleCount: number;
+  hasComparisonTable: boolean;
+  hasBrandStory: boolean;
+  aplusImageCount: number;
+  aplusVideoCount: number;
+}
+
 interface ProductInfo {
   title: string;
   asin: string;
@@ -54,6 +63,7 @@ interface ProductInfo {
   description: string | null;
   heroImageData: HeroImageData | null;
   priceData: PriceExtendedData | null;
+  aplusContentData: AplusContentData | null;
   pageType: 'product' | 'serp' | 'unknown';
 }
 
@@ -431,6 +441,80 @@ function extractDescription(): string | null {
 }
 
 /**
+ * Extracts A+ Content (Enhanced Brand Content) data from below the fold.
+ * Amazon A+ Content lives in dedicated feature divs with known selectors.
+ */
+function extractAplusContent(): AplusContentData {
+  // Primary A+ containers
+  const aplusById = document.getElementById('aplus')
+    || document.getElementById('aplusProductDescription');
+  const aplusFeatureDiv = document.getElementById('aplus_feature_div');
+  const aplusV2 = document.querySelector('.aplus-v2');
+
+  // The A+ root is whichever container exists
+  const aplusRoot = aplusFeatureDiv || aplusById || aplusV2;
+  const hasAplusContent = !!aplusRoot;
+
+  // Count individual A+ modules
+  const aplusModules = aplusRoot
+    ? aplusRoot.querySelectorAll('.aplus-module')
+    : document.querySelectorAll('#aplus .aplus-module, #aplus_feature_div .aplus-module, .aplus-v2 .aplus-module');
+  const aplusModuleCount = aplusModules.length;
+
+  // Comparison table detection — .aplus-module-3 is Amazon's comparison chart module,
+  // also check for common comparison table markup inside A+ sections
+  const hasComparisonTable = !!(
+    document.querySelector('.aplus-module-3') ||
+    document.querySelector('#aplus_feature_div .a-compare-table') ||
+    document.querySelector('#aplus .a-compare-table') ||
+    document.querySelector('.aplus-v2 table.a-keyvalue') ||
+    document.querySelector('#aplus_feature_div [class*="comparison"]') ||
+    document.querySelector('#aplus [class*="comparison"]')
+  );
+
+  // Brand Story detection
+  const hasBrandStory = !!(
+    document.getElementById('aplusBrandStory_feature_div') ||
+    document.querySelector('.brand-story') ||
+    document.querySelector('#aplusBrandStory') ||
+    document.querySelector('[class*="brand-story"]')
+  );
+
+  // Count images inside A+ containers
+  let aplusImageCount = 0;
+  if (aplusRoot) {
+    aplusImageCount = aplusRoot.querySelectorAll('img').length;
+  } else {
+    // Fallback: query each known container
+    const containers = ['#aplus', '#aplus_feature_div', '#aplusProductDescription', '.aplus-v2'];
+    for (const sel of containers) {
+      const el = document.querySelector(sel);
+      if (el) {
+        aplusImageCount = Math.max(aplusImageCount, el.querySelectorAll('img').length);
+      }
+    }
+  }
+
+  // Count videos inside A+ sections
+  let aplusVideoCount = 0;
+  if (aplusRoot) {
+    aplusVideoCount = aplusRoot.querySelectorAll('video, [data-csa-c-type="video"], .a-video-player').length;
+  }
+
+  const data: AplusContentData = {
+    hasAplusContent,
+    aplusModuleCount,
+    hasComparisonTable,
+    hasBrandStory,
+    aplusImageCount,
+    aplusVideoCount,
+  };
+
+  console.log('TitlePerfect: A+ Content detection:', JSON.stringify(data, null, 2));
+  return data;
+}
+
+/**
  * Determines the current page type
  */
 function getPageType(): 'product' | 'serp' | 'unknown' {
@@ -732,6 +816,7 @@ function extractProductInfo(): ProductInfo | null {
   const description = extractDescription();
   const heroImageData = getHeroImageData();
   const priceData = extractPriceExtended();
+  const aplusContentData = extractAplusContent();
 
   return {
     title,
@@ -747,6 +832,7 @@ function extractProductInfo(): ProductInfo | null {
     description,
     heroImageData,
     priceData,
+    aplusContentData,
     pageType: 'product',
   };
 }

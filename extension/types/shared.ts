@@ -19,6 +19,15 @@ export interface PriceExtendedData {
   buyBoxStatus: 'winning' | 'competing' | 'suppressed' | 'unknown';
 }
 
+export interface AplusContentData {
+  hasAplusContent: boolean;
+  aplusModuleCount: number;
+  hasComparisonTable: boolean;
+  hasBrandStory: boolean;
+  aplusImageCount: number;
+  aplusVideoCount: number;
+}
+
 export interface ProductInfo {
   title: string;
   asin: string;
@@ -33,6 +42,7 @@ export interface ProductInfo {
   description: string | null;
   heroImageData: HeroImageData | null;
   priceData: PriceExtendedData | null;
+  aplusContentData: AplusContentData | null;
   pageType: 'product' | 'serp' | 'unknown';
 }
 
