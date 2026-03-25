@@ -14,6 +14,8 @@ export interface GenerateReportRequest {
   marketplace: string;
   mode: 'full' | 'pre-computed';
   format: 'pdf' | 'html' | 'both';
+  heroImageUrl?: string | null;
+  category?: string | null;
   scrapedData?: Record<string, unknown>;
 }
 

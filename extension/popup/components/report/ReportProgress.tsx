@@ -12,30 +12,12 @@ interface ModuleState {
 }
 
 const INITIAL_MODULES: ModuleState[] = [
-  { id: 'title', label: 'Title', message: 'Analyzing Title... typically 60-90 seconds', status: 'pending' },
-  { id: 'bullets', label: 'Bullets', message: 'Analyzing Bullets... typically 90-120 seconds', status: 'pending' },
-  { id: 'description', label: 'Description', message: 'Analyzing Description... typically 90-120 seconds', status: 'pending' },
-  { id: 'hero', label: 'Hero Image', message: 'Analyzing Hero Image... typically 60-90 seconds', status: 'pending' },
-  { id: 'price', label: 'Price Intelligence', message: 'Analyzing Price Intelligence... typically 45-90 seconds', status: 'pending' },
+  { id: 'title', label: 'Title', message: 'Analyzing Title...', status: 'pending' },
+  { id: 'bullets', label: 'Bullets', message: 'Analyzing Bullets...', status: 'pending' },
+  { id: 'description', label: 'Description', message: 'Analyzing Description...', status: 'pending' },
+  { id: 'hero', label: 'Hero Image', message: 'Analyzing Hero Image...', status: 'pending' },
+  { id: 'price', label: 'Price Intelligence', message: 'Analyzing Price Intelligence...', status: 'pending' },
 ];
-
-// Cumulative time (ms) when each module transitions to "running"
-const MODULE_START_TIMES: Record<ModuleId, number> = {
-  title: 0,
-  bullets: 75000,
-  description: 180000,
-  hero: 285000,
-  price: 375000,
-};
-
-// Time (ms) when each module transitions to "done" (start of next module)
-const MODULE_DONE_TIMES: Record<ModuleId, number> = {
-  title: 74000,
-  bullets: 179000,
-  description: 284000,
-  hero: 374000,
-  price: 435000,
-};
 
 const PERSISTENT_FOOTER = '\u2615 Full audit typically takes 7-10 minutes. Grab a coffee \u2014 we\u2019re running $5,000 worth of analysis.';
 
@@ -73,43 +55,15 @@ export default function ReportProgress({
   const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
 
-  // Reset state when opened
+  // Reset state when opened — all modules start as "running" immediately
+  // since the backend processes all modules in a single request.
   useEffect(() => {
     if (isOpen) {
-      setModules(INITIAL_MODULES.map(m => ({ ...m })));
+      setModules(INITIAL_MODULES.map(m => ({ ...m, status: 'running' as ModuleStatus })));
       setOverallStage('analyzing');
       setTimedOut(false);
     }
   }, [isOpen]);
-
-  // Simulated module progression based on elapsed time
-  useEffect(() => {
-    if (!isOpen || overallStage !== 'analyzing' || timedOut) return;
-
-    const timers: ReturnType<typeof setTimeout>[] = [];
-
-    // Set each module to "running" at its start time
-    for (const mod of INITIAL_MODULES) {
-      timers.push(
-        setTimeout(() => {
-          setModules(prev => prev.map(m =>
-            m.id === mod.id && m.status === 'pending' ? { ...m, status: 'running' } : m
-          ));
-        }, MODULE_START_TIMES[mod.id]),
-      );
-
-      // Set each module to "done" at its done time
-      timers.push(
-        setTimeout(() => {
-          setModules(prev => prev.map(m =>
-            m.id === mod.id && m.status === 'running' ? { ...m, status: 'done' } : m
-          ));
-        }, MODULE_DONE_TIMES[mod.id]),
-      );
-    }
-
-    return () => timers.forEach(clearTimeout);
-  }, [isOpen, overallStage, timedOut]);
 
   // 15 minute timeout
   useEffect(() => {
@@ -180,11 +134,9 @@ export default function ReportProgress({
 
   if (!isOpen) return null;
 
-  // Calculate progress percentage
-  const doneCount = modules.filter(m => m.status === 'done').length;
-  const progressPercent = overallStage === 'ready' ? 100
-    : overallStage === 'building' ? 100
-    : Math.round((doneCount / 5) * 100);
+  // Progress: indeterminate while analyzing, 100% when building/ready
+  const isIndeterminate = overallStage === 'analyzing';
+  const progressPercent = overallStage === 'ready' || overallStage === 'building' ? 100 : 0;
 
   const showGlobalError = (overallStage === 'error') || timedOut;
   const hasModuleError = modules.some(m => m.status === 'error');
@@ -260,17 +212,32 @@ export default function ReportProgress({
 
             {/* Progress bar */}
             <div className="w-full h-2 bg-gray-100 rounded-full mb-1 overflow-hidden">
-              <div
-                className="h-full rounded-full transition-all duration-700 ease-out"
-                style={{
-                  width: `${progressPercent}%`,
-                  background: hasModuleError
-                    ? '#F97316'
-                    : 'linear-gradient(90deg, #2563EB, #1B2A4A)',
-                }}
-              />
+              {isIndeterminate ? (
+                <div
+                  className="h-full rounded-full animate-pulse"
+                  style={{
+                    width: '100%',
+                    background: hasModuleError
+                      ? '#F97316'
+                      : 'linear-gradient(90deg, #2563EB, #1B2A4A)',
+                    opacity: 0.6,
+                  }}
+                />
+              ) : (
+                <div
+                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  style={{
+                    width: `${progressPercent}%`,
+                    background: hasModuleError
+                      ? '#F97316'
+                      : 'linear-gradient(90deg, #2563EB, #1B2A4A)',
+                  }}
+                />
+              )}
             </div>
-            <p className="text-xs text-gray-400 text-right mb-4">{progressPercent}%</p>
+            <p className="text-xs text-gray-400 text-right mb-4">
+              {isIndeterminate ? 'Analyzing all modules...' : `${progressPercent}%`}
+            </p>
 
             {/* Module checklist */}
             <div className="space-y-2 mb-4">

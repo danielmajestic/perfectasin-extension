@@ -484,10 +484,18 @@ function getHeroImageData(): HeroImageData {
       '#altImages li.item[data-csa-c-type="image"]',
     );
 
-    // Extra strategy: count li.item nodes that contain an img element (catches
-    // thumbnails that lazy-load into the DOM but lack data-csa-c-type="image").
-    // :has() is supported in all Chrome versions the extension targets.
-    const itemsWithImg = document.querySelectorAll('#altImages li.item:has(img)');
+    // Extra strategy: count li.item nodes that contain an img with a real src
+    // (not a placeholder/spacer). Amazon lazy-loads with data:image or
+    // transparent GIF placeholders that shouldn't count as real gallery images.
+    const allItemsWithImg = document.querySelectorAll('#altImages li.item:has(img)');
+    const itemsWithImg = Array.from(allItemsWithImg).filter((item) => {
+      const img = item.querySelector('img') as HTMLImageElement | null;
+      if (!img) return false;
+      const src = img.src || img.getAttribute('src') || '';
+      // Filter out placeholders: data URIs, empty, or Amazon's 1x1 spacer
+      if (!src || src.startsWith('data:') || src.includes('/images/S/') || src.length < 20) return false;
+      return true;
+    });
 
     // Secondary thumbnail containers used on some Amazon page variants
     const secondaryThumbs = document.querySelectorAll(
@@ -496,22 +504,45 @@ function getHeroImageData(): HeroImageData {
 
     // Attempt to read the image count from Amazon's embedded colorImages JSON,
     // which is the most authoritative source (includes images not yet in DOM).
+    // We use bracket-depth counting instead of a simple regex because the image
+    // objects contain nested arrays (e.g. "variant":["MAIN","PT01"]) that cause
+    // a non-greedy [\s\S]*?\] to stop too early.
     let colorImagesCount = 0;
     try {
       const scripts = Array.from(document.querySelectorAll('script'));
       for (const s of scripts) {
         const t = s.textContent || '';
-        const m = t.match(/'colorImages'\s*:\s*(\{"initial":\s*\[[\s\S]*?\])/);
-        if (m) {
-          const arr = JSON.parse(m[1] + '}');
-          if (Array.isArray(arr.initial)) {
-            colorImagesCount = arr.initial.filter(
-              (img: { hiRes?: string; large?: string; main?: string }) =>
-                img.hiRes || img.large || img.main,
-            ).length;
+        // Amazon uses both single-quoted and double-quoted property names
+        const startIdx = Math.max(
+          t.indexOf("'colorImages'"),
+          t.indexOf('"colorImages"'),
+        );
+        if (startIdx === -1) continue;
+
+        // Find the opening bracket of the "initial" array
+        const bracketStart = t.indexOf('[', t.indexOf('initial', startIdx));
+        if (bracketStart === -1) continue;
+
+        // Walk forward counting bracket depth to find matching ]
+        let depth = 0;
+        let end = -1;
+        for (let i = bracketStart; i < Math.min(bracketStart + 50000, t.length); i++) {
+          if (t[i] === '[') depth++;
+          else if (t[i] === ']') {
+            depth--;
+            if (depth === 0) { end = i; break; }
           }
-          break;
         }
+        if (end === -1) continue;
+
+        const arr = JSON.parse(t.substring(bracketStart, end + 1));
+        if (Array.isArray(arr)) {
+          colorImagesCount = arr.filter(
+            (img: { hiRes?: string; large?: string; main?: string }) =>
+              img.hiRes || img.large || img.main,
+          ).length;
+        }
+        break;
       }
     } catch { /* ignore — JSON parse failures are non-fatal */ }
 
@@ -563,6 +594,31 @@ function getHeroImageData(): HeroImageData {
       }
     });
 
+    // Strategy 7: Amazon embeds video count in data attributes or script tags
+    let dataAttrVideoCount = 0;
+    const videoCountEl = document.querySelector(
+      '[data-video-count], #video-count, #vse-vw-dp-container',
+    );
+    if (videoCountEl) {
+      const vc = videoCountEl.getAttribute('data-video-count');
+      if (vc) dataAttrVideoCount = parseInt(vc, 10) || 0;
+      if (dataAttrVideoCount === 0) dataAttrVideoCount = 1; // element exists = at least 1
+    }
+    // Also try to find video count from Amazon's JS data (e.g. videoCount in page scripts)
+    if (dataAttrVideoCount === 0) {
+      try {
+        const scripts = Array.from(document.querySelectorAll('script'));
+        for (const s of scripts) {
+          const t = s.textContent || '';
+          const vm = t.match(/"videoCount"\s*:\s*(\d+)/);
+          if (vm) {
+            dataAttrVideoCount = parseInt(vm[1], 10) || 0;
+            break;
+          }
+        }
+      } catch { /* ignore */ }
+    }
+
     const videoCount = Math.max(
       cscVideoItems.length,
       cscVideoChildren.length,
@@ -570,6 +626,7 @@ function getHeroImageData(): HeroImageData {
       vseVideoCount,
       videoIconItems.length > 0 ? 1 : 0,
       textVideoCount,
+      dataAttrVideoCount,
     );
 
     // Static image count — take the highest credible count across all strategies:

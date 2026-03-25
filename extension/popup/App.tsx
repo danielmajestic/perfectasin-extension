@@ -90,6 +90,8 @@ function AppContent() {
           marketplace: 'US',
           mode: 'full',
           format: 'both',
+          heroImageUrl: hero?.heroImageUrl || null,
+          category: product.category || null,
           scrapedData: {
             title: product.title,
             category: product.category,
