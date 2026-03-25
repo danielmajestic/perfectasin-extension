@@ -235,6 +235,12 @@ export interface HeroImageRequest {
   brand?: string | null;
   icp_data?: object | null;
   tier?: 'full' | 'free';
+  // A+ Content detail fields (v1.9.1)
+  aplus_module_count?: number;
+  aplus_has_comparison_table?: boolean;
+  aplus_has_brand_story?: boolean;
+  aplus_image_count?: number;
+  aplus_video_count?: number;
 }
 
 export interface HeroImageDimensionScore {

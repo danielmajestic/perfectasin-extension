@@ -648,6 +648,7 @@ export function ASINProvider({ children }: { children: ReactNode }) {
       const token = await getIdToken();
       apiClient.setAuthToken(token);
 
+      const aplusData = product.aplusContentData;
       const response: HeroImageResponse = await apiClient.analyzeHeroImage({
         asin: product.asin,
         marketplace: 'US',
@@ -659,13 +660,19 @@ export function ASINProvider({ children }: { children: ReactNode }) {
         video_count: heroImageData?.videoCount ?? 0,
         has_video: heroImageData?.hasVideo ?? false,
         has_360: heroImageData?.has360 ?? false,
-        has_aplus: heroImageData?.hasAPlus ?? false,
+        has_aplus: aplusData?.hasAplusContent ?? heroImageData?.hasAPlus ?? false,
         gallery_alt_texts: heroImageData?.galleryAltTexts ?? [],
         title: product.title,
         category: product.category,
         brand: product.brand,
         icp_data: fullIcp ?? undefined,
         tier,
+        // A+ Content detail fields
+        aplus_module_count: aplusData?.aplusModuleCount ?? 0,
+        aplus_has_comparison_table: aplusData?.hasComparisonTable ?? false,
+        aplus_has_brand_story: aplusData?.hasBrandStory ?? false,
+        aplus_image_count: aplusData?.aplusImageCount ?? 0,
+        aplus_video_count: aplusData?.aplusVideoCount ?? 0,
       });
 
       const result: HeroAnalysisResult = {
