@@ -106,20 +106,22 @@ export default function ReportProgress({
       // Mark all modules as done → show "Building your report..." card
       setModules(prev => prev.map(m => m.status !== 'error' ? { ...m, status: 'done' } : m));
       setOverallStage('building');
-      console.log('[ReportProgress] Card 1 (Building) displayed at:', Date.now());
+      const card1ShownAt = Date.now();
+      console.log('[ReportProgress] Card 1 (Building) displayed at:', card1ShownAt);
 
-      // Hold "Building your report..." for 3s
+      // Hold "Building your report..." for 6s (doubled from 3s)
       const t2 = setTimeout(() => {
         setOverallStage('ready');
-        console.log('[ReportProgress] Card 2 (Ready) displayed at:', Date.now());
+        console.log('[ReportProgress] Card 2 (Ready) displayed at:', Date.now(), '| Card 1 was visible for', Date.now() - card1ShownAt, 'ms');
+        const card2ShownAt = Date.now();
 
-        // Hold "Your $5k Audit™ is ready!" for 2s
+        // Hold "Your $5k Audit™ is ready!" for 4s (doubled from 2s)
         const t3 = setTimeout(() => {
-          console.log('[ReportProgress] Calling onReady (Save dialog) at:', Date.now());
+          console.log('[ReportProgress] Calling onReady (Save dialog) at:', Date.now(), '| Card 2 was visible for', Date.now() - card2ShownAt, 'ms');
           onReadyRef.current();
-        }, 2000);
+        }, 4000);
         timersRef.current.push(t3);
-      }, 3000);
+      }, 6000);
       timersRef.current.push(t2);
     }, remaining);
     timersRef.current.push(t1);
@@ -262,9 +264,10 @@ export default function ReportProgress({
                 />
               ) : (
                 <div
-                  className="h-full rounded-full transition-all duration-700 ease-out"
+                  className="h-full rounded-full"
                   style={{
                     width: `${progressPercent}%`,
+                    transition: 'width 700ms ease-out',
                     background: hasModuleError
                       ? '#F97316'
                       : 'linear-gradient(90deg, #2563EB, #1B2A4A)',
