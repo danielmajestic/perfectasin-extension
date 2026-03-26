@@ -82,6 +82,7 @@ function AppContent() {
     const product = asinData.product;
     const hero = product.heroImageData;
     const priceExt = product.priceData;
+    const aplus = product.aplusContentData;
 
     try {
       const response = await generateReport(
@@ -106,7 +107,13 @@ function AppContent() {
             videoCount: hero?.videoCount ?? 0,
             hasVideo: hero?.hasVideo ?? false,
             has360: hero?.has360 ?? false,
-            hasAplus: hero?.hasAPlus ?? false,
+            hasAplus: aplus?.hasAplusContent ?? hero?.hasAPlus ?? false,
+            aplusModuleCount: aplus?.aplusModuleCount ?? 0,
+            hasBrandStory: aplus?.hasBrandStory ?? false,
+            hasComparisonTable: aplus?.hasComparisonTable ?? false,
+            aplusImageCount: aplus?.aplusImageCount ?? 0,
+            aplusVideoCount: aplus?.aplusVideoCount ?? 0,
+            aplusTextContent: aplus?.aplusTextContent || '',
             galleryAltTexts: hero?.galleryAltTexts || [],
             currentPrice: product.price || null,
             currentPriceNumeric: product.price ? parseFloat(product.price.replace(/[^0-9.]/g, '')) || null : null,
