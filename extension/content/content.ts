@@ -841,6 +841,9 @@ function extractProductInfo(): ProductInfo | null {
   const priceData = extractPriceExtended();
   const aplusContentData = extractAplusContent();
 
+  console.log('TitlePerfect: reviewCount=', reviewCount, 'rating=', rating);
+  console.log('TitlePerfect: imageCount=', heroImageData?.imageCount, 'videoCount=', heroImageData?.videoCount);
+
   return {
     title,
     asin,

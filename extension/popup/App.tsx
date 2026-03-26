@@ -124,7 +124,7 @@ function AppContent() {
             subscribeSavePrice: priceExt?.subscribeAndSavePrice || null,
             buyBoxStatus: priceExt?.buyBoxStatus || 'unknown',
             rating: product.rating,
-            reviewCount: product.reviewCount ? parseInt(product.reviewCount, 10) || null : null,
+            reviewCount: product.reviewCount ? parseInt(product.reviewCount.replace(/,/g, ''), 10) || null : null,
           },
         },
         token,
