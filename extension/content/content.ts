@@ -471,16 +471,22 @@ function extractAplusContent(): AplusContentData {
     : document.querySelectorAll('#aplus .aplus-module, #aplus_feature_div .aplus-module, .aplus-v2 .aplus-module');
   const aplusModuleCount = aplusModules.length;
 
-  // Comparison table detection — .aplus-module-3 is Amazon's comparison chart module,
-  // also check for common comparison table markup inside A+ sections
+  // Comparison table detection — covers standard and Premium A+ formats:
+  // Standard: .aplus-module-3 (comparison chart), .a-compare-table, table.a-keyvalue
+  // Premium A+: premium-module-13-carousel (product comparison carousel),
+  //   brand-story-card-1-four-asin (4-product comparison grid in Brand Story)
   const hasComparisonTable = !!(
     document.querySelector('.aplus-module-3') ||
     document.querySelector('#aplus_feature_div .a-compare-table') ||
     document.querySelector('#aplus .a-compare-table') ||
     document.querySelector('.aplus-v2 table.a-keyvalue') ||
     document.querySelector('#aplus_feature_div [class*="comparison"]') ||
-    document.querySelector('#aplus [class*="comparison"]')
+    document.querySelector('#aplus [class*="comparison"]') ||
+    document.querySelector('.premium-module-13-carousel') ||
+    document.querySelector('.brand-story-card-1-four-asin') ||
+    document.querySelector('#HLCXComparisonWidget_feature_div')
   );
+  console.log('TitlePerfect: hasComparisonTable=', hasComparisonTable);
 
   // Brand Story detection
   const hasBrandStory = !!(

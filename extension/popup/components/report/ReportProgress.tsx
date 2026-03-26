@@ -85,11 +85,11 @@ export default function ReportProgress({
       setModules(prev => prev.map(m => m.status !== 'error' ? { ...m, status: 'done' } : m));
       setOverallStage('building');
 
-      // After 2s "building" state, transition to ready
+      // Hold "Building your report..." for 1.5s, then show "Ready!" for 1.5s
       setTimeout(() => {
         setOverallStage('ready');
-        setTimeout(onReady, 600);
-      }, 2000);
+        setTimeout(onReady, 1500);
+      }, 1500);
     }, remaining);
   }, [startTime, onReady]);
 
