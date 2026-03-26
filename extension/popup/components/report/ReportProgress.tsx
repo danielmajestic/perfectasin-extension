@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 type ModuleId = 'title' | 'bullets' | 'description' | 'hero' | 'price';
 type ModuleStatus = 'pending' | 'running' | 'done' | 'error';
@@ -55,15 +55,29 @@ export default function ReportProgress({
   const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
 
+  // Refs to prevent multiple timer chains and enable proper cleanup
+  const hasCompletedRef = useRef(false);
+  const onReadyRef = useRef(onReady);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  onReadyRef.current = onReady;
+
+  const clearAllTimers = useCallback(() => {
+    timersRef.current.forEach(t => clearTimeout(t));
+    timersRef.current = [];
+  }, []);
+
   // Reset state when opened — all modules start as "running" immediately
   // since the backend processes all modules in a single request.
   useEffect(() => {
     if (isOpen) {
+      hasCompletedRef.current = false;
+      clearAllTimers();
       setModules(INITIAL_MODULES.map(m => ({ ...m, status: 'running' as ModuleStatus })));
       setOverallStage('analyzing');
       setTimedOut(false);
+      console.log('[ReportProgress] Modal opened, state reset at:', Date.now());
     }
-  }, [isOpen]);
+  }, [isOpen, clearAllTimers]);
 
   // 15 minute timeout
   useEffect(() => {
@@ -75,23 +89,46 @@ export default function ReportProgress({
     return () => clearTimeout(timer);
   }, [isOpen]);
 
-  // Handle completion — enforce minimum 3s display, show "Building your report..." first
+  // Handle completion — enforce minimum 3s analyzing display, then hold each card
   const handleComplete = useCallback(() => {
+    // Guard: only run once per open cycle
+    if (hasCompletedRef.current) {
+      console.log('[ReportProgress] handleComplete BLOCKED (already completed)');
+      return;
+    }
+    hasCompletedRef.current = true;
+    console.log('[ReportProgress] handleComplete fired at:', Date.now());
+
     const elapsed = Date.now() - startTime;
     const remaining = Math.max(0, 3000 - elapsed);
 
-    setTimeout(() => {
-      // Mark all modules as done
+    const t1 = setTimeout(() => {
+      // Mark all modules as done → show "Building your report..." card
       setModules(prev => prev.map(m => m.status !== 'error' ? { ...m, status: 'done' } : m));
       setOverallStage('building');
+      console.log('[ReportProgress] Card 1 (Building) displayed at:', Date.now());
 
-      // Hold "Building your report..." for 1.5s, then show "Ready!" for 1.5s
-      setTimeout(() => {
+      // Hold "Building your report..." for 3s
+      const t2 = setTimeout(() => {
         setOverallStage('ready');
-        setTimeout(onReady, 1500);
-      }, 1500);
+        console.log('[ReportProgress] Card 2 (Ready) displayed at:', Date.now());
+
+        // Hold "Your $5k Audit™ is ready!" for 2s
+        const t3 = setTimeout(() => {
+          console.log('[ReportProgress] Calling onReady (Save dialog) at:', Date.now());
+          onReadyRef.current();
+        }, 2000);
+        timersRef.current.push(t3);
+      }, 3000);
+      timersRef.current.push(t2);
     }, remaining);
-  }, [startTime, onReady]);
+    timersRef.current.push(t1);
+  }, [startTime]);
+
+  // Clean up timers on unmount
+  useEffect(() => {
+    return () => clearAllTimers();
+  }, [clearAllTimers]);
 
   useEffect(() => {
     if (isComplete && !isError) {
