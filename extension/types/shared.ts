@@ -26,6 +26,7 @@ export interface AplusContentData {
   hasBrandStory: boolean;
   aplusImageCount: number;
   aplusVideoCount: number;
+  aplusTextContent: string;
 }
 
 export interface ProductInfo {

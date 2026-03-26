@@ -47,6 +47,7 @@ interface AplusContentData {
   hasBrandStory: boolean;
   aplusImageCount: number;
   aplusVideoCount: number;
+  aplusTextContent: string;
 }
 
 interface ProductInfo {
@@ -190,11 +191,18 @@ function extractPrice(): string | null {
 }
 
 /**
- * Extracts category from breadcrumbs
+ * Extracts category from breadcrumbs.
+ * Primary: #wayfinding-breadcrumbs_container (most pages).
+ * Fallback: .a-breadcrumb (Grüns and some newer layouts).
  */
 function extractCategory(): string | null {
-  const categoryContainer = document.querySelector(SELECTORS.category);
-  if (!categoryContainer) return null;
+  const categoryContainer =
+    document.querySelector(SELECTORS.category) ||
+    document.querySelector('.a-breadcrumb');
+  if (!categoryContainer) {
+    console.log('TitlePerfect: category= null (no breadcrumb container found)');
+    return null;
+  }
 
   // Extract all breadcrumb links
   const breadcrumbs = categoryContainer.querySelectorAll('a');
@@ -207,7 +215,9 @@ function extractCategory(): string | null {
     }
   });
 
-  return categories.length > 0 ? categories.join(' > ') : null;
+  const result = categories.length > 0 ? categories.join(' > ') : null;
+  console.log('TitlePerfect: category=', result);
+  return result;
 }
 
 /**
@@ -501,6 +511,18 @@ function extractAplusContent(): AplusContentData {
     aplusVideoCount = aplusRoot.querySelectorAll('video, [data-csa-c-type="video"], .a-video-player').length;
   }
 
+  // Extract A+ text content from all modules for quality analysis
+  // Concatenate innerText from each module, separated by newlines, capped at 8000 chars
+  let aplusTextContent = '';
+  if (aplusModules.length > 0) {
+    const texts: string[] = [];
+    aplusModules.forEach((mod) => {
+      const text = (mod as HTMLElement).innerText?.trim();
+      if (text && text.length > 5) texts.push(text);
+    });
+    aplusTextContent = texts.join('\n\n').slice(0, 8000);
+  }
+
   const data: AplusContentData = {
     hasAplusContent,
     aplusModuleCount,
@@ -508,6 +530,7 @@ function extractAplusContent(): AplusContentData {
     hasBrandStory,
     aplusImageCount,
     aplusVideoCount,
+    aplusTextContent,
   };
 
   console.log('TitlePerfect: A+ Content detection:', JSON.stringify(data, null, 2));

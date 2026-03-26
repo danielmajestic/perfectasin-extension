@@ -30,6 +30,8 @@ export interface TitleData {
   user_id?: string;
   is_pro?: boolean;
   tier?: 'full' | 'free';
+  rating?: number | null;
+  review_count?: string | null;
 }
 
 export interface CompetitorTitle {
@@ -122,6 +124,8 @@ export interface BulletsRequest {
   category?: string | null;
   brand?: string | null;
   tier?: 'full' | 'free';
+  rating?: number | null;
+  review_count?: string | null;
 }
 
 export interface BulletScoreData {
@@ -175,6 +179,10 @@ export interface DescriptionRequest {
   bullets?: string[];
   icp_data?: object | null;
   tier?: 'full' | 'free';
+  rating?: number | null;
+  review_count?: string | null;
+  // A+ Content text for quality analysis
+  aplus_text_content?: string | null;
 }
 
 export interface DescDimensionScore {
@@ -235,12 +243,15 @@ export interface HeroImageRequest {
   brand?: string | null;
   icp_data?: object | null;
   tier?: 'full' | 'free';
+  rating?: number | null;
+  review_count?: string | null;
   // A+ Content detail fields (v1.9.1)
   aplus_module_count?: number;
   aplus_has_comparison_table?: boolean;
   aplus_has_brand_story?: boolean;
   aplus_image_count?: number;
   aplus_video_count?: number;
+  aplus_text_content?: string | null;
 }
 
 export interface HeroImageDimensionScore {

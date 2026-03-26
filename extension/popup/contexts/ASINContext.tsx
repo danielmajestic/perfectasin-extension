@@ -466,6 +466,8 @@ export function ASINProvider({ children }: { children: ReactNode }) {
         user_id: userId,
         is_pro: isOwnerOrAbove,
         tier,
+        rating: product.rating,
+        review_count: product.reviewCount,
       });
 
       const result: TitleAnalysisResult = {
@@ -532,6 +534,8 @@ export function ASINProvider({ children }: { children: ReactNode }) {
         category: product.category,
         brand: product.brand,
         tier,
+        rating: product.rating,
+        review_count: product.reviewCount,
       });
 
       const result: BulletsAnalysisResult = {
@@ -586,6 +590,9 @@ export function ASINProvider({ children }: { children: ReactNode }) {
         bullets: product.bullets,
         icp_data: fullIcp ?? undefined,
         tier,
+        rating: product.rating,
+        review_count: product.reviewCount,
+        aplus_text_content: product.aplusContentData?.aplusTextContent || null,
       });
 
       const result: DescAnalysisResult = {
@@ -667,12 +674,15 @@ export function ASINProvider({ children }: { children: ReactNode }) {
         brand: product.brand,
         icp_data: fullIcp ?? undefined,
         tier,
+        rating: product.rating,
+        review_count: product.reviewCount,
         // A+ Content detail fields
         aplus_module_count: aplusData?.aplusModuleCount ?? 0,
         aplus_has_comparison_table: aplusData?.hasComparisonTable ?? false,
         aplus_has_brand_story: aplusData?.hasBrandStory ?? false,
         aplus_image_count: aplusData?.aplusImageCount ?? 0,
         aplus_video_count: aplusData?.aplusVideoCount ?? 0,
+        aplus_text_content: aplusData?.aplusTextContent || null,
       });
 
       const result: HeroAnalysisResult = {
