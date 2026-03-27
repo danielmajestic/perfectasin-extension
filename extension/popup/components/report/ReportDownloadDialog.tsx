@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { GenerateReportResponse } from './reportApi';
+import RevenueImpactSection from './RevenueImpactSection';
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
@@ -246,6 +247,14 @@ export default function ReportDownloadDialog({
             </div>
           )}
         </div>
+
+        {/* Revenue Impact (only if backend provided it) */}
+        {report.revenueImpact && (
+          <RevenueImpactSection
+            revenueImpact={report.revenueImpact}
+            overallGrade={report.overallGrade}
+          />
+        )}
 
         {/* Disclaimer footer */}
         <div className="border-t pt-4 mt-1" style={{ borderColor: '#E0E0E0', background: '#F5F5F5', margin: '0 -20px -20px', padding: '16px 20px', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>

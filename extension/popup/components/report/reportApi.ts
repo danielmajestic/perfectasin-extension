@@ -27,6 +27,18 @@ export interface ReportSection {
   [key: string]: unknown;
 }
 
+export interface RevenueImpact {
+  monthlyRevenue: number;
+  unitsSold: number;
+  unitsSoldSource: 'dom' | 'estimated';
+  currentPrice: number;
+  conservativeRange: [number, number];
+  conservativeLiftRange: [number, number];
+  aggressiveRange: [number, number];
+  aggressiveLiftRange: [number, number];
+  disclaimer: string | null;
+}
+
 export interface GenerateReportResponse {
   reportId: string;
   overallGrade: string;
@@ -62,6 +74,7 @@ export interface GenerateReportResponse {
   pdfBase64: string | null;
   shareToken?: string;
   reportJson?: unknown;
+  revenueImpact?: RevenueImpact;
   disclaimer?: Record<string, unknown>;
   disclaimerFooter?: string;
   generatedAt: string;
@@ -112,6 +125,7 @@ export async function generateReport(
     if (rj.sections && !raw.sections) raw.sections = rj.sections;
     if (rj.actionPlan && !raw.actionPlan) raw.actionPlan = rj.actionPlan;
     if (rj.copyBlocks && !raw.copyBlocks) raw.copyBlocks = rj.copyBlocks;
+    if (rj.revenueImpact && !raw.revenueImpact) raw.revenueImpact = rj.revenueImpact;
   }
 
   return raw as GenerateReportResponse;
