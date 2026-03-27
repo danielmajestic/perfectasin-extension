@@ -434,6 +434,10 @@ class ApiClient {
     this.loadApiKey();
   }
 
+  getBaseUrl(): string {
+    return this.baseUrl;
+  }
+
   private async loadApiKey(): Promise<void> {
     try {
       const result = await chrome.storage.local.get(['apiKey']);

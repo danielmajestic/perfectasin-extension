@@ -317,7 +317,31 @@ export function ASINProvider({ children }: { children: ReactNode }) {
       pendingResolveRef.current();
       pendingResolveRef.current = null;
     }
-  }, []);
+
+    // Fire-and-forget: log terms acceptance server-side for audit trail
+    (async () => {
+      try {
+        const token = await getIdToken();
+        await fetch(`${apiClient.getBaseUrl()}/api/terms-acceptance`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({
+            userEmail: currentUser?.email || null,
+            disclaimerVersion: '1.0',
+            extensionVersion: chrome.runtime.getManifest().version,
+            action: 'terms_accepted',
+            timestamp: new Date().toISOString(),
+          }),
+        });
+        console.log('[Disclaimer] Terms acceptance logged to server');
+      } catch (err) {
+        console.warn('[Disclaimer] Failed to log terms acceptance:', err);
+      }
+    })();
+  }, [getIdToken, currentUser]);
 
   // ─── Product fetching ──────────────────────────────────────────────────────
 
