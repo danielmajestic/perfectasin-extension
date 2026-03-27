@@ -62,6 +62,8 @@ export interface GenerateReportResponse {
   pdfBase64: string | null;
   shareToken?: string;
   reportJson?: unknown;
+  disclaimer?: Record<string, unknown>;
+  disclaimerFooter?: string;
   generatedAt: string;
   processingTimeMs: number;
   modulesCompleted: number;

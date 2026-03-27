@@ -44,6 +44,8 @@ export interface ProductInfo {
   heroImageData: HeroImageData | null;
   priceData: PriceExtendedData | null;
   aplusContentData: AplusContentData | null;
+  unitsSoldText: string | null;
+  unitsSoldEstimate: number | null;
   pageType: 'product' | 'serp' | 'unknown';
 }
 

@@ -65,6 +65,8 @@ interface ProductInfo {
   heroImageData: HeroImageData | null;
   priceData: PriceExtendedData | null;
   aplusContentData: AplusContentData | null;
+  unitsSoldText: string | null;
+  unitsSoldEstimate: number | null;
   pageType: 'product' | 'serp' | 'unknown';
 }
 
@@ -819,6 +821,47 @@ function getHeroImageData(): HeroImageData {
 }
 
 /**
+ * Parses "10K+ bought in past month" text into a numeric estimate.
+ */
+function parseUnitsSold(text: string | null): number | null {
+  if (!text) return null;
+  const match = text.match(/([\d.]+)(K\+|\+)/i);
+  if (!match) return null;
+  const num = parseFloat(match[1]);
+  const hasK = match[2].toUpperCase().startsWith('K');
+  return hasK ? Math.round(num * 1000) : Math.round(num);
+}
+
+/**
+ * Extracts "X+ bought in past month" social proof text from the PDP.
+ * Scrapes by text content pattern (not CSS class) since Amazon changes classes.
+ */
+function extractUnitsSold(): { unitsSoldText: string | null; unitsSoldEstimate: number | null } {
+  // Strategy 1: Text-content scan across all spans
+  const spans = document.querySelectorAll('span');
+  for (const span of spans) {
+    const text = span.textContent?.trim();
+    if (text && /bought in past month/i.test(text)) {
+      console.log('TitlePerfect: unitsSoldText=', text);
+      return { unitsSoldText: text, unitsSoldEstimate: parseUnitsSold(text) };
+    }
+  }
+
+  // Strategy 2: Known ID fallback
+  const proofEl = document.getElementById('social-proofing-faceout-title-tk_bought');
+  if (proofEl) {
+    const text = proofEl.textContent?.trim() || null;
+    if (text) {
+      console.log('TitlePerfect: unitsSoldText (by ID)=', text);
+      return { unitsSoldText: text, unitsSoldEstimate: parseUnitsSold(text) };
+    }
+  }
+
+  console.log('TitlePerfect: unitsSoldText not found on page');
+  return { unitsSoldText: null, unitsSoldEstimate: null };
+}
+
+/**
  * Extracts product information from a product detail page
  */
 function extractProductInfo(): ProductInfo | null {
@@ -846,9 +889,11 @@ function extractProductInfo(): ProductInfo | null {
   const heroImageData = getHeroImageData();
   const priceData = extractPriceExtended();
   const aplusContentData = extractAplusContent();
+  const { unitsSoldText, unitsSoldEstimate } = extractUnitsSold();
 
   console.log('TitlePerfect: reviewCount=', reviewCount, 'rating=', rating);
   console.log('TitlePerfect: imageCount=', heroImageData?.imageCount, 'videoCount=', heroImageData?.videoCount);
+  console.log('TitlePerfect: unitsSoldText=', unitsSoldText, 'unitsSoldEstimate=', unitsSoldEstimate);
 
   return {
     title,
@@ -865,6 +910,8 @@ function extractProductInfo(): ProductInfo | null {
     heroImageData,
     priceData,
     aplusContentData,
+    unitsSoldText,
+    unitsSoldEstimate,
     pageType: 'product',
   };
 }

@@ -13,6 +13,7 @@ import { generateReport, type GenerateReportResponse } from './components/report
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
 import { ASINProvider, useASIN } from './contexts/ASINContext';
+import DisclaimerModal from './components/DisclaimerModal';
 import AuthGate from './components/AuthGate';
 import { initAnalytics } from './utils/analytics';
 import TabNavigation, { type TabId } from './components/TabNavigation';
@@ -26,7 +27,7 @@ import { useEffect } from 'react';
 
 function AppContent() {
   const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd } = useSubscription();
-  const { asinData, refreshProduct } = useASIN();
+  const { asinData, refreshProduct, showDisclaimerModal, acknowledgeDisclaimer } = useASIN();
   const { getIdToken } = useAuth();
 
   const [showUpgradeCTA, setShowUpgradeCTA] = useState(false);
@@ -115,6 +116,8 @@ function AppContent() {
             aplusVideoCount: aplus?.aplusVideoCount ?? 0,
             aplusTextContent: aplus?.aplusTextContent || '',
             galleryAltTexts: hero?.galleryAltTexts || [],
+            unitsSoldText: product.unitsSoldText || null,
+            unitsSoldEstimate: product.unitsSoldEstimate || null,
             currentPrice: product.price || null,
             currentPriceNumeric: product.price ? parseFloat(product.price.replace(/[^0-9.]/g, '')) || null : null,
             listPrice: priceExt?.listPrice || null,
@@ -332,6 +335,10 @@ function AppContent() {
       <MyReportsPanel
         isOpen={showMyReports}
         onClose={() => setShowMyReports(false)}
+      />
+      <DisclaimerModal
+        isOpen={showDisclaimerModal}
+        onAccept={acknowledgeDisclaimer}
       />
     </div>
   );

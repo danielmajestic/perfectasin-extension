@@ -247,15 +247,45 @@ export default function ReportDownloadDialog({
           )}
         </div>
 
-        {/* Footer credit */}
-        <div className="text-center border-t border-gray-100 pt-3">
-          <p className="text-xs text-gray-400">
+        {/* Disclaimer footer */}
+        <div className="border-t pt-4 mt-1" style={{ borderColor: '#E0E0E0', background: '#F5F5F5', margin: '0 -20px -20px', padding: '16px 20px', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>
+          {report.disclaimerFooter ? (
+            <div className="text-xs leading-relaxed" style={{ color: '#666666' }}>
+              {(report.disclaimerFooter as string).split('\n\n').map((para: string, i: number) => (
+                <p key={i} className={i > 0 ? 'mt-2' : ''}>
+                  {para.includes('perfectasin.com/terms') ? (
+                    <>
+                      {para.split('perfectasin.com/terms')[0]}
+                      <a
+                        href="https://perfectasin.com/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline underline-offset-2 hover:text-gray-800"
+                        style={{ color: '#555555' }}
+                      >
+                        perfectasin.com/terms
+                      </a>
+                      {para.split('perfectasin.com/terms')[1]}
+                    </>
+                  ) : para}
+                </p>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs leading-relaxed" style={{ color: '#666666' }}>
+              PerfectASIN provides AI-generated analysis. Verify all recommendations before implementing. You are responsible for changes made to your listings.
+            </p>
+          )}
+
+          {/* Footer credit */}
+          <p className="text-xs text-center mt-3" style={{ color: '#999999' }}>
             Powered by{' '}
             <a
               href="https://www.ravingfans.ai/tools"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-gray-500 hover:text-gray-700 underline underline-offset-2 transition-colors"
+              className="hover:text-gray-700 underline underline-offset-2 transition-colors"
+              style={{ color: '#888888' }}
             >
               RavingFans.ai
             </a>

@@ -4,6 +4,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from 'react';
 import { ProductInfo } from '../../types/shared';
@@ -226,6 +227,10 @@ export interface ASINContextType {
   startHeroAnalysis: () => Promise<void>;
   startPriceAnalysis: (skipSerp?: boolean) => Promise<void>;
   refreshProduct: () => Promise<void>;
+  /** True when first-use disclaimer modal should be shown */
+  showDisclaimerModal: boolean;
+  /** Call when user accepts the disclaimer */
+  acknowledgeDisclaimer: () => void;
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -275,6 +280,44 @@ export function ASINProvider({ children }: { children: ReactNode }) {
   const [priceSerpFetching, setPriceSerpFetching] = useState(false);
   const [priceSerpFailed, setPriceSerpFailed] = useState(false);
   const [priceError, setPriceError] = useState<ErrorState | null>(null);
+
+  // ─── First-use disclaimer gate ─────────────────────────────────────────────
+  const [showDisclaimerModal, setShowDisclaimerModal] = useState(false);
+  const disclaimerAcknowledgedRef = useRef(false);
+  const pendingResolveRef = useRef<(() => void) | null>(null);
+
+  // Load disclaimer status from chrome.storage on mount
+  useEffect(() => {
+    chrome.storage.local.get('disclaimerAcknowledged', (result) => {
+      disclaimerAcknowledgedRef.current = !!result.disclaimerAcknowledged;
+    });
+  }, []);
+
+  /**
+   * Gate that blocks until the user has acknowledged the first-use disclaimer.
+   * Returns immediately if already acknowledged; otherwise shows the modal and
+   * awaits user action.
+   */
+  const requireDisclaimer = useCallback((): Promise<void> => {
+    if (disclaimerAcknowledgedRef.current) return Promise.resolve();
+    return new Promise((resolve) => {
+      pendingResolveRef.current = resolve;
+      setShowDisclaimerModal(true);
+    });
+  }, []);
+
+  const acknowledgeDisclaimer = useCallback(() => {
+    disclaimerAcknowledgedRef.current = true;
+    chrome.storage.local.set({
+      disclaimerAcknowledged: true,
+      disclaimerAcknowledgedAt: new Date().toISOString(),
+    });
+    setShowDisclaimerModal(false);
+    if (pendingResolveRef.current) {
+      pendingResolveRef.current();
+      pendingResolveRef.current = null;
+    }
+  }, []);
 
   // ─── Product fetching ──────────────────────────────────────────────────────
 
@@ -441,6 +484,7 @@ export function ASINProvider({ children }: { children: ReactNode }) {
 
   const startTitleAnalysis = useCallback(async () => {
     if (!asinData?.product) return;
+    await requireDisclaimer();
 
     const product = asinData.product;
     const tier: 'full' | 'free' = isOwnerOrAbove ? 'full' : firstAnalysisDone ? 'free' : 'full';
@@ -509,12 +553,13 @@ export function ASINProvider({ children }: { children: ReactNode }) {
       setTitleLoading(false);
       setTitleElapsed(0);
     }
-  }, [asinData, isOwnerOrAbove, firstAnalysisDone, getIdToken, currentUser, refreshSubscription, incrementAnalysesUsed]);
+  }, [asinData, isOwnerOrAbove, firstAnalysisDone, getIdToken, currentUser, refreshSubscription, incrementAnalysesUsed, requireDisclaimer]);
 
   // ─── startBulletsAnalysis ─────────────────────────────────────────────────
 
   const startBulletsAnalysis = useCallback(async () => {
     if (!asinData?.product) return;
+    await requireDisclaimer();
 
     const product = asinData.product;
     const tier: 'full' | 'free' = isOwnerOrAbove ? 'full' : 'free';
@@ -559,12 +604,13 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     } finally {
       setBulletsLoading(false);
     }
-  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed]);
+  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed, requireDisclaimer]);
 
   // ─── startDescAnalysis ────────────────────────────────────────────────────
 
   const startDescAnalysis = useCallback(async (descriptionOverride?: string) => {
     if (!asinData?.product) return;
+    await requireDisclaimer();
 
     const product = asinData.product;
     const description = descriptionOverride ?? product.description ?? '';
@@ -636,12 +682,13 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     } finally {
       setDescLoading(false);
     }
-  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed]);
+  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed, requireDisclaimer]);
 
   // ─── startHeroAnalysis ────────────────────────────────────────────────────
 
   const startHeroAnalysis = useCallback(async () => {
     if (!asinData?.product) return;
+    await requireDisclaimer();
 
     const product = asinData.product;
     const heroImageData = product.heroImageData;
@@ -721,12 +768,13 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     } finally {
       setHeroLoading(false);
     }
-  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed]);
+  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed, requireDisclaimer]);
 
   // ─── startPriceAnalysis ───────────────────────────────────────────────────
 
   const startPriceAnalysis = useCallback(async (skipSerp = false) => {
     if (!asinData?.product) return;
+    await requireDisclaimer();
 
     const product = asinData.product;
     const tier: 'full' | 'free' = isOwnerOrAbove ? 'full' : 'free';
@@ -875,7 +923,7 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     } finally {
       setPriceLoading(false);
     }
-  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed]);
+  }, [asinData, isOwnerOrAbove, getIdToken, refreshSubscription, incrementAnalysesUsed, requireDisclaimer]);
 
   // ─── Context value ─────────────────────────────────────────────────────────
 
@@ -916,6 +964,8 @@ export function ASINProvider({ children }: { children: ReactNode }) {
     startHeroAnalysis,
     startPriceAnalysis,
     refreshProduct,
+    showDisclaimerModal,
+    acknowledgeDisclaimer,
   };
 
   return <ASINContext.Provider value={value}>{children}</ASINContext.Provider>;
