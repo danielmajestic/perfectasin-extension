@@ -121,7 +121,7 @@ export default function ReportDownloadDialog({
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-5 relative"
+        className="bg-white rounded-xl shadow-2xl max-w-sm w-full p-5 relative max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
@@ -257,7 +257,7 @@ export default function ReportDownloadDialog({
         )}
 
         {/* Disclaimer footer */}
-        <div className="border-t pt-4 mt-1" style={{ borderColor: '#E0E0E0', background: '#F5F5F5', margin: '0 -20px -20px', padding: '16px 20px', borderBottomLeftRadius: '12px', borderBottomRightRadius: '12px' }}>
+        <div className="border-t pt-4 mt-1 rounded-b-lg" style={{ borderColor: '#E0E0E0', background: '#F5F5F5', margin: '0 -20px -20px', padding: '16px 20px' }}>
           {report.disclaimerFooter ? (
             <div className="text-xs leading-relaxed" style={{ color: '#666666' }}>
               {(report.disclaimerFooter as string).split('\n\n').map((para: string, i: number) => (
@@ -287,7 +287,7 @@ export default function ReportDownloadDialog({
           )}
 
           {/* Footer credit */}
-          <p className="text-xs text-center mt-3" style={{ color: '#999999' }}>
+          <p className="text-xs text-center mt-3" style={{ color: '#888888' }}>
             Powered by{' '}
             <a
               href="https://www.ravingfans.ai/tools"

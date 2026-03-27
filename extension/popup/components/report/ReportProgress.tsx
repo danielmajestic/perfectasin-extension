@@ -348,7 +348,7 @@ export default function ReportProgress({
 
             {/* Persistent footer */}
             <div className="border-t border-gray-100 pt-3">
-              <p className="text-xs text-gray-400 leading-relaxed text-center">
+              <p className="text-xs leading-relaxed text-center" style={{ color: '#4A4A4A' }}>
                 {PERSISTENT_FOOTER}
               </p>
             </div>

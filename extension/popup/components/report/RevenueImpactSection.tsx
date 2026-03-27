@@ -60,25 +60,25 @@ export default function RevenueImpactSection({
         <div className="px-3 py-3 border-b border-gray-100">
           <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
             <div>
-              <span className="text-gray-400 block">Monthly Sales Velocity</span>
+              <span className="block" style={{ color: '#6B7280' }}>Monthly Sales Velocity</span>
               <span className="text-gray-800 font-semibold">{formatUnits(ri.unitsSold)}</span>
             </div>
             <div>
-              <span className="text-gray-400 block">Current Price</span>
+              <span className="block" style={{ color: '#6B7280' }}>Current Price</span>
               <span className="text-gray-800 font-semibold">{formatCurrency(ri.currentPrice)}</span>
             </div>
             <div>
-              <span className="text-gray-400 block">Est. Monthly Revenue</span>
+              <span className="block" style={{ color: '#6B7280' }}>Est. Monthly Revenue</span>
               <span className="text-gray-800 font-bold">{formatCurrency(ri.monthlyRevenue)}</span>
             </div>
             <div>
-              <span className="text-gray-400 block">Source</span>
+              <span className="block" style={{ color: '#6B7280' }}>Source</span>
               <span className="flex items-center gap-1.5">
                 <span
                   className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                   style={{ background: isDom ? '#22C55E' : '#F59E0B' }}
                 />
-                <span className="text-gray-600 text-xs">
+                <span className="text-xs" style={{ color: '#4A4A4A' }}>
                   {isDom ? 'Amazon product page' : 'Estimated (not publicly available)'}
                 </span>
               </span>
@@ -89,7 +89,7 @@ export default function RevenueImpactSection({
         {/* Conservative Estimate */}
         <div className="px-3 py-2.5 border-b border-gray-100">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs" style={{ color: '#4A4A4A' }}>
               Conservative ({formatPct(ri.conservativeLiftRange[0])}–{formatPct(ri.conservativeLiftRange[1])} lift)
             </span>
             <span className="text-xs font-bold text-gray-700">
@@ -110,7 +110,7 @@ export default function RevenueImpactSection({
         {/* Aggressive / Full Optimization Estimate */}
         <div className="px-3 py-2.5 border-b border-gray-100">
           <div className="flex items-center justify-between mb-1.5">
-            <span className="text-xs text-gray-500">
+            <span className="text-xs" style={{ color: '#4A4A4A' }}>
               Full Optimization ({formatPct(ri.aggressiveLiftRange[0])}–{formatPct(ri.aggressiveLiftRange[1])} lift)
             </span>
             <span className="text-xs font-bold" style={{ color: '#B8860B' }}>
@@ -131,11 +131,11 @@ export default function RevenueImpactSection({
         {/* Disclaimer (conditional) + Footer note */}
         <div className="px-3 py-2.5">
           {ri.disclaimer && (
-            <p className="text-xs italic leading-relaxed mb-2" style={{ color: '#999999', fontSize: '11px' }}>
+            <p className="text-xs italic leading-relaxed mb-2" style={{ color: '#888888', fontSize: '11px' }}>
               {ri.disclaimer}
             </p>
           )}
-          <p className="text-xs leading-relaxed" style={{ color: '#999999', fontSize: '11px' }}>
+          <p className="text-xs leading-relaxed" style={{ color: '#888888', fontSize: '11px' }}>
             Based on current sales velocity and industry-standard conversion lift benchmarks for listings scoring {overallGrade}.
           </p>
         </div>
