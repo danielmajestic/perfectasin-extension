@@ -54,6 +54,7 @@ export default function ReportProgress({
   const [overallStage, setOverallStage] = useState<OverallStage>('analyzing');
   const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   // Refs to prevent multiple timer chains and enable proper cleanup
   const hasCompletedRef = useRef(false);
@@ -75,9 +76,20 @@ export default function ReportProgress({
       setModules(INITIAL_MODULES.map(m => ({ ...m, status: 'running' as ModuleStatus })));
       setOverallStage('analyzing');
       setTimedOut(false);
+      setElapsedSeconds(0);
       console.log('[ReportProgress] Modal opened, state reset at:', Date.now());
     }
   }, [isOpen, clearAllTimers]);
+
+  // Elapsed timer — ticks every second while analyzing or building
+  useEffect(() => {
+    if (!isOpen) return;
+    if (overallStage === 'ready' || overallStage === 'error') return;
+    const interval = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [isOpen, overallStage, startTime]);
 
   // 15 minute timeout
   useEffect(() => {
@@ -275,9 +287,14 @@ export default function ReportProgress({
                 />
               )}
             </div>
-            <p className="text-xs text-gray-400 text-right mb-4">
-              {isIndeterminate ? 'Analyzing all modules...' : `${progressPercent}%`}
-            </p>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-xs font-mono font-semibold text-gray-600">
+                {String(Math.floor(elapsedSeconds / 60)).padStart(1, '0')}:{String(elapsedSeconds % 60).padStart(2, '0')}
+              </span>
+              <span className="text-xs text-gray-400">
+                {isIndeterminate ? 'Estimated time: 7-10 minutes' : `${progressPercent}%`}
+              </span>
+            </div>
 
             {/* Module checklist */}
             <div className="space-y-2 mb-4">

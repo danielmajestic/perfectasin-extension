@@ -4,8 +4,10 @@
  * Takes 7-10 minutes. No polling — single synchronous response.
  */
 
-const REPORT_API_URL =
-  'https://titleperfect-api-119656431080.us-central1.run.app/api/v1/report/generate';
+const REPORT_BASE_URL =
+  'https://titleperfect-api-119656431080.us-central1.run.app';
+
+const REPORT_API_URL = `${REPORT_BASE_URL}/api/v1/report/generate`;
 
 // ─── Types (kept from mockReportApi, aligned with phase1b API contract) ──────
 
@@ -139,8 +141,7 @@ export async function saveReportTags(
   tags: { linkedinName?: string; company?: string; source?: string; notes?: string },
   idToken: string,
 ): Promise<void> {
-  const baseUrl = REPORT_API_URL.replace('/api/v1/report/generate', '');
-  const response = await fetch(`${baseUrl}/api/v1/report/${reportId}/tags`, {
+  const response = await fetch(`${REPORT_BASE_URL}/api/v1/report/${reportId}/tags`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -153,4 +154,89 @@ export async function saveReportTags(
     const data = await response.json().catch(() => ({}));
     throw new Error(data.error || data.detail || 'Failed to save tags.');
   }
+}
+
+// ─── Report Listing API ─────────────────────────────────────────────────────
+
+export interface ReportSummary {
+  reportId: string;
+  asin: string;
+  productTitle: string;
+  overallGrade: string;
+  overallScore: number;
+  generatedAt: string;
+  modulesCompleted: number;
+  modulesTotal: 5;
+  moduleScores: {
+    title: { score: number; grade: string } | null;
+    bullets: { score: number; grade: string } | null;
+    description: { score: number; grade: string } | null;
+    heroImage: { score: number; grade: string } | null;
+    price: { score: number; grade: string } | null;
+  };
+  tags: {
+    linkedinName: string;
+    company: string;
+    source: string;
+    notes: string;
+  } | null;
+  isPublic: boolean;
+  hasPassword: boolean;
+  htmlContent?: string;
+  pdfBase64?: string | null;
+}
+
+export interface ReportsListResponse {
+  reports: ReportSummary[];
+  total: number;
+  page: number;
+  pageSize: number;
+  stats: {
+    totalReports: number;
+    thisMonth: number;
+    avgGrade: string;
+    topCategory: string;
+  };
+}
+
+export interface ReportsListParams {
+  search?: string;
+  grade?: string;
+  source?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  sort?: 'newest' | 'oldest' | 'best' | 'worst';
+  page?: number;
+  pageSize?: number;
+}
+
+/**
+ * List user's reports — GET /api/v1/reports
+ * Backend dependency: Kat to deploy this endpoint.
+ */
+export async function listReports(
+  params: ReportsListParams,
+  idToken: string,
+): Promise<ReportsListResponse> {
+  const qs = new URLSearchParams();
+  if (params.search) qs.set('search', params.search);
+  if (params.grade && params.grade !== 'All') qs.set('grade', params.grade);
+  if (params.source && params.source !== 'All') qs.set('source', params.source);
+  if (params.sort) qs.set('sort', params.sort);
+  if (params.page) qs.set('page', String(params.page));
+  if (params.pageSize) qs.set('pageSize', String(params.pageSize));
+
+  const response = await fetch(`${REPORT_BASE_URL}/api/v1/reports?${qs.toString()}`, {
+    method: 'GET',
+    headers: {
+      Authorization: `Bearer ${idToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data.error || data.detail || `Failed to load reports (${response.status}).`);
+  }
+
+  return response.json();
 }

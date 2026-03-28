@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import { mockListReports, type ReportSummary, type ReportsListResponse, type ReportsListParams } from './mockReportsApi';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import { listReports, saveReportTags, type ReportSummary, type ReportsListResponse, type ReportsListParams } from './reportApi';
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
@@ -38,7 +39,9 @@ interface MyReportsPanelProps {
  * Compact card list with search, grade filter, sort, stats, and actions.
  */
 export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps) {
+  const { getIdToken } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<ReportsListResponse | null>(null);
   const [search, setSearch] = useState('');
   const [gradeFilter, setGradeFilter] = useState<string>('All');
@@ -49,19 +52,25 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
 
   const fetchReports = useCallback(async () => {
     setLoading(true);
+    setError(null);
     try {
-      const result = await mockListReports({
+      const token = await getIdToken();
+      if (!token) throw new Error('Not authenticated. Please sign in again.');
+      const result = await listReports({
         search: search || undefined,
         grade: gradeFilter !== 'All' ? gradeFilter : undefined,
         sort,
         page,
         pageSize: 20,
-      });
+      }, token);
       setData(result);
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Unable to load reports.';
+      setError(msg);
     } finally {
       setLoading(false);
     }
-  }, [search, gradeFilter, sort, page]);
+  }, [search, gradeFilter, sort, page, getIdToken]);
 
   useEffect(() => {
     if (isOpen) fetchReports();
@@ -105,7 +114,35 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
     URL.revokeObjectURL(url);
   }, []);
 
+  // ── Inline tag editing ──────────────────────────────────────────────────────
   const [editingTagsId, setEditingTagsId] = useState<string | null>(null);
+  const [tagSaving, setTagSaving] = useState(false);
+  const [tagError, setTagError] = useState<string | null>(null);
+  const tagLinkedinRef = useRef<HTMLInputElement>(null);
+  const tagCompanyRef = useRef<HTMLInputElement>(null);
+  const tagNotesRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveTags = useCallback(async (reportId: string) => {
+    setTagSaving(true);
+    setTagError(null);
+    try {
+      const token = await getIdToken();
+      if (!token) throw new Error('Not authenticated.');
+      await saveReportTags(reportId, {
+        linkedinName: tagLinkedinRef.current?.value || undefined,
+        company: tagCompanyRef.current?.value || undefined,
+        notes: tagNotesRef.current?.value || undefined,
+      }, token);
+      setEditingTagsId(null);
+      // Refresh to show updated tags
+      fetchReports();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Failed to save tags.';
+      setTagError(msg);
+    } finally {
+      setTagSaving(false);
+    }
+  }, [getIdToken, fetchReports]);
 
   // Escape key
   useEffect(() => {
@@ -213,6 +250,24 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
             </svg>
+          </div>
+        ) : error ? (
+          /* Error state */
+          <div className="flex flex-col items-center justify-center py-12 px-6 text-center">
+            <div className="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-3">
+              <svg className="w-7 h-7 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+              </svg>
+            </div>
+            <h3 className="text-sm font-bold text-gray-700 mb-1">Unable to load reports</h3>
+            <p className="text-xs text-gray-500 mb-4">{error}</p>
+            <button
+              onClick={fetchReports}
+              className="px-4 py-2 rounded-lg text-xs font-semibold text-white transition-all hover:scale-105"
+              style={{ background: '#1B2A4A' }}
+            >
+              Try Again
+            </button>
           </div>
         ) : reports.length === 0 ? (
           /* Empty state */
@@ -337,7 +392,10 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
                           {copiedId === report.reportId ? 'Copied!' : 'Share'}
                         </button>
                         <button
-                          onClick={() => setEditingTagsId(editingTagsId === report.reportId ? null : report.reportId)}
+                          onClick={() => {
+                            setEditingTagsId(editingTagsId === report.reportId ? null : report.reportId);
+                            setTagError(null);
+                          }}
                           className="px-2.5 py-1 rounded text-xs font-medium border border-gray-300 text-gray-600 transition-colors hover:bg-gray-100"
                         >
                           {editingTagsId === report.reportId ? 'Close' : 'Edit Tags'}
@@ -348,32 +406,36 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
                       {editingTagsId === report.reportId && (
                         <div className="mt-2 p-2 bg-white rounded-lg border border-gray-200 space-y-1.5">
                           <input
+                            ref={tagLinkedinRef}
                             type="text"
                             placeholder="LinkedIn Name"
                             defaultValue={report.tags?.linkedinName || ''}
                             className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
                           />
                           <input
+                            ref={tagCompanyRef}
                             type="text"
                             placeholder="Company"
                             defaultValue={report.tags?.company || ''}
                             className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
                           />
                           <input
+                            ref={tagNotesRef}
                             type="text"
                             placeholder="Notes"
                             defaultValue={report.tags?.notes || ''}
                             className="w-full text-xs px-2 py-1.5 border border-gray-200 rounded focus:outline-none focus:ring-1 focus:ring-amber-400/50"
                           />
+                          {tagError && (
+                            <p className="text-xs text-red-600 bg-red-50 rounded px-2 py-1 border border-red-200">{tagError}</p>
+                          )}
                           <button
-                            onClick={() => {
-                              // TODO: Wire to PATCH /api/v1/report/{reportId}/tags
-                              setEditingTagsId(null);
-                            }}
-                            className="px-3 py-1 rounded text-xs font-semibold text-white"
-                            style={{ background: '#D4A843' }}
+                            onClick={() => handleSaveTags(report.reportId)}
+                            disabled={tagSaving}
+                            className="px-3 py-1 rounded text-xs font-semibold text-white disabled:opacity-60"
+                            style={{ background: '#D4A843', color: '#1B2A4A' }}
                           >
-                            Save Tags
+                            {tagSaving ? 'Saving...' : 'Save Tags'}
                           </button>
                         </div>
                       )}
