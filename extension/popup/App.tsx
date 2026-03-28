@@ -26,9 +26,21 @@ import PriceTab from './components/tabs/PriceTab';
 import { useEffect } from 'react';
 
 function AppContent() {
-  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd } = useSubscription();
+  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd, loading: subscriptionLoading } = useSubscription();
   const { asinData, refreshProduct, showDisclaimerModal, acknowledgeDisclaimer } = useASIN();
   const { getIdToken } = useAuth();
+
+  // Fix free-plan flash: show loading skeleton until cached tier resolves
+  if (subscriptionLoading) {
+    return (
+      <div className="min-w-[320px] w-full h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+          <p className="text-sm text-gray-500">Loading your account...</p>
+        </div>
+      </div>
+    );
+  }
 
   const [showUpgradeCTA, setShowUpgradeCTA] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
@@ -283,20 +295,20 @@ function AppContent() {
         )}
       </div>
 
+      {/* $5k Audit™ banner — persistent above tabs */}
+      <ReportButton
+        onClick={handleGenerateReport}
+        onUpgradeClick={handleUpgradeClick}
+        loading={reportLoading}
+        disabled={reportLoading}
+      />
+
       {/* Tab navigation */}
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Scrollable tab content */}
       <div className="flex-1 overflow-y-auto px-3 sm:px-4 py-4">
         {renderTabContent()}
-
-        {/* Report button — appears after all 5 modules scored */}
-        <ReportButton
-          onClick={handleGenerateReport}
-          onUpgradeClick={handleUpgradeClick}
-          loading={reportLoading}
-          disabled={reportLoading}
-        />
       </div>
 
       {/* Modals / panels */}
