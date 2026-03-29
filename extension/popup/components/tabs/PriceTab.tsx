@@ -406,7 +406,7 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
       </div>
 
       {/* Price Ladder */}
-      {priceAnalysis.competitors.length > 0 && (
+      {(priceAnalysis.competitors?.length ?? 0) > 0 && (
         <div className="rounded-lg border border-gray-200 bg-white p-3">
           <h4 className="text-xs font-semibold text-gray-700 mb-1">
             Competitive Price Ladder
@@ -450,12 +450,12 @@ export default function PriceTab({ onUpgradeClick }: PriceTabProps) {
       </div>
 
       {/* Quick wins — PI10: renders exactly once here; PriceQuickWins is not used elsewhere in this component */}
-      {priceAnalysis.quickWins.length > 0 && (
+      {(priceAnalysis.quickWins?.length ?? 0) > 0 && (
         <PriceQuickWins quickWins={priceAnalysis.quickWins} />
       )}
 
       {/* Recommendations */}
-      {priceAnalysis.recommendations.length > 0 && (
+      {(priceAnalysis.recommendations?.length ?? 0) > 0 && (
         <div className="rounded-lg border border-gray-100 bg-white p-3">
           <h4 className="text-xs font-semibold text-gray-700 mb-2">💡 Recommendations</h4>
           <ul className="space-y-1.5">

@@ -215,9 +215,9 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
 
           {/* Critical issues + quick wins + recommendations */}
           <CriticalIssuesList
-            criticalIssues={analysisResult.criticalIssues}
-            quickWins={analysisResult.quickWins}
-            recommendations={analysisResult.recommendations}
+            criticalIssues={analysisResult.criticalIssues ?? []}
+            quickWins={analysisResult.quickWins ?? []}
+            recommendations={analysisResult.recommendations ?? []}
           />
 
           {/* ─── AI Image Prompts section ───────────────────────────────────── */}
@@ -225,14 +225,14 @@ export default function HeroImageTab({ onUpgradeClick }: HeroImageTabProps) {
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-gray-700">AI Image Prompts</h3>
               {showProPrompts && (
-                <span className="text-xs text-gray-400">{analysisResult.prompts.length} strategies</span>
+                <span className="text-xs text-gray-400">{analysisResult.prompts?.length ?? 0} strategies</span>
               )}
             </div>
 
             {showProPrompts ? (
               /* Pro: 3-tab strategy switcher */
-              <PromptStrategyTabs prompts={analysisResult.prompts} />
-            ) : analysisResult.prompts.length > 0 ? (
+              <PromptStrategyTabs prompts={analysisResult.prompts ?? []} />
+            ) : (analysisResult.prompts?.length ?? 0) > 0 ? (
               /* Free: single basic prompt (no Nano Banana JSON in free tier) */
               <>
                 <ImagePromptCard promptData={analysisResult.prompts[0]} showNanoBanana={false} />

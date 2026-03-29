@@ -97,11 +97,12 @@ function ComplianceIssueItem({ issue }: { issue: ComplianceIssue }) {
 }
 
 export default function ComplianceWarnings({ issues }: ComplianceWarningsProps) {
-  const errorCount = issues.filter((i) => i.severity === 'error').length;
-  const warningCount = issues.filter((i) => i.severity === 'warning').length;
-  const infoCount = issues.filter((i) => i.severity === 'info').length;
+  const safeIssues = issues ?? [];
+  const errorCount = safeIssues.filter((i) => i.severity === 'error').length;
+  const warningCount = safeIssues.filter((i) => i.severity === 'warning').length;
+  const infoCount = safeIssues.filter((i) => i.severity === 'info').length;
 
-  if (issues.length === 0) {
+  if (safeIssues.length === 0) {
     return (
       <div className="bg-white rounded-lg border border-gray-200 p-4 shadow-sm">
         <div className="flex items-center gap-3">
@@ -147,7 +148,7 @@ export default function ComplianceWarnings({ issues }: ComplianceWarningsProps) 
       </div>
 
       <div className="space-y-2">
-        {issues.map((issue) => (
+        {safeIssues.map((issue) => (
           <ComplianceIssueItem key={issue.id} issue={issue} />
         ))}
       </div>

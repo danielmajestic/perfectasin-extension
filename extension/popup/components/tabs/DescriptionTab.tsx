@@ -211,19 +211,19 @@ function FeedbackSection({
   weaknesses: string[];
   recommendations: string[];
 }) {
-  if (!strengths.length && !weaknesses.length && !recommendations.length) return null;
+  if (!(strengths?.length) && !(weaknesses?.length) && !(recommendations?.length)) return null;
 
   return (
     <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm space-y-3">
       <h3 className="text-sm font-semibold text-gray-700">Qualitative Feedback</h3>
 
-      {strengths.length > 0 && (
+      {(strengths?.length ?? 0) > 0 && (
         <div>
           <p className="text-xs font-semibold text-green-700 mb-1.5 flex items-center gap-1">
             <span>✅</span> Strengths
           </p>
           <ul className="space-y-1">
-            {strengths.map((s, i) => (
+            {(strengths ?? []).map((s, i) => (
               <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
                 {s}
@@ -233,13 +233,13 @@ function FeedbackSection({
         </div>
       )}
 
-      {weaknesses.length > 0 && (
+      {(weaknesses?.length ?? 0) > 0 && (
         <div>
           <p className="text-xs font-semibold text-red-700 mb-1.5 flex items-center gap-1">
             <span>⚠️</span> Weaknesses
           </p>
           <ul className="space-y-1">
-            {weaknesses.map((w, i) => (
+            {(weaknesses ?? []).map((w, i) => (
               <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
                 {w}
@@ -249,13 +249,13 @@ function FeedbackSection({
         </div>
       )}
 
-      {recommendations.length > 0 && (
+      {(recommendations?.length ?? 0) > 0 && (
         <div>
           <p className="text-xs font-semibold text-blue-700 mb-1.5 flex items-center gap-1">
             <span>💡</span> Recommendations
           </p>
           <ul className="space-y-1">
-            {recommendations.map((r, i) => (
+            {(recommendations ?? []).map((r, i) => (
               <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                 <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
                 {r}
@@ -501,9 +501,9 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
 
           {/* Qualitative feedback */}
           <FeedbackSection
-            strengths={analysisResult.strengths}
-            weaknesses={analysisResult.weaknesses}
-            recommendations={analysisResult.recommendations}
+            strengths={analysisResult.strengths ?? []}
+            weaknesses={analysisResult.weaknesses ?? []}
+            recommendations={analysisResult.recommendations ?? []}
           />
 
           {/* AI Rewrite Variations — Pro or first-analysis */}

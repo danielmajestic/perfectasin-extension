@@ -77,18 +77,23 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // Phase 1: Load cached values immediately so gauge renders on first frame.
+  // Only clear loading if a real cached tier exists — otherwise keep the loading
+  // spinner visible until the API responds (Phase 2), preventing a "Free Plan" flash.
   useEffect(() => {
     chrome.storage.local.get(
       ['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_billingCycle', 'tp_currentPeriodEnd'],
       (result) => {
-        const cachedTier = (result.tp_tier as SubscriptionTier) || 'free';
-        setTier(cachedTier);
-        setStatus(result.tp_status || 'none');
-        setAnalysesUsed(result.tp_analysesUsed || 0);
-        setAnalysisLimit(result.tp_analysisLimit || ANALYSIS_LIMITS[cachedTier]);
-        setBillingCycle(result.tp_billingCycle ?? null);
-        setCurrentPeriodEnd(result.tp_currentPeriodEnd ?? null);
-        setLoading(false);
+        if (result.tp_tier) {
+          const cachedTier = result.tp_tier as SubscriptionTier;
+          setTier(cachedTier);
+          setStatus(result.tp_status || 'none');
+          setAnalysesUsed(result.tp_analysesUsed || 0);
+          setAnalysisLimit(result.tp_analysisLimit || ANALYSIS_LIMITS[cachedTier]);
+          setBillingCycle(result.tp_billingCycle ?? null);
+          setCurrentPeriodEnd(result.tp_currentPeriodEnd ?? null);
+          setLoading(false);
+        }
+        // No cache → loading stays true; Phase 2 API fetch will resolve it.
       },
     );
   }, []);

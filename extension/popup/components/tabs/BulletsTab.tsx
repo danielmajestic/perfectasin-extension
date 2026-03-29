@@ -534,19 +534,19 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
           </div>
 
           {/* Qualitative feedback */}
-          {(analysisResult.strengths.length > 0 ||
-            analysisResult.weaknesses.length > 0 ||
-            analysisResult.recommendations.length > 0) && (
+          {((analysisResult.strengths?.length ?? 0) > 0 ||
+            (analysisResult.weaknesses?.length ?? 0) > 0 ||
+            (analysisResult.recommendations?.length ?? 0) > 0) && (
             <div className="bg-white rounded-lg border border-gray-200 p-3 shadow-sm space-y-3">
               <h3 className="text-sm font-semibold text-gray-700">Qualitative Feedback</h3>
 
-              {analysisResult.strengths.length > 0 && (
+              {(analysisResult.strengths?.length ?? 0) > 0 && (
                 <div>
                   <p className="text-xs font-semibold text-green-700 mb-1.5 flex items-center gap-1">
                     <span>✅</span> Strengths
                   </p>
                   <ul className="space-y-1">
-                    {analysisResult.strengths.map((s, i) => (
+                    {(analysisResult.strengths ?? []).map((s, i) => (
                       <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                         <span className="w-1.5 h-1.5 rounded-full bg-green-400 mt-1.5 flex-shrink-0" />
                         {s}
@@ -556,13 +556,13 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
                 </div>
               )}
 
-              {analysisResult.weaknesses.length > 0 && (
+              {(analysisResult.weaknesses?.length ?? 0) > 0 && (
                 <div>
                   <p className="text-xs font-semibold text-red-700 mb-1.5 flex items-center gap-1">
                     <span>⚠️</span> Weaknesses
                   </p>
                   <ul className="space-y-1">
-                    {analysisResult.weaknesses.map((w, i) => (
+                    {(analysisResult.weaknesses ?? []).map((w, i) => (
                       <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                         <span className="w-1.5 h-1.5 rounded-full bg-red-400 mt-1.5 flex-shrink-0" />
                         {w}
@@ -572,13 +572,13 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
                 </div>
               )}
 
-              {analysisResult.recommendations.length > 0 && (
+              {(analysisResult.recommendations?.length ?? 0) > 0 && (
                 <div>
                   <p className="text-xs font-semibold text-blue-700 mb-1.5 flex items-center gap-1">
                     <span>💡</span> Recommendations
                   </p>
                   <ul className="space-y-1">
-                    {analysisResult.recommendations.map((r, i) => (
+                    {(analysisResult.recommendations ?? []).map((r, i) => (
                       <li key={i} className="flex items-start gap-1.5 text-xs text-gray-700">
                         <span className="w-1.5 h-1.5 rounded-full bg-blue-400 mt-1.5 flex-shrink-0" />
                         {r}

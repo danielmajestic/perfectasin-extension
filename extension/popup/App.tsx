@@ -17,7 +17,8 @@ import DisclaimerModal from './components/DisclaimerModal';
 import AuthGate from './components/AuthGate';
 import { initAnalytics } from './utils/analytics';
 import TabNavigation, { type TabId } from './components/TabNavigation';
-import { FEATURE_GATES } from '../../src/shared/scoringConstants';
+// FEATURE_GATES import removed — history button hidden in v1.11.6
+// import { FEATURE_GATES } from '../../src/shared/scoringConstants';
 import TitleTab from './components/tabs/TitleTab';
 import BulletsTab from './components/tabs/BulletsTab';
 import DescriptionTab from './components/tabs/DescriptionTab';
@@ -230,7 +231,8 @@ function AppContent() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </button>
-            <button
+            {/* Analysis History button — hidden for v1.11.6 while HistoryPanel is reworked */}
+            {/* <button
               onClick={FEATURE_GATES[tier]?.historyPanel ? () => setShowHistory(true) : handleUpgradeClick}
               className="p-2 rounded-lg hover:bg-gray-200 transition-colors relative"
               title={FEATURE_GATES[tier]?.historyPanel ? 'Analysis history' : 'Analysis history — upgrade to unlock'}
@@ -245,7 +247,7 @@ function AppContent() {
                   </svg>
                 </span>
               )}
-            </button>
+            </button> */}
             <button
               onClick={() => setShowMyReports(true)}
               className="p-2 rounded-lg hover:bg-gray-200 transition-colors"

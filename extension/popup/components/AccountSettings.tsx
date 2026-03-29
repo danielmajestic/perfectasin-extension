@@ -161,11 +161,8 @@ export default function AccountSettings({ isOpen, onClose, onUpgradeClick }: Acc
         {/* Consultant upsell for Owner tier */}
         {tier === 'owner' && onUpgradeClick && (
           <p className="mt-3 text-xs text-gray-500">
-            <span
-              className="text-indigo-600 cursor-pointer hover:underline font-medium"
-              onClick={() => { onClose(); onUpgradeClick(); }}
-            >
-              More analyses & unlimited history → Upgrade to Consultant
+            <span className="text-indigo-600 cursor-pointer hover:underline font-medium" onClick={() => { onClose(); onUpgradeClick(); }}>
+              Upgrade to Consultant — unlock unlimited history & priority support →
             </span>
           </p>
         )}
