@@ -4,8 +4,9 @@
  * Takes 7-10 minutes. No polling — single synchronous response.
  */
 
-const REPORT_BASE_URL =
-  'https://titleperfect-api-119656431080.us-central1.run.app';
+import { getApiBaseUrl } from '../../../utils/api';
+
+const REPORT_BASE_URL = getApiBaseUrl();
 
 const REPORT_API_URL = `${REPORT_BASE_URL}/api/v1/report/generate`;
 

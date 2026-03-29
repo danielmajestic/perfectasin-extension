@@ -12,7 +12,7 @@ const API_CONFIG = {
   production: 'https://api.perfectasin.com',
 };
 
-const getApiBaseUrl = (): string => {
+export const getApiBaseUrl = (): string => {
   return import.meta.env.MODE === 'production'
     ? API_CONFIG.production
     : API_CONFIG.development;
