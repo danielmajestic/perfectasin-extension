@@ -8,9 +8,10 @@ import { TIER_NAMES, TIER_STARS, TIER_STARS_RIGHT, ANNUAL_SAVINGS } from '../uti
 interface AccountSettingsProps {
   isOpen: boolean;
   onClose: () => void;
+  onUpgradeClick?: () => void;
 }
 
-export default function AccountSettings({ isOpen, onClose }: AccountSettingsProps) {
+export default function AccountSettings({ isOpen, onClose, onUpgradeClick }: AccountSettingsProps) {
   const { currentUser, getIdToken, logout } = useAuth();
   const {
     tier,
@@ -158,10 +159,13 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
         )}
 
         {/* Consultant upsell for Owner tier */}
-        {tier === 'owner' && (
+        {tier === 'owner' && onUpgradeClick && (
           <p className="mt-3 text-xs text-gray-500">
-            <span className="text-indigo-600 cursor-pointer hover:underline font-medium" onClick={onClose}>
-              Unlock competitor analysis & exports → Upgrade to Consultant
+            <span
+              className="text-indigo-600 cursor-pointer hover:underline font-medium"
+              onClick={() => { onClose(); onUpgradeClick(); }}
+            >
+              More analyses & unlimited history → Upgrade to Consultant
             </span>
           </p>
         )}

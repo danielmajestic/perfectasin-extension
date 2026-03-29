@@ -18,19 +18,20 @@ type CheckoutTier = 'owner' | 'consultant';
 type BillingCycle = 'monthly' | 'annual';
 
 const OWNER_BENEFITS = [
-  '50 AI analyses',
-  'AI variations & ICP reports',
+  '50 AI analyses/month',
+  '10 $5k Audit\u2122 reports/month',
+  'AI-powered listing optimization',
+  'PDF & HTML report exports',
+  'Revenue Impact estimates',
   '90-day analysis history',
 ];
 
 const CONSULTANT_BENEFITS = [
-  '150 ASINs per month',
-  '600 AI analyses',
+  '200 AI analyses/month',
+  '30 $5k Audit\u2122 reports/month',
   'Everything in Pro Plan, plus:',
-  'Competitor ASIN analysis (coming soon)',
-  'PDF export reports (coming soon)',
-  'CSV bulk import (coming soon)',
-  'Unlimited history',
+  'Unlimited analysis history',
+  'Priority support',
 ];
 
 function annualPerMonth(tier: CheckoutTier): number {
@@ -116,9 +117,8 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
             </svg>
           </button>
           <div className="text-center mb-4">
-            <div className="text-2xl mb-1">⭐⭐</div>
-            <h2 className="text-xl font-bold text-gray-900">Upgrade to Consultant</h2>
-            <p className="text-sm text-gray-600 mt-1">Unlock competitor analysis, PDF exports, and more.</p>
+            <h2 className="text-xl font-bold text-gray-900">⭐ Upgrade to Consultant ⭐</h2>
+            <p className="text-sm text-gray-600 mt-1">More analyses, more audits, unlimited history.</p>
           </div>
           <ul className="space-y-2 mb-5">
             {CONSULTANT_BENEFITS.map((b) => {
@@ -267,7 +267,7 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
               <span className="bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full whitespace-nowrap">⭐ MOST POPULAR</span>
             </div>
             <div className="mb-3">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">⭐⭐ Pro Consultant Plan</p>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">⭐ Pro Consultant ⭐ Plan</p>
               <div className="flex items-baseline gap-1.5 mt-1">
                 <span className="text-sm text-gray-400 line-through">${FOUNDER_ORIGINAL_PRICE.consultant}</span>
                 <span className="text-2xl font-bold text-gray-900">

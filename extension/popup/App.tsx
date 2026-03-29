@@ -319,6 +319,7 @@ function AppContent() {
       <AccountSettings
         isOpen={showSettings}
         onClose={() => setShowSettings(false)}
+        onUpgradeClick={handleUpgradeClick}
       />
       <HistoryPanel
         isOpen={showHistory}

@@ -14,9 +14,9 @@ const TABS: Tab[] = [
 ];
 
 const LOCKED_CONSULTANT_TABS = [
-  { label: 'Competitor', teaser: 'Coming soon — available on Consultant plan' },
-  { label: 'PDF Export', teaser: 'Coming soon — available on Consultant plan' },
-  { label: 'Bulk Import', teaser: 'Coming soon — available on Consultant plan' },
+  { label: 'Competitor', teaser: 'Coming soon' },
+  { label: 'PDF Export', teaser: 'Coming soon' },
+  { label: 'Bulk Import', teaser: 'Coming soon' },
 ];
 
 interface TabNavigationProps {
