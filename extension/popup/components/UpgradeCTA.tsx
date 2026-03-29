@@ -19,7 +19,7 @@ type BillingCycle = 'monthly' | 'annual';
 
 const OWNER_BENEFITS = [
   '50 AI analyses/month',
-  '10 $5k Audit\u2122 reports/month',
+  '10 $5k Audit™ reports/month',
   'AI-powered listing optimization',
   'PDF & HTML report exports',
   'Revenue Impact estimates',
@@ -28,7 +28,7 @@ const OWNER_BENEFITS = [
 
 const CONSULTANT_BENEFITS = [
   '200 AI analyses/month',
-  '30 $5k Audit\u2122 reports/month',
+  '30 $5k Audit™ reports/month',
   'Everything in Pro Plan, plus:',
   'Unlimited analysis history',
   'Priority support',
