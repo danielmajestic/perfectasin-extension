@@ -1,6 +1,6 @@
 import React from 'react';
 import type { SubscriptionTier } from '../utils/pricingConstants';
-import { TIER_NAMES, TIER_STARS, USAGE_WARNING_THRESHOLD } from '../utils/pricingConstants';
+import { TIER_NAMES, TIER_STARS, TIER_STARS_RIGHT, USAGE_WARNING_THRESHOLD } from '../utils/pricingConstants';
 import { FEATURE_GATES } from '../../../src/shared/scoringConstants';
 
 interface UsageGaugeProps {
@@ -39,12 +39,13 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
 }) => {
   const tierName = TIER_NAMES[tier];
   const tierStars = TIER_STARS[tier];
+  const tierStarsRight = TIER_STARS_RIGHT[tier];
 
   // Agency: unlimited display
   if (tier === 'agency') {
     return (
       <div data-testid="usage-gauge" className="flex items-center justify-between py-1">
-        <span className="text-sm font-semibold text-amber-600">{tierStars} {tierName} Plan</span>
+        <span className="text-sm font-semibold text-amber-600">{tierStars} {tierName}{tierStarsRight ? ` ${tierStarsRight}` : ''} Plan</span>
         <span className="text-xs font-medium text-gray-500">Unlimited</span>
       </div>
     );
@@ -95,7 +96,7 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
     <div data-testid="usage-gauge" className="space-y-1.5">
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs font-semibold text-gray-700">
-          {tierStars && `${tierStars} `}{tierName} Plan
+          {tierStars && `${tierStars} `}{tierName}{tierStarsRight ? ` ${tierStarsRight}` : ''} Plan
         </span>
         {tier === 'free' && (
           <button

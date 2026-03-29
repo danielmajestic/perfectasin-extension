@@ -19,7 +19,7 @@ const INITIAL_MODULES: ModuleState[] = [
   { id: 'price', label: 'Price Intelligence', message: 'Analyzing Price Intelligence...', status: 'pending' },
 ];
 
-const PERSISTENT_FOOTER = '\u2615 Full audit typically takes 7-10 minutes. Grab a coffee \u2014 we\u2019re running $5,000 worth of analysis.';
+const PERSISTENT_FOOTER = '\u2615 Full audit typically takes 2-3 minutes. Sit tight \u2014 we\u2019re running $5,000 worth of analysis.';
 
 interface ReportProgressProps {
   isOpen: boolean;
@@ -52,7 +52,6 @@ export default function ReportProgress({
 }: ReportProgressProps) {
   const [modules, setModules] = useState<ModuleState[]>(INITIAL_MODULES.map(m => ({ ...m })));
   const [overallStage, setOverallStage] = useState<OverallStage>('analyzing');
-  const [startTime] = useState(() => Date.now());
   const [timedOut, setTimedOut] = useState(false);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
@@ -60,6 +59,7 @@ export default function ReportProgress({
   const hasCompletedRef = useRef(false);
   const onReadyRef = useRef(onReady);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const startTimeRef = useRef(Date.now());
   onReadyRef.current = onReady;
 
   const clearAllTimers = useCallback(() => {
@@ -73,6 +73,7 @@ export default function ReportProgress({
     if (isOpen) {
       hasCompletedRef.current = false;
       clearAllTimers();
+      startTimeRef.current = Date.now();
       setModules(INITIAL_MODULES.map(m => ({ ...m, status: 'running' as ModuleStatus })));
       setOverallStage('analyzing');
       setTimedOut(false);
@@ -86,10 +87,10 @@ export default function ReportProgress({
     if (!isOpen) return;
     if (overallStage === 'ready' || overallStage === 'error') return;
     const interval = setInterval(() => {
-      setElapsedSeconds(Math.floor((Date.now() - startTime) / 1000));
+      setElapsedSeconds(Math.floor((Date.now() - startTimeRef.current) / 1000));
     }, 1000);
     return () => clearInterval(interval);
-  }, [isOpen, overallStage, startTime]);
+  }, [isOpen, overallStage]);
 
   // 15 minute timeout
   useEffect(() => {
@@ -111,7 +112,7 @@ export default function ReportProgress({
     hasCompletedRef.current = true;
     console.log('[ReportProgress] handleComplete fired at:', Date.now());
 
-    const elapsed = Date.now() - startTime;
+    const elapsed = Date.now() - startTimeRef.current;
     const remaining = Math.max(0, 3000 - elapsed);
 
     const t1 = setTimeout(() => {
@@ -137,7 +138,7 @@ export default function ReportProgress({
       timersRef.current.push(t2);
     }, remaining);
     timersRef.current.push(t1);
-  }, [startTime]);
+  }, []);
 
   // Clean up timers on unmount
   useEffect(() => {
@@ -292,7 +293,7 @@ export default function ReportProgress({
                 {String(Math.floor(elapsedSeconds / 60)).padStart(1, '0')}:{String(elapsedSeconds % 60).padStart(2, '0')}
               </span>
               <span className="text-xs text-gray-400">
-                {isIndeterminate ? 'Estimated time: 7-10 minutes' : `${progressPercent}%`}
+                {isIndeterminate ? 'Estimated time: 2-3 minutes' : `${progressPercent}%`}
               </span>
             </div>
 

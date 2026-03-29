@@ -3,7 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useSubscription } from '../contexts/SubscriptionContext';
 import { useASIN } from '../contexts/ASINContext';
 import apiClient from '../../utils/api';
-import { TIER_NAMES, TIER_STARS, ANNUAL_SAVINGS } from '../utils/pricingConstants';
+import { TIER_NAMES, TIER_STARS, TIER_STARS_RIGHT, ANNUAL_SAVINGS } from '../utils/pricingConstants';
 
 interface AccountSettingsProps {
   isOpen: boolean;
@@ -116,7 +116,7 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
                   ? 'bg-gradient-to-r from-amber-400 to-amber-500 text-white'
                   : 'bg-gray-100 text-gray-600'
               }`}>
-                {tierStars && `${tierStars} `}{tierName}
+                {tierStars && `${tierStars} `}{tierName}{TIER_STARS_RIGHT[tier] ? ` ${TIER_STARS_RIGHT[tier]}` : ''}
               </span>
               {statusLabel && <span className="text-xs text-gray-500">{statusLabel}</span>}
               {billingCycle && <span className="text-xs text-gray-500 capitalize">{billingCycle}</span>}
@@ -169,13 +169,18 @@ export default function AccountSettings({ isOpen, onClose }: AccountSettingsProp
         {/* Actions */}
         <div className="mt-5 space-y-2 pt-4 border-t border-gray-200">
           {isOwnerOrAbove ? (
-            <button
-              onClick={handleManageBilling}
-              disabled={billingLoading}
-              className="w-full bg-white border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 text-gray-700 font-medium py-2 rounded-lg transition-colors text-sm"
-            >
-              {billingLoading ? 'Opening...' : 'Manage Billing'}
-            </button>
+            // Beta/bypass users have no Stripe customer — hide billing button
+            !billingCycle && !currentPeriodEnd ? (
+              <p className="text-xs text-gray-500 text-center py-2">Billing managed by admin</p>
+            ) : (
+              <button
+                onClick={handleManageBilling}
+                disabled={billingLoading}
+                className="w-full bg-white border border-gray-300 hover:bg-gray-50 disabled:bg-gray-100 text-gray-700 font-medium py-2 rounded-lg transition-colors text-sm"
+              >
+                {billingLoading ? 'Opening...' : 'Manage Billing'}
+              </button>
+            )
           ) : (
             <button
               onClick={handleUpgrade}

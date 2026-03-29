@@ -157,8 +157,27 @@ export default function MyReportsPanel({ isOpen, onClose }: MyReportsPanelProps)
   if (!isOpen) return null;
 
   const reports = data?.reports || [];
-  const stats = data?.stats;
   const hasMore = data ? data.page * data.pageSize < data.total : false;
+
+  // Client-side stats fallback when API fields are blank/0
+  const stats = (() => {
+    const raw = data?.stats;
+    if (!raw) return null;
+
+    const now = new Date();
+    const thisMonth = raw.thisMonth || reports.filter(r => {
+      const d = new Date(r.generatedAt);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    }).length;
+
+    let avgGrade = raw.avgGrade;
+    if (!avgGrade && reports.length > 0) {
+      const avgScore = reports.reduce((sum, r) => sum + r.overallScore, 0) / reports.length;
+      avgGrade = avgScore >= 90 ? 'A' : avgScore >= 80 ? 'B' : avgScore >= 70 ? 'C' : avgScore >= 60 ? 'D' : 'F';
+    }
+
+    return { ...raw, thisMonth, avgGrade: avgGrade || '—' };
+  })();
 
   return (
     <div className="fixed inset-0 bg-white z-50 flex flex-col">

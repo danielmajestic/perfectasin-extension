@@ -72,7 +72,8 @@ export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
       setCursor(data.next_cursor);
     } catch (err) {
       console.error('History fetch error:', err);
-      setError('Could not load history.');
+      const msg = err instanceof Error ? err.message : 'Unknown error';
+      setError(`Could not load history: ${msg}`);
     } finally {
       setLoading(false);
     }
@@ -143,9 +144,15 @@ export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
         {/* Scrollable list */}
         <div className="flex-1 overflow-y-auto px-5 py-3">
           {error && (
-            <p className="text-xs text-red-600 bg-red-50 rounded-lg px-3 py-2 border border-red-200 mb-3">
-              {error}
-            </p>
+            <div className="bg-red-50 rounded-lg px-3 py-2 border border-red-200 mb-3">
+              <p className="text-xs text-red-600 mb-1.5">{error}</p>
+              <button
+                onClick={() => { setEntries([]); setCursor(undefined); fetchHistory(); }}
+                className="text-xs font-semibold text-red-700 hover:text-red-800 underline"
+              >
+                Try again
+              </button>
+            </div>
           )}
 
           {entries.length === 0 && !loading && !error && (

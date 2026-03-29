@@ -13,8 +13,16 @@ export const TIER_NAMES: Record<SubscriptionTier, string> = {
 export const TIER_STARS: Record<SubscriptionTier, string> = {
   free: '',
   owner: '⭐',
-  consultant: '⭐⭐',
+  consultant: '⭐',
   agency: '⭐⭐⭐',
+};
+
+/** Trailing star for tiers that display symmetrically (e.g. ⭐ Pro Consultant ⭐) */
+export const TIER_STARS_RIGHT: Record<SubscriptionTier, string> = {
+  free: '',
+  owner: '',
+  consultant: '⭐',
+  agency: '',
 };
 
 export const ASIN_LIMITS: Record<SubscriptionTier, number> = {
