@@ -107,8 +107,6 @@ function CompetitorTable({ competitors, userPriceNumeric }: {
 
   const displayed = expanded ? sorted : sorted.slice(0, 5);
   const hasMore = sorted.length > 5;
-  // Show Title column only if the backend is returning titles for competitors
-  // TODO: Remove this check once backend consistently returns competitor titles in all cases
   const hasTitles = displayed.some(c => c.title && c.title.length > 0);
 
   return (

@@ -10,7 +10,6 @@ const GRADE_COLORS: Record<string, string> = {
   F: '#EF4444',
 };
 
-// TODO: Confirm domain with Mat — perfectasin.com or ravingfans.ai
 const SHARE_BASE_URL = 'https://www.ravingfans.ai/tools/report';
 
 interface ReportDownloadDialogProps {
@@ -96,8 +95,6 @@ export default function ReportDownloadDialog({
   const handleShareReport = useCallback(async () => {
     if (!report) return;
 
-    // TODO: If password protect enabled, call PATCH /api/v1/report/{reportId}/share
-    // to set the password before sharing
     if (passwordProtect && sharePassword) {
       // await apiClient.patch(`/api/v1/report/${report.reportId}/share`, { password: sharePassword });
     }

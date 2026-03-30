@@ -78,7 +78,6 @@ export default function ReportProgress({
       setOverallStage('analyzing');
       setTimedOut(false);
       setElapsedSeconds(0);
-      console.log('[ReportProgress] Modal opened, state reset at:', Date.now());
     }
   }, [isOpen, clearAllTimers]);
 
@@ -105,12 +104,8 @@ export default function ReportProgress({
   // Handle completion — enforce minimum 3s analyzing display, then hold each card
   const handleComplete = useCallback(() => {
     // Guard: only run once per open cycle
-    if (hasCompletedRef.current) {
-      console.log('[ReportProgress] handleComplete BLOCKED (already completed)');
-      return;
-    }
+    if (hasCompletedRef.current) return;
     hasCompletedRef.current = true;
-    console.log('[ReportProgress] handleComplete fired at:', Date.now());
 
     const elapsed = Date.now() - startTimeRef.current;
     const remaining = Math.max(0, 3000 - elapsed);
@@ -119,18 +114,13 @@ export default function ReportProgress({
       // Mark all modules as done → show "Building your report..." card
       setModules(prev => prev.map(m => m.status !== 'error' ? { ...m, status: 'done' } : m));
       setOverallStage('building');
-      const card1ShownAt = Date.now();
-      console.log('[ReportProgress] Card 1 (Building) displayed at:', card1ShownAt);
 
-      // Hold "Building your report..." for 6s (doubled from 3s)
+      // Hold "Building your report..." for 6s minimum
       const t2 = setTimeout(() => {
         setOverallStage('ready');
-        console.log('[ReportProgress] Card 2 (Ready) displayed at:', Date.now(), '| Card 1 was visible for', Date.now() - card1ShownAt, 'ms');
-        const card2ShownAt = Date.now();
 
-        // Hold "Your $5k Audit™ is ready!" for 4s (doubled from 2s)
+        // Hold "Your $5k Audit™ is ready!" for 4s
         const t3 = setTimeout(() => {
-          console.log('[ReportProgress] Calling onReady (Save dialog) at:', Date.now(), '| Card 2 was visible for', Date.now() - card2ShownAt, 'ms');
           onReadyRef.current();
         }, 4000);
         timersRef.current.push(t3);
