@@ -1,6 +1,6 @@
 {
   "name": "titleperfect-extension",
-  "version": "1.11.8",
+  "version": "1.11.9",
   "description": "AI-powered Amazon title optimizer Chrome extension",
   "scripts": {
     "dev": "vite",

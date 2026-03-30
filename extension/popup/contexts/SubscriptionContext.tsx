@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from 'react';
 import apiClient from '../../utils/api';
 import { useAuth } from './AuthContext';
 import {
@@ -37,6 +37,8 @@ export interface SubscriptionContextType {
   billingCycle: 'monthly' | 'annual' | null;
   currentPeriodEnd: string | null;
   loading: boolean;
+  /** True while a background refresh is in-flight (not the initial load). */
+  refreshing: boolean;
   refresh: () => Promise<void>;
   /** Immediately increments analysesUsed by 1 (optimistic update after analysis). */
   incrementAnalysesUsed: () => void;
@@ -75,6 +77,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual' | null>(null);
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const lastFetchedRef = useRef(0);
 
   // Phase 1: Load cached values immediately so gauge renders on first frame.
   // Only clear loading if a real cached tier exists — otherwise keep the loading
@@ -100,6 +104,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   // Phase 2: Fetch fresh data from API in the background; updates state silently.
   const fetchSubscription = useCallback(async () => {
+    setRefreshing(true);
     try {
       const token = await getIdToken();
       apiClient.setAuthToken(token);
@@ -136,6 +141,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       console.error('Failed to fetch subscription:', err);
       // Phase 1 cache already populated the UI — no additional fallback needed.
     } finally {
+      lastFetchedRef.current = Date.now();
+      setRefreshing(false);
       // Safety net: clear loading if Phase 1 cache was empty and API failed.
       setLoading(false);
     }
@@ -143,6 +150,18 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     fetchSubscription();
+  }, [fetchSubscription]);
+
+  // Auto-refresh subscription when tab regains focus (e.g. after Stripe checkout).
+  // Throttled to at most once every 10 seconds to avoid hammering the API.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && Date.now() - lastFetchedRef.current >= 10_000) {
+        fetchSubscription();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, [fetchSubscription]);
 
   const asinLimit = ASIN_LIMITS[tier];
@@ -170,6 +189,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     billingCycle,
     currentPeriodEnd,
     loading,
+    refreshing,
     refresh: fetchSubscription,
     incrementAnalysesUsed,
   };

@@ -25,7 +25,7 @@ import PriceTab from './components/tabs/PriceTab';
 import { useEffect } from 'react';
 
 function AppContent() {
-  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd, loading: subscriptionLoading } = useSubscription();
+  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd, loading: subscriptionLoading, refreshing, refresh } = useSubscription();
   const { asinData, refreshProduct, showDisclaimerModal, acknowledgeDisclaimer } = useASIN();
   const { getIdToken } = useAuth();
 
@@ -46,7 +46,6 @@ function AppContent() {
   const [showHistory, setShowHistory] = useState(false);
   const [showMyReports, setShowMyReports] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('title');
-  const { refresh } = useSubscription();
 
   // Report generation state (Tickets 7-9)
   const [reportLoading, setReportLoading] = useState(false);
@@ -61,18 +60,11 @@ function AppContent() {
     initAnalytics('G-ZDZDVRF41G');
   }, []);
 
-  // Post-checkout refresh: when the extension panel regains visibility after the
-  // user completes (or cancels) the Stripe checkout in a browser tab, re-fetch
-  // subscription status so Pro features unlock immediately without re-login.
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        refresh();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [refresh]);
+  // Refresh both product data and subscription when the manual refresh button is clicked
+  const handleRefresh = useCallback(() => {
+    refreshProduct();
+    refresh();
+  }, [refreshProduct, refresh]);
 
   const handleUpgradeClick = () => setShowUpgradeCTA(true);
 
@@ -220,12 +212,12 @@ function AppContent() {
               </span>
             )}
             <button
-              onClick={refreshProduct}
+              onClick={handleRefresh}
               data-testid="refresh-button"
               className="p-2 rounded-lg hover:bg-gray-200 transition-colors"
-              title="Refresh product"
+              title="Refresh product & subscription"
             >
-              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className={`w-5 h-5 text-gray-600${refreshing ? ' animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
             </button>
