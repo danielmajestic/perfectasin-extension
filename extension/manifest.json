@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PerfectASIN",
   "short_name": "PerfectASIN",
-  "version": "1.11.9",
+  "version": "1.11.10",
   "description": "PerfectASIN analyzes Amazon product listings with AI-powered scoring across Title, Bullets, Description, Hero Image, and Price Intelligence to help sellers optimize conversions and revenue.",
   "permissions": [
     "activeTab",

@@ -40,7 +40,7 @@ function annualPerMonth(tier: CheckoutTier): number {
 
 export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
   const { getIdToken } = useAuth();
-  const { tier: currentTier } = useSubscription();
+  const { tier: currentTier, startCheckoutPolling } = useSubscription();
   const { asinData } = useASIN();
   const currentAsin = asinData?.product?.asin ?? null;
   const [loading, setLoading] = useState<`${CheckoutTier}-${BillingCycle}` | null>(null);
@@ -84,6 +84,7 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
       });
 
       chrome.tabs.create({ url: data.checkout_url });
+      startCheckoutPolling();
       onClose();
     } catch (err) {
       console.error('Checkout error:', err);

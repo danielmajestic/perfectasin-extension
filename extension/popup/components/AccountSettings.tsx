@@ -21,6 +21,7 @@ export default function AccountSettings({ isOpen, onClose, onUpgradeClick }: Acc
     analysisLimit,
     billingCycle,
     currentPeriodEnd,
+    startCheckoutPolling,
   } = useSubscription();
   const { asinData } = useASIN();
   const currentAsin = asinData?.product?.asin ?? null;
@@ -58,6 +59,7 @@ export default function AccountSettings({ isOpen, onClose, onUpgradeClick }: Acc
         cancel_url: 'https://perfectasin.com/checkout-cancel.html',
       });
       chrome.tabs.create({ url: data.checkout_url });
+      startCheckoutPolling();
       onClose();
     } catch (err) {
       console.error('Checkout error:', err);

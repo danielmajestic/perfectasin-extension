@@ -40,6 +40,10 @@ export interface SubscriptionContextType {
   /** True while a background refresh is in-flight (not the initial load). */
   refreshing: boolean;
   refresh: () => Promise<void>;
+  /** Start polling subscription every 5s after user initiates Stripe checkout. */
+  startCheckoutPolling: () => void;
+  /** Stop checkout polling (e.g. user closes modal without checking out). */
+  stopCheckoutPolling: () => void;
   /** Immediately increments analysesUsed by 1 (optimistic update after analysis). */
   incrementAnalysesUsed: () => void;
 }
@@ -78,7 +82,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const lastFetchedRef = useRef(0);
 
   // Phase 1: Load cached values immediately so gauge renders on first frame.
   // Only clear loading if a real cached tier exists — otherwise keep the loading
@@ -141,7 +144,6 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       console.error('Failed to fetch subscription:', err);
       // Phase 1 cache already populated the UI — no additional fallback needed.
     } finally {
-      lastFetchedRef.current = Date.now();
       setRefreshing(false);
       // Safety net: clear loading if Phase 1 cache was empty and API failed.
       setLoading(false);
@@ -152,17 +154,41 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     fetchSubscription();
   }, [fetchSubscription]);
 
-  // Auto-refresh subscription when tab regains focus (e.g. after Stripe checkout).
-  // Throttled to at most once every 10 seconds to avoid hammering the API.
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible' && Date.now() - lastFetchedRef.current >= 10_000) {
-        fetchSubscription();
+  // Checkout polling: after the user opens Stripe checkout, poll every 5s
+  // until the tier changes from 'free', or 10 minutes elapses (120 polls max).
+  const checkoutPollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const pollCountRef = useRef(0);
+
+  const stopCheckoutPolling = useCallback(() => {
+    if (checkoutPollRef.current) {
+      clearInterval(checkoutPollRef.current);
+      checkoutPollRef.current = null;
+    }
+    pollCountRef.current = 0;
+  }, []);
+
+  const startCheckoutPolling = useCallback(() => {
+    stopCheckoutPolling();
+    pollCountRef.current = 0;
+    checkoutPollRef.current = setInterval(async () => {
+      pollCountRef.current += 1;
+      if (pollCountRef.current > 120) {
+        stopCheckoutPolling();
+        return;
       }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchSubscription]);
+      await fetchSubscription();
+    }, 5_000);
+  }, [fetchSubscription, stopCheckoutPolling]);
+
+  // Auto-stop polling once tier upgrades from free
+  useEffect(() => {
+    if (tier !== 'free' && checkoutPollRef.current) {
+      stopCheckoutPolling();
+    }
+  }, [tier, stopCheckoutPolling]);
+
+  // Cleanup on unmount
+  useEffect(() => stopCheckoutPolling, [stopCheckoutPolling]);
 
   const asinLimit = ASIN_LIMITS[tier];
   const isOwnerOrAbove = (tier === 'owner' || tier === 'consultant' || tier === 'agency')
@@ -191,6 +217,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     loading,
     refreshing,
     refresh: fetchSubscription,
+    startCheckoutPolling,
+    stopCheckoutPolling,
     incrementAnalysesUsed,
   };
 
