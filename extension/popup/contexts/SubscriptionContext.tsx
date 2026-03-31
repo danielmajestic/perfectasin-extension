@@ -207,11 +207,12 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   useEffect(() => stopCheckoutPolling, [stopCheckoutPolling]);
 
   const asinLimit = ASIN_LIMITS[tier];
-  const isOwnerOrAbove = (tier === 'owner' || tier === 'consultant' || tier === 'agency')
-    && (status === 'active' || status === 'trialing');
-  const isConsultantOrAbove = (tier === 'consultant' || tier === 'agency')
-    && (status === 'active' || status === 'trialing');
-  const isAgency = tier === 'agency' && (status === 'active' || status === 'trialing');
+  // Feature access: paid tier grants access unless subscription is canceled.
+  // 'none' = beta/admin-provisioned, 'past_due' = grace period — both should have access.
+  const paidStatusOk = status !== 'canceled';
+  const isOwnerOrAbove = (tier === 'owner' || tier === 'consultant' || tier === 'agency') && paidStatusOk;
+  const isConsultantOrAbove = (tier === 'consultant' || tier === 'agency') && paidStatusOk;
+  const isAgency = tier === 'agency' && paidStatusOk;
 
   const incrementAnalysesUsed = useCallback(() => {
     setAnalysesUsed((prev) => prev + 1);
