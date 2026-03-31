@@ -107,14 +107,14 @@ export async function signOut(): Promise<void> {
   await chrome.storage.local.remove(['tp_auth']);
 }
 
-/** Return stored token, or null if missing/expired. */
+/** Return stored token, or null if missing/expired.
+ *  Does NOT sign out on expiry — callers handle auth failure gracefully
+ *  without kicking the user to the login page mid-session.
+ */
 export async function getStoredToken(): Promise<string | null> {
   const stored = await getStoredAuth();
   if (!stored) return null;
-  if (Date.now() > stored.expiresAt) {
-    await signOut();
-    return null;
-  }
+  if (Date.now() > stored.expiresAt) return null;
   return stored.token;
 }
 

@@ -164,7 +164,8 @@ function AppContent() {
   const handleReportReady = useCallback(() => {
     setShowReportProgress(false);
     setShowReportTagging(true);
-  }, []);
+    refresh();
+  }, [refresh]);
 
   const handleTagsSaved = useCallback(() => {
     setShowReportTagging(false);
