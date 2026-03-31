@@ -110,7 +110,13 @@ export async function generateReport(
       throw new Error(data.detail || 'Invalid request — missing required fields.');
     }
     if (response.status === 429) {
-      throw new Error('Rate limit reached. Please try again later.');
+      const err = new Error(data.message || 'Rate limit reached. Please try again later.') as Error & {
+        rateLimitType?: string;
+        rateLimitData?: Record<string, unknown>;
+      };
+      err.rateLimitType = data.error; // 'monthly_audit_limit_reached' | 'hourly_burst_limit'
+      err.rateLimitData = data;
+      throw err;
     }
     if (response.status === 504) {
       throw new Error('Audit timed out. Please try again.');

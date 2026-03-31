@@ -5,6 +5,7 @@ import { useSubscription } from '../../contexts/SubscriptionContext';
 interface ReportButtonProps {
   onClick: () => void;
   onUpgradeClick: () => void;
+  onLimitReached: () => void;
   disabled?: boolean;
   loading?: boolean;
 }
@@ -15,10 +16,12 @@ interface ReportButtonProps {
  * Paid users: gold CTA button on navy background.
  * Free users: subtle upgrade teaser.
  */
-export default function ReportButton({ onClick, onUpgradeClick, disabled, loading }: ReportButtonProps) {
+export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, disabled, loading }: ReportButtonProps) {
   const { asinData } = useASIN();
   const { currentUser } = useAuth();
-  const { isOwnerOrAbove } = useSubscription();
+  const { isOwnerOrAbove, fullAuditCount, fullAuditLimit } = useSubscription();
+
+  const atLimit = isOwnerOrAbove && fullAuditLimit > 0 && fullAuditCount >= fullAuditLimit;
 
   // Only show when an ASIN is detected on the page
   if (!asinData?.product?.asin || !currentUser) return null;
@@ -47,19 +50,23 @@ export default function ReportButton({ onClick, onUpgradeClick, disabled, loadin
   }
 
   // Paid users: prominent gold CTA on navy background
+  const isDisabled = disabled || loading || atLimit;
+
   return (
     <div
       className="flex-shrink-0 flex flex-col items-center justify-center px-3 py-2 border-b"
       style={{ background: '#1a1a2e', borderColor: '#2a2a4e', maxHeight: 60 }}
     >
       <button
-        onClick={onClick}
+        onClick={atLimit ? onLimitReached : onClick}
         disabled={disabled || loading}
+        title={atLimit ? 'Audit limit reached \u2014 resets next month' : undefined}
         className="w-full max-w-[320px] flex items-center justify-center gap-2 rounded-lg text-sm font-bold transition-all duration-200 hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
         style={{
           height: 36,
-          background: disabled || loading ? '#6b7280' : 'linear-gradient(135deg, #f59e0b, #d97706)',
-          color: disabled || loading ? '#d1d5db' : '#1a1a2e',
+          background: isDisabled ? '#6b7280' : 'linear-gradient(135deg, #f59e0b, #d97706)',
+          color: isDisabled ? '#d1d5db' : '#1a1a2e',
+          opacity: atLimit ? 0.5 : undefined,
         }}
       >
         {loading ? (

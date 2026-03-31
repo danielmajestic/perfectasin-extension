@@ -5,6 +5,7 @@ import {
   type SubscriptionTier,
   ASIN_LIMITS,
   ANALYSIS_LIMITS,
+  AUDIT_LIMITS,
 } from '../utils/pricingConstants';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -20,6 +21,8 @@ interface SubscriptionApiResponse {
   reset_at?: string;
   billing_cycle?: 'monthly' | 'annual';
   current_period_end?: string;
+  audit_count?: number;
+  audit_limit?: number;
 }
 
 export interface SubscriptionContextType {
@@ -34,6 +37,8 @@ export interface SubscriptionContextType {
   analysisLimit: number;
   asinsUsed: number;
   asinLimit: number;
+  fullAuditCount: number;
+  fullAuditLimit: number;
   billingCycle: 'monthly' | 'annual' | null;
   currentPeriodEnd: string | null;
   loading: boolean;
@@ -78,6 +83,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   const [analysesUsed, setAnalysesUsed] = useState(0);
   const [analysisLimit, setAnalysisLimit] = useState<number>(ANALYSIS_LIMITS['free']);
   const [asinsUsed] = useState(0);
+  const [fullAuditCount, setFullAuditCount] = useState(0);
+  const [fullAuditLimit, setFullAuditLimit] = useState(0);
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'annual' | null>(null);
   const [currentPeriodEnd, setCurrentPeriodEnd] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -88,7 +95,7 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
   // spinner visible until the API responds (Phase 2), preventing a "Free Plan" flash.
   useEffect(() => {
     chrome.storage.local.get(
-      ['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_billingCycle', 'tp_currentPeriodEnd'],
+      ['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_fullAuditCount', 'tp_fullAuditLimit', 'tp_billingCycle', 'tp_currentPeriodEnd'],
       (result) => {
         if (result.tp_tier) {
           const cachedTier = result.tp_tier as SubscriptionTier;
@@ -96,6 +103,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
           setStatus(result.tp_status || 'none');
           setAnalysesUsed(result.tp_analysesUsed || 0);
           setAnalysisLimit(result.tp_analysisLimit || ANALYSIS_LIMITS[cachedTier]);
+          setFullAuditCount(result.tp_fullAuditCount || 0);
+          setFullAuditLimit(result.tp_fullAuditLimit ?? AUDIT_LIMITS[cachedTier]);
           setBillingCycle(result.tp_billingCycle ?? null);
           setCurrentPeriodEnd(result.tp_currentPeriodEnd ?? null);
           setLoading(false);
@@ -124,18 +133,25 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
       // usage_limit from API is ground truth; fall back to local constant
       const resolvedLimit = data.usage_limit ?? ANALYSIS_LIMITS[resolvedTier];
 
+      const resolvedAuditCount = data.audit_count ?? 0;
+      const resolvedAuditLimit = data.audit_limit ?? AUDIT_LIMITS[resolvedTier];
+
       setTier(resolvedTier);
       setStatus(data.status);
       setBillingCycle(data.billing_cycle ?? null);
       setCurrentPeriodEnd(data.current_period_end ?? null);
       setAnalysesUsed(usedCount);
       setAnalysisLimit(resolvedLimit);
+      setFullAuditCount(resolvedAuditCount);
+      setFullAuditLimit(resolvedAuditLimit);
 
       await chrome.storage.local.set({
         tp_tier: resolvedTier,
         tp_status: data.status,
         tp_analysesUsed: usedCount,
         tp_analysisLimit: resolvedLimit,
+        tp_fullAuditCount: resolvedAuditCount,
+        tp_fullAuditLimit: resolvedAuditLimit,
         tp_billingCycle: data.billing_cycle ?? null,
         tp_currentPeriodEnd: data.current_period_end ?? null,
         tp_lastUpdated: new Date().toISOString(),
@@ -212,6 +228,8 @@ export function SubscriptionProvider({ children }: { children: ReactNode }) {
     analysisLimit,
     asinsUsed,
     asinLimit,
+    fullAuditCount,
+    fullAuditLimit,
     billingCycle,
     currentPeriodEnd,
     loading,

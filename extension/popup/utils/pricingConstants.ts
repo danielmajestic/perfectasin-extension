@@ -39,6 +39,13 @@ export const ANALYSIS_LIMITS: Record<SubscriptionTier, number> = {
   agency: Infinity,
 };
 
+export const AUDIT_LIMITS: Record<SubscriptionTier, number> = {
+  free: 0,
+  owner: 10,
+  consultant: 30,
+  agency: Infinity,
+};
+
 // Monthly prices in dollars (display only — actual billing via Stripe)
 export const MONTHLY_PRICE: Record<'owner' | 'consultant', number> = {
   owner: 19.95,

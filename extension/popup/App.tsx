@@ -9,6 +9,7 @@ import ReportProgress from './components/report/ReportProgress';
 import ReportDownloadDialog from './components/report/ReportDownloadDialog';
 import ReportTaggingForm from './components/report/ReportTaggingForm';
 import MyReportsPanel from './components/report/MyReportsPanel';
+import AuditLimitModal from './components/report/AuditLimitModal';
 import { generateReport, type GenerateReportResponse } from './components/report/reportApi';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { SubscriptionProvider, useSubscription } from './contexts/SubscriptionContext';
@@ -25,7 +26,7 @@ import PriceTab from './components/tabs/PriceTab';
 import { useEffect } from 'react';
 
 function AppContent() {
-  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd, loading: subscriptionLoading, refreshing, refresh } = useSubscription();
+  const { isOwnerOrAbove, analysesUsed, analysisLimit, asinsUsed, asinLimit, tier, currentPeriodEnd, loading: subscriptionLoading, refreshing, refresh, fullAuditCount, fullAuditLimit } = useSubscription();
   const { asinData, refreshProduct, showDisclaimerModal, acknowledgeDisclaimer } = useASIN();
   const { getIdToken } = useAuth();
 
@@ -55,6 +56,9 @@ function AppContent() {
   const [showReportDownload, setShowReportDownload] = useState(false);
   const [showReportTagging, setShowReportTagging] = useState(false);
   const [reportData, setReportData] = useState<GenerateReportResponse | null>(null);
+  const [showAuditLimitModal, setShowAuditLimitModal] = useState(false);
+  const [auditLimitData, setAuditLimitData] = useState<Record<string, unknown> | undefined>(undefined);
+  const [burstLimitToast, setBurstLimitToast] = useState(false);
 
   useEffect(() => {
     initAnalytics('G-ZDZDVRF41G');
@@ -137,8 +141,21 @@ function AppContent() {
       );
       setReportData(response);
       setReportComplete(true);
-    } catch {
-      setReportError(true);
+    } catch (err: unknown) {
+      const rateLimitType = (err as { rateLimitType?: string })?.rateLimitType;
+      const rateLimitData = (err as { rateLimitData?: Record<string, unknown> })?.rateLimitData;
+
+      if (rateLimitType === 'monthly_audit_limit_reached') {
+        setShowReportProgress(false);
+        setAuditLimitData(rateLimitData);
+        setShowAuditLimitModal(true);
+      } else if (rateLimitType === 'hourly_burst_limit') {
+        setShowReportProgress(false);
+        setBurstLimitToast(true);
+        setTimeout(() => setBurstLimitToast(false), 5000);
+      } else {
+        setReportError(true);
+      }
     } finally {
       setReportLoading(false);
     }
@@ -283,9 +300,19 @@ function AppContent() {
       <ReportButton
         onClick={handleGenerateReport}
         onUpgradeClick={handleUpgradeClick}
+        onLimitReached={() => setShowAuditLimitModal(true)}
         loading={reportLoading}
         disabled={reportLoading}
       />
+
+      {/* Soft warning: 1 audit remaining */}
+      {isOwnerOrAbove && fullAuditLimit > 0 && fullAuditCount === fullAuditLimit - 1 && (
+        <div className="flex-shrink-0 px-3 py-1.5 border-b border-amber-200/30" style={{ background: 'rgba(245, 158, 11, 0.1)' }}>
+          <p className="text-xs text-amber-700 text-center">
+            1 audit remaining this month. Resets {currentPeriodEnd ? new Date(currentPeriodEnd).toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) : 'next month'}.
+          </p>
+        </div>
+      )}
 
       {/* Tab navigation */}
       <TabNavigation activeTab={activeTab} onTabChange={setActiveTab} />
@@ -333,10 +360,22 @@ function AppContent() {
         isOpen={showMyReports}
         onClose={() => setShowMyReports(false)}
       />
+      <AuditLimitModal
+        isOpen={showAuditLimitModal}
+        onClose={() => setShowAuditLimitModal(false)}
+        limitData={auditLimitData as { limit?: number; used?: number; resets?: string; upgrade_available?: string; upgrade_limit?: number }}
+      />
       <DisclaimerModal
         isOpen={showDisclaimerModal}
         onAccept={acknowledgeDisclaimer}
       />
+
+      {/* Burst limit toast */}
+      {burstLimitToast && (
+        <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-gray-900 text-white text-sm px-4 py-2.5 rounded-lg shadow-lg">
+          Too many requests. Please wait a few minutes.
+        </div>
+      )}
     </div>
   );
 }
