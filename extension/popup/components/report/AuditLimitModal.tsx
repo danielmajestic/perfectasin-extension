@@ -34,7 +34,6 @@ export default function AuditLimitModal({ isOpen, onClose, limitData }: AuditLim
   const [error, setError] = useState('');
 
   const limit = limitData?.limit ?? fullAuditLimit;
-  const upgradeLimit = limitData?.upgrade_limit ?? 30;
   const resetDate = formatResetDate(limitData?.resets, currentPeriodEnd);
 
   useEffect(() => {
@@ -108,15 +107,29 @@ export default function AuditLimitModal({ isOpen, onClose, limitData }: AuditLim
             You've used all {limit} audits this month
           </h3>
           <p className="text-sm text-gray-500 mt-1">
-            Your audits reset on {resetDate}.
+            Your audits reset {resetDate}.
           </p>
         </div>
 
         <div className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-lg p-4 mb-5 border border-indigo-100">
-          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-1">Upgrade to Pro Consultant</p>
-          <p className="text-sm text-gray-700 mb-2">
-            Get {upgradeLimit} audits/month &mdash; {Math.round(upgradeLimit / limit)}x more audits
-          </p>
+          <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Upgrade to Pro Consultant</p>
+          <ul className="space-y-1.5 mb-3">
+            {[
+              '30 $5k Audit\u2122 reports/month',
+              '200 tab analyses/month',
+              'Unlimited analysis history',
+              'PDF & HTML report exports',
+              'Revenue Impact calculator',
+              'Priority support',
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-2 text-sm text-gray-700">
+                <svg className="w-4 h-4 flex-shrink-0 mt-0.5" style={{ color: '#22C55E' }} fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                </svg>
+                {b}
+              </li>
+            ))}
+          </ul>
           <p className="text-lg font-bold text-gray-900">
             ${MONTHLY_PRICE.consultant}<span className="text-sm font-normal text-gray-500">/month</span>
           </p>

@@ -19,7 +19,7 @@ interface ReportButtonProps {
 export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, disabled, loading }: ReportButtonProps) {
   const { asinData } = useASIN();
   const { currentUser } = useAuth();
-  const { isOwnerOrAbove, fullAuditCount, fullAuditLimit } = useSubscription();
+  const { isOwnerOrAbove, isConsultantOrAbove, fullAuditCount, fullAuditLimit } = useSubscription();
 
   const atLimit = isOwnerOrAbove && fullAuditLimit > 0 && fullAuditCount >= fullAuditLimit;
 
@@ -77,6 +77,12 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
             </svg>
             <span>Running Audit...</span>
           </>
+        ) : atLimit ? (
+          <span style={{ color: '#d97706' }}>
+            {isConsultantOrAbove
+              ? 'Audit limit reached \u2014 resets next month'
+              : 'Upgrade to Consultant \u2014 30 Audits/mo'}
+          </span>
         ) : (
           <>
             <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
