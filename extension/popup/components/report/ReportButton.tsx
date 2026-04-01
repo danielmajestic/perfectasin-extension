@@ -71,6 +71,7 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
           height: 36,
           background: atLimit ? '#1E293B' : (disabled || loading) ? '#6b7280' : 'linear-gradient(135deg, #f59e0b, #d97706)',
           color: atLimit ? '#94A3B8' : (disabled || loading) ? '#d1d5db' : '#1a1a2e',
+          border: atLimit ? '2px solid #FDE68A' : 'none',
         }}
       >
         {loading ? (
