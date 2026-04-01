@@ -115,8 +115,8 @@ export default function AuditLimitModal({ isOpen, onClose, limitData }: AuditLim
           <p className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-2">Upgrade to Pro Consultant</p>
           <ul className="space-y-1.5 mb-3">
             {[
-              '30 $5k Audit\u2122 reports/month',
-              '200 tab analyses/month',
+              '30x $5k Audit\u2122 reports/month',
+              '200x tab analyses/month',
               'Unlimited analysis history',
               'PDF & HTML report exports',
               'Revenue Impact calculator',

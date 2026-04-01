@@ -78,7 +78,7 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
           <div className="h-full rounded-full" style={{ width: '100%', backgroundColor: '#ef4444' }} />
         </div>
         <div className="flex items-center justify-between text-xs text-gray-500">
-          <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} analyses used — Resets {resetDate}</span>
+          <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} tab analyses used — Resets {resetDate}</span>
           {nextTier && (
             <button
               onClick={onUpgradeClick}
@@ -107,7 +107,7 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
           </button>
         )}
       </div>
-      {/* Dual counter — free tier shows block gauge + "X analyses remaining" (BUG-F20/F21) */}
+      {/* Dual counter — free tier shows block gauge + "X tab analyses remaining" (BUG-F20/F21) */}
       <div className="flex items-center gap-1.5 text-xs text-gray-500">
         {tier === 'free' && !FEATURE_GATES.free.reAnalyze ? (
           <>
@@ -134,12 +134,12 @@ const UsageGauge: React.FC<UsageGaugeProps> = ({
             })()}
             {/* BUG-F20: drop "of Y" */}
             <span className="font-medium text-gray-700">
-              {Math.max(0, analysisLimit - analysesUsed)} analyses remaining
+              {Math.max(0, analysisLimit - analysesUsed)} tab analyses remaining
             </span>
           </>
         ) : (
           <>
-            <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} analyses</span>
+            <span>{analysesUsed}/{analysisLimit === Infinity ? '∞' : analysisLimit} tab analyses</span>
             <span className="text-gray-300">·</span>
             {/* ASIN counter removed — gate disabled */}
           </>

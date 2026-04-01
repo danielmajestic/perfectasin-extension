@@ -78,7 +78,7 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
             <span>Running Audit...</span>
           </>
         ) : atLimit ? (
-          <span style={{ color: '#d97706' }}>
+          <span style={{ color: '#FBBF24' }}>
             {isConsultantOrAbove
               ? 'Audit limit reached \u2014 resets next month'
               : 'Upgrade to Consultant \u2014 30 Audits/mo'}
