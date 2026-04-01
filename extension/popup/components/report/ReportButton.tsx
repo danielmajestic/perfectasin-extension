@@ -55,7 +55,7 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
   return (
     <div
       className="flex-shrink-0 flex flex-col items-center justify-center px-3 py-2 border-b"
-      style={{ background: '#1a1a2e', borderColor: '#2a2a4e', maxHeight: 60 }}
+      style={{ background: '#1a1a2e', borderColor: '#2a2a4e' }}
     >
       <button
         onClick={atLimit ? onLimitReached : onClick}
@@ -64,8 +64,8 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
         className="w-full max-w-[320px] flex items-center justify-center gap-2 rounded-lg text-sm font-bold transition-all duration-200 hover:brightness-110 disabled:opacity-60 disabled:cursor-not-allowed shadow-md"
         style={{
           height: 36,
-          background: isDisabled ? '#6b7280' : 'linear-gradient(135deg, #f59e0b, #d97706)',
-          color: isDisabled ? '#d1d5db' : '#1a1a2e',
+          background: isDisabled ? '#1E293B' : 'linear-gradient(135deg, #f59e0b, #d97706)',
+          color: isDisabled ? '#FDE68A' : '#1a1a2e',
           opacity: atLimit ? 0.5 : undefined,
         }}
       >
@@ -78,10 +78,10 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
             <span>Running Audit...</span>
           </>
         ) : atLimit ? (
-          <span style={{ color: '#FBBF24' }}>
+          <span style={{ color: '#FDE68A' }}>
             {isConsultantOrAbove
               ? 'Audit limit reached \u2014 resets next month'
-              : 'Upgrade to Consultant \u2014 30 Audits/mo'}
+              : 'Upgrade to Consultant \u2014 30x Audits/mo'}
           </span>
         ) : (
           <>
@@ -95,9 +95,14 @@ export default function ReportButton({ onClick, onUpgradeClick, onLimitReached, 
           </>
         )}
       </button>
-      {!loading && (
+      {!loading && !atLimit && (
         <span className="text-[10px] font-semibold text-gray-400 mt-0.5 tracking-wide">
           Full ASIN Analysis &bull; All 5 Modules
+        </span>
+      )}
+      {atLimit && (
+        <span className="text-xs font-semibold mt-0.5" style={{ color: '#F59E0B' }}>
+          Audit limit reached
         </span>
       )}
     </div>
