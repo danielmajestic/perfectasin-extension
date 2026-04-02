@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Claim Your $5,000 ASIN Audit | PerfectASIN</title>
+  <meta name="description" content="Get a complimentary 18-page ASIN audit powered by AI. The same analysis that drove +26.7% revenue growth for a CPG brand." />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0B0F1A;
+      color: #E2E8F0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page-wrapper {
+      width: 100%;
+      max-width: 560px;
+      padding: 40px 20px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(251, 191, 36, 0.1);
+      border: 1px solid rgba(251, 191, 36, 0.25);
+      color: #FDE68A;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 24px;
+    }
+
+    /* Headline */
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      text-align: center;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+    h1 .gold { color: #FBBF24; }
+
+    .subhead {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #94A3B8;
+      text-align: center;
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .subhead strong { color: #E2E8F0; font-weight: 600; }
+
+    /* Form card */
+    .form-card {
+      width: 100%;
+      background: #111827;
+      border: 1px solid #1E293B;
+      border-radius: 16px;
+      padding: 28px 24px;
+      margin-bottom: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+    .form-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #CBD5E1;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 14px;
+      background: #0B0F1A;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      color: #F1F5F9;
+      font-size: 15px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+    input::placeholder { color: #475569; }
+    input:focus, select:focus {
+      border-color: #FBBF24;
+      box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.1);
+    }
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23475569' viewBox='0 0 16 16'%3E%3Cpath d='M4.646 5.646a.5.5 0 01.708 0L8 8.293l2.646-2.647a.5.5 0 01.708.708l-3 3a.5.5 0 01-.708 0l-3-3a.5.5 0 010-.708z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      padding-right: 40px;
+    }
+    select option { background: #111827; color: #F1F5F9; }
+
+    /* Honeypot */
+    .hp-field { position: absolute; left: -9999px; opacity: 0; height: 0; width: 0; overflow: hidden; }
+
+    /* Submit button */
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #0B0F1A;
+      font-size: 16px;
+      font-weight: 700;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin-top: 20px;
+      letter-spacing: 0.01em;
+    }
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(245, 158, 11, 0.25);
+    }
+    .submit-btn:active { transform: translateY(0); }
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Success state */
+    .success-state {
+      text-align: center;
+      padding: 20px 0;
+    }
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(34, 197, 94, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+    }
+    .success-state h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin-bottom: 8px;
+    }
+    .success-state p {
+      font-size: 14px;
+      color: #94A3B8;
+      line-height: 1.5;
+    }
+
+    /* Error fallback */
+    .error-msg {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #FCA5A5;
+      text-align: center;
+      margin-top: 12px;
+      display: none;
+    }
+    .error-msg a { color: #FDE68A; text-decoration: underline; }
+
+    /* Trust signals */
+    .trust-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px 16px;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: #64748B;
+      white-space: nowrap;
+    }
+    .trust-item svg { flex-shrink: 0; }
+
+    /* Powered by */
+    .powered-by {
+      font-size: 13px;
+      color: #475569;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    /* Footer */
+    .footer {
+      font-size: 11px;
+      color: #334155;
+      text-align: center;
+      padding-bottom: 24px;
+    }
+    .footer a { color: #475569; text-decoration: none; }
+    .footer a:hover { color: #64748B; }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(11, 15, 26, 0.3);
+      border-top-color: #0B0F1A;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .page-wrapper { padding: 28px 16px 24px; }
+      h1 { font-size: 24px; }
+      .subhead { font-size: 14px; }
+      .form-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-wrapper">
+    <div class="badge">
+      <svg width="14" height="14" fill="#FBBF24" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+      Complimentary Audit
+    </div>
+
+    <h1>Claim Your Complimentary<br /><span class="gold">$5,000 ASIN Audit</span></h1>
+
+    <p class="subhead">
+      The same analysis that drove <strong>+26.7% revenue growth</strong> for a CPG brand &mdash;
+      with <strong>42% less traffic</strong> and <strong>23.5% less ad spend</strong>.
+    </p>
+
+    <div class="form-card" id="formCard">
+      <form id="auditForm" novalidate>
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input type="text" id="firstName" name="firstName" placeholder="Jane" required autocomplete="given-name" />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="jane@brand.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="asin">Primary ASIN</label>
+          <input type="text" id="asin" name="asin" placeholder="B0XXXXXXXXXX" required pattern="^B0[A-Z0-9]{8}$" maxlength="10" />
+        </div>
+        <div class="form-group">
+          <label for="revenueRange">Monthly Revenue</label>
+          <select id="revenueRange" name="revenueRange" required>
+            <option value="" disabled selected>Select range</option>
+            <option value="Under $10K">Under $10K</option>
+            <option value="$10K-$50K">$10K&ndash;$50K</option>
+            <option value="$50K-$100K">$50K&ndash;$100K</option>
+            <option value="$100K-$500K">$100K&ndash;$500K</option>
+            <option value="$500K+">$500K+</option>
+          </select>
+        </div>
+
+        <!-- Honeypot -->
+        <div class="hp-field" aria-hidden="true">
+          <label for="website">Website</label>
+          <input type="text" id="website" name="website" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">Run My Audit</button>
+        <div class="error-msg" id="errorMsg">
+          Something went wrong. Please email <a href="mailto:dan@ravingfans.ai">dan@ravingfans.ai</a> with your ASIN.
+        </div>
+      </form>
+    </div>
+
+    <div class="trust-bar">
+      <span class="trust-item">
+        <svg width="14" height="14" fill="none" stroke="#64748B" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m6-2a10 10 0 11-20 0 10 10 0 0120 0z"/></svg>
+        27 years in e-commerce
+      </span>
+      <span class="trust-item">
+        <svg width="14" height="14" fill="none" stroke="#64748B" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg>
+        $572M career revenue
+      </span>
+      <span class="trust-item">
+        <svg width="14" height="14" fill="none" stroke="#64748B" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        18-page report in 48 hours
+      </span>
+      <span class="trust-item">
+        <svg width="14" height="14" fill="none" stroke="#64748B" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+        No credit card. No pitch. Just the data.
+      </span>
+    </div>
+
+    <p class="powered-by">Powered by <strong>PerfectASIN</strong> &mdash; Launching Soon</p>
+
+    <div class="footer">
+      &copy; 2026 Profit Apps Studio LLC | <a href="https://ravingfans.ai">RavingFans.ai</a>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwNrm7_y9Luuu-kBpKfT2zXEuc2Zuq4k-lFpkR-HnyDaITcfdafh6Xnnz190NGjCR0-/exec';
+
+      const form = document.getElementById('auditForm');
+      const formCard = document.getElementById('formCard');
+      const submitBtn = document.getElementById('submitBtn');
+      const errorMsg = document.getElementById('errorMsg');
+
+      // Parse ?src= param
+      const urlParams = new URLSearchParams(window.location.search);
+      const source = urlParams.get('src') || 'direct';
+
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        errorMsg.style.display = 'none';
+
+        // Honeypot check
+        if (document.getElementById('website').value) return;
+
+        const firstName = document.getElementById('firstName').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const asin = document.getElementById('asin').value.trim().toUpperCase();
+        const revenueRange = document.getElementById('revenueRange').value;
+
+        // Basic validation
+        if (!firstName || !email || !asin || !revenueRange) return;
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner"></span>Submitting...';
+
+        try {
+          await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              firstName: firstName,
+              email: email,
+              asin: asin,
+              revenueRange: revenueRange,
+              source: source,
+              timestamp: new Date().toISOString()
+            })
+          });
+
+          // no-cors returns opaque response, so we assume success
+          formCard.innerHTML = '<div class="success-state">' +
+            '<div class="success-icon"><svg width="28" height="28" fill="none" stroke="#22C55E" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>' +
+            '<h2>Your audit is being generated</h2>' +
+            '<p>Check your email within 48 hours for your<br />complete 18-page ASIN audit report.</p>' +
+            '</div>';
+        } catch (err) {
+          errorMsg.style.display = 'block';
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Run My Audit';
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
