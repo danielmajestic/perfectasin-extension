@@ -3,9 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Claim Your $5,000 ASIN Audit | PerfectASIN</title>
+  <title>PerfectASIN — Free $5,000 ASIN Audit&#8482;</title>
   <meta name="description" content="Get a complimentary 18-page ASIN audit powered by AI. The same analysis that drove +26.7% revenue growth for a CPG brand." />
-  <link rel="icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -165,16 +166,76 @@
       justify-content: center;
       margin: 0 auto 16px;
     }
+    .success-headshot {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid #FBBF24;
+      margin: 0 auto 16px;
+      display: block;
+    }
     .success-state h2 {
       font-size: 20px;
       font-weight: 700;
       color: #FFFFFF;
-      margin-bottom: 8px;
+      margin-bottom: 16px;
     }
     .success-state p {
       font-size: 14px;
       color: #94A3B8;
-      line-height: 1.5;
+      line-height: 1.7;
+      text-align: left;
+      margin-bottom: 12px;
+    }
+    .success-state .signoff {
+      text-align: left;
+      margin-top: 20px;
+    }
+    .success-state .signoff .grateful {
+      color: #CBD5E1;
+      font-style: italic;
+      font-size: 14px;
+    }
+    .success-state .signoff .name {
+      color: #FFFFFF;
+      font-weight: 700;
+      font-size: 15px;
+      margin-top: 4px;
+    }
+    .success-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: transform 0.15s, box-shadow 0.15s;
+      margin: 6px 4px;
+    }
+    .success-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    }
+    .success-cta.gold {
+      background: linear-gradient(135deg, #F59E0B, #D97706);
+      color: #0B0F1A;
+    }
+    .success-cta.outline {
+      background: transparent;
+      border: 1px solid #334155;
+      color: #CBD5E1;
+    }
+    .success-cta.outline:hover { border-color: #FBBF24; color: #FDE68A; }
+    .success-ctas {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+      margin-bottom: 8px;
     }
 
     /* Error fallback */
@@ -378,9 +439,19 @@
 
           // no-cors returns opaque response, so we assume success
           formCard.innerHTML = '<div class="success-state">' +
+            '<img src="dan-headshot.png" alt="Dan" class="success-headshot" />' +
             '<div class="success-icon"><svg width="28" height="28" fill="none" stroke="#22C55E" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>' +
-            '<h2>Your audit is being generated</h2>' +
-            '<p>Check your email within 48 hours for your<br />complete 18-page ASIN audit report.</p>' +
+            '<h2>Thank you for claiming your $5,000 ASIN Audit\u2122</h2>' +
+            '<p>I personally generate these myself and will email you directly with the results. I have Sophia (my AI Support Agent) checking for signups regularly and will run your report as soon as I can and email it to you. Usually within an hour or so, but sometimes 15 minutes \u2014 but if I get slammed with requests I promise I will send it to you within 48 hours.</p>' +
+            '<div class="success-ctas">' +
+              '<a href="https://www.ravingfans.ai/call" target="_blank" class="success-cta gold">Book a Call \u2192</a>' +
+              '<a href="https://www.ravingfans.ai/team" target="_blank" class="success-cta outline">Meet the Team \u2192</a>' +
+            '</div>' +
+            '<p style="margin-top:20px;">If you want me to go over it with you personally, book a call above. You can also meet my 9-agent AI team if you\u2019re curious.</p>' +
+            '<div class="signoff">' +
+              '<p class="grateful">Thank you for the opportunity to serve you.<br />It\u2019s an honor I hold in high regard.</p>' +
+              '<p class="name" style="color:#fff;font-weight:700;font-size:15px;margin-top:4px;">Sincerely grateful,<br />Dan</p>' +
+            '</div>' +
             '</div>';
         } catch (err) {
           errorMsg.style.display = 'block';
