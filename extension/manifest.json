@@ -3,7 +3,7 @@
   "name": "PerfectASIN",
   "short_name": "PerfectASIN",
   "version": "3.5.7",
-  "description": "PerfectASIN analyzes Amazon product listings with AI-powered scoring across Title, Bullets, Description, Hero Image, and Price Intelligence to help sellers optimize conversions and revenue.",
+  "description": "AI-powered Amazon listing optimizer. Get scores, $5k Audit™ reports, title rewrites, and revenue impact analysis for any ASIN.",
   "permissions": [
     "activeTab",
     "tabs",
