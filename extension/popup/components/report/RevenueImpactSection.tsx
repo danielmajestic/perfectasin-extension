@@ -30,7 +30,7 @@ function formatUnits(value: number): string {
 }
 
 function formatPct(value: number): string {
-  return Math.round(value) + '%';
+  return Math.round(value * 100) + '%';
 }
 
 export default function RevenueImpactSection({
@@ -101,7 +101,7 @@ export default function RevenueImpactSection({
               className="h-full rounded-full"
               style={{
                 background: '#94A3B8',
-                width: `${Math.min(100, Math.max(20, ((ri.conservativeLiftRange[0] + ri.conservativeLiftRange[1]) / 2) * 2))}%`,
+                width: `${Math.min(100, Math.max(20, ((ri.conservativeLiftRange[0] + ri.conservativeLiftRange[1]) / 2) * 100 * 2))}%`,
               }}
             />
           </div>
@@ -122,7 +122,7 @@ export default function RevenueImpactSection({
               className="h-full rounded-full"
               style={{
                 background: 'linear-gradient(90deg, #D4A843, #F59E0B)',
-                width: `${Math.min(100, Math.max(30, ((ri.aggressiveLiftRange[0] + ri.aggressiveLiftRange[1]) / 2) * 2))}%`,
+                width: `${Math.min(100, Math.max(30, ((ri.aggressiveLiftRange[0] + ri.aggressiveLiftRange[1]) / 2) * 100 * 2))}%`,
               }}
             />
           </div>

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "PerfectASIN",
   "short_name": "PerfectASIN",
-  "version": "3.5.7",
+  "version": "3.5.8",
   "description": "AI-powered Amazon listing optimizer. Get scores, $5k Audit™ reports, title rewrites, and revenue impact analysis for any ASIN.",
   "permissions": [
     "activeTab",
