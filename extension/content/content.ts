@@ -111,20 +111,39 @@ function extractText(selector: string): string | null {
 }
 
 /**
- * Extracts all bullet points from the product features section
+ * Extracts all bullet points from the product features section.
+ *
+ * Amazon ships bullets under two different DOM layouts:
+ *   1. Classic `#feature-bullets` (most listings)
+ *   2. Voyager Accordion / Product Facts Desktop Expander (newer UI used in
+ *      Health & Household, Handmade, Jewelry, etc.) — no `#feature-bullets` at
+ *      all; bullets live inside `#productFactsDesktopExpander .a-expander-content ul`.
+ *
+ * The new layout is the reason emoji-heavy bullets appeared "unscraped" —
+ * the correlation is category, not character set. Try classic first, then
+ * fall through to the Voyager selector so both layouts return bullets.
  */
 function extractBulletPoints(): string[] {
-  const bullets: string[] = [];
-  const bulletElements = document.querySelectorAll(SELECTORS.bullets);
+  const selectorsToTry = [
+    SELECTORS.bullets, // classic #feature-bullets ul li
+    '#productFactsDesktopExpander .a-expander-content ul li', // Voyager Accordion UI
+  ];
 
-  bulletElements.forEach((element) => {
-    const text = element.textContent?.trim();
-    if (text) {
-      bullets.push(text);
+  for (const selector of selectorsToTry) {
+    const bullets: string[] = [];
+    const bulletElements = document.querySelectorAll(selector);
+    bulletElements.forEach((element) => {
+      const text = element.textContent?.trim();
+      if (text) {
+        bullets.push(text);
+      }
+    });
+    if (bullets.length > 0) {
+      return bullets;
     }
-  });
+  }
 
-  return bullets;
+  return [];
 }
 
 /**
@@ -202,7 +221,6 @@ function extractCategory(): string | null {
     document.querySelector(SELECTORS.category) ||
     document.querySelector('.a-breadcrumb');
   if (!categoryContainer) {
-    console.log('TitlePerfect: category= null (no breadcrumb container found)');
     return null;
   }
 
@@ -217,9 +235,7 @@ function extractCategory(): string | null {
     }
   });
 
-  const result = categories.length > 0 ? categories.join(' > ') : null;
-  console.log('TitlePerfect: category=', result);
-  return result;
+  return categories.length > 0 ? categories.join(' > ') : null;
 }
 
 /**
@@ -488,7 +504,6 @@ function extractAplusContent(): AplusContentData {
     document.querySelector('.brand-story-card-1-four-asin') ||
     document.querySelector('#HLCXComparisonWidget_feature_div')
   );
-  console.log('TitlePerfect: hasComparisonTable=', hasComparisonTable);
 
   // Brand Story detection
   const hasBrandStory = !!(
@@ -541,7 +556,6 @@ function extractAplusContent(): AplusContentData {
     aplusTextContent,
   };
 
-  console.log('TitlePerfect: A+ Content detection:', JSON.stringify(data, null, 2));
   return data;
 }
 
@@ -842,7 +856,6 @@ function extractUnitsSold(): { unitsSoldText: string | null; unitsSoldEstimate: 
   for (const span of spans) {
     const text = span.textContent?.trim();
     if (text && /bought in past month/i.test(text)) {
-      console.log('TitlePerfect: unitsSoldText=', text);
       return { unitsSoldText: text, unitsSoldEstimate: parseUnitsSold(text) };
     }
   }
@@ -852,12 +865,10 @@ function extractUnitsSold(): { unitsSoldText: string | null; unitsSoldEstimate: 
   if (proofEl) {
     const text = proofEl.textContent?.trim() || null;
     if (text) {
-      console.log('TitlePerfect: unitsSoldText (by ID)=', text);
       return { unitsSoldText: text, unitsSoldEstimate: parseUnitsSold(text) };
     }
   }
 
-  console.log('TitlePerfect: unitsSoldText not found on page');
   return { unitsSoldText: null, unitsSoldEstimate: null };
 }
 
@@ -890,10 +901,6 @@ function extractProductInfo(): ProductInfo | null {
   const priceData = extractPriceExtended();
   const aplusContentData = extractAplusContent();
   const { unitsSoldText, unitsSoldEstimate } = extractUnitsSold();
-
-  console.log('TitlePerfect: reviewCount=', reviewCount, 'rating=', rating);
-  console.log('TitlePerfect: imageCount=', heroImageData?.imageCount, 'videoCount=', heroImageData?.videoCount);
-  console.log('TitlePerfect: unitsSoldText=', unitsSoldText, 'unitsSoldEstimate=', unitsSoldEstimate);
 
   return {
     title,
