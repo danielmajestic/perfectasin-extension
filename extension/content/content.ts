@@ -961,6 +961,42 @@ function extractSerpData(): SerpData | null {
 }
 
 /**
+ * Extraction health check — early warning for silent DOM changes on Amazon.
+ * Non-blocking: never affects the payload or UX, only emits monitoring signals.
+ */
+function runExtractionHealthCheck(info: ProductInfo): void {
+  if (!info.title || !info.title.trim()) return;
+
+  const missingFields: string[] = [];
+  if (info.bullets.length === 0) missingFields.push('bullets');
+  if (!info.heroImageData || info.heroImageData.imageCount === 0) missingFields.push('imageCount');
+  if (!info.price) missingFields.push('price');
+
+  if (missingFields.length === 0) return;
+
+  const warning = {
+    event: 'extraction_gap',
+    asin: info.asin,
+    missingFields,
+    timestamp: Date.now(),
+    url: window.location.href,
+  };
+  console.warn('[PerfectASIN] extraction_gap', warning);
+
+  // TODO(Kat): wire up POST /api/extraction-health on backend (FastAPI).
+  // Lightweight monitoring endpoint — accept the warning payload, persist for
+  // DOM-drift alerting. Until then, this fetch will 404 silently (caught below).
+  try {
+    fetch('https://api.perfectasin.com/api/extraction-health', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(warning),
+      keepalive: true,
+    }).catch(() => { /* monitoring only — never surface */ });
+  } catch { /* monitoring only — never surface */ }
+}
+
+/**
  * Message listener for communication with popup
  */
 chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
@@ -974,6 +1010,7 @@ chrome.runtime.onMessage.addListener((request, _sender, sendResponse) => {
         await new Promise<void>((resolve) => setTimeout(resolve, 500));
         productInfo.heroImageData = getHeroImageData();
       }
+      if (productInfo) runExtractionHealthCheck(productInfo);
       sendResponse({ productInfo });
     })();
     return true; // keep channel open for async sendResponse
