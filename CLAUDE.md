@@ -10,6 +10,13 @@ This is the PerfectASIN extension repo: ~/projects/perfectasin-extension/
 - The two repos are SEPARATE Chrome extensions with DIFFERENT extension IDs
 - Backend is SHARED at ~/projects/titleperfect/backend/ — that is the ONLY part of titleperfect that is still active
 
+## ⛔ BACKEND IN THIS REPO IS ARCHIVED (2026-03-22)
+**~/projects/perfectasin-extension/backend/ is READ-ONLY. DO NOT MODIFY.**
+The canonical backend for both TitlePerfect and PerfectASIN is:
+**~/projects/titleperfect/backend/**
+All new backend work, bug fixes, and deployments happen there.
+See ~/projects/perfectasin-extension/backend/README.md for details.
+
 # TitlePerfect Project
 
 ## Tech Stack

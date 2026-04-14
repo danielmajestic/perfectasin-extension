@@ -36,6 +36,7 @@ coverage/
 
 # Misc
 .cache/
+.playwright-mcp/
 
 # Temp files
 tmpclaude-*
