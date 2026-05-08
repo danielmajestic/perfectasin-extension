@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Clear stale subscription cache so tier is re-fetched from backend
     await chrome.storage.local.remove(['tp_tier', 'tp_status', 'tp_analysesUsed', 'tp_analysisLimit', 'tp_billingCycle', 'tp_currentPeriodEnd']);
     await chrome.storage.local.set({
-      tp_auth: { token, uid, email, expiresAt: Date.now() + 55 * 60 * 1000 },
+      tp_auth: { token, uid, email, expiresAt: Date.now() + 55 * 60 * 1000, authMethod: 'google' as const },
     });
     setCurrentUser({ uid, email });
   }
