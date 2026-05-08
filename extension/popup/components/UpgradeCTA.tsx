@@ -79,7 +79,7 @@ export default function UpgradeCTA({ isOpen, onClose }: UpgradeCTAProps) {
 
       const data: { checkout_url: string } = await apiClient.post('/api/stripe/create-checkout-session', {
         plan: planParam,
-        success_url: `https://perfectasin.com/checkout-success?session_id={CHECKOUT_SESSION_ID}${currentAsin ? `&asin=${currentAsin}` : ''}`,
+        success_url: `https://perfectasin.com/checkout-success?session_id={CHECKOUT_SESSION_ID}&tier=${tier}${currentAsin ? `&asin=${currentAsin}` : ''}`,
         cancel_url: 'https://perfectasin.com/checkout-cancel.html',
       });
 
