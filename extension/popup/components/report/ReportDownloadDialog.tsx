@@ -6,6 +6,7 @@ import ComplianceBanner from './ComplianceBanner';
 import ComplianceViolationsTable from './ComplianceViolationsTable';
 import ItemHighlightSection from './ItemHighlightSection';
 import BackendFieldsSection from './BackendFieldsSection';
+import ReadyToPasteBlock from './ReadyToPasteBlock';
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
@@ -229,6 +230,14 @@ export default function ReportDownloadDialog({
             />
           </div>
         )}
+
+        {/* v3.7.6 — Ready to Paste: every generated field in one place, last content
+            section before the action buttons — matches the backend HTML/PDF's own
+            document order (badge → compliance banner → title+highlight → backend
+            fields → violations table → consolidated Ready-to-Paste block). */}
+        <div className="mb-4">
+          <ReadyToPasteBlock report={report} />
+        </div>
 
         {/* Action buttons */}
         <div className="flex flex-col gap-2 mb-3">

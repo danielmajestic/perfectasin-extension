@@ -27,10 +27,15 @@ export interface ReportSection {
   error?: string;
   score: number;
   grade: string;
+  // AI-generated content for this section — string for title/description, string[] for bullets
+  optimizedContent?: string | string[] | null;
   // v3.7.5 Feature 2 — Item Highlight rendered directly under Item Name (Title) in the title section
   currentItemHighlight?: string | null;
   optimizedItemHighlight?: string;
   itemHighlightCharCount?: number;
+  // v3.7.6 — DSHEA structure/function-claim disclaimer, description section only. Present
+  // only when optimizedContent makes a caution-tier claim; append verbatim, never paraphrase.
+  dsheaDisclaimer?: string | null;
   [key: string]: unknown;
 }
 
