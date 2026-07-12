@@ -77,7 +77,7 @@ export default function LoadingState({ message = 'Analyzing title...', elapsedSe
               <SkeletonLine className="w-16" />
             </div>
           </div>
-          {/* Rufus Score skeleton */}
+          {/* Alexa for Shopping (formerly Rufus) score skeleton */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <SkeletonLine className="w-24" />

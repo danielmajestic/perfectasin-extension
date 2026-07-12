@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { GenerateReportResponse } from './reportApi';
 import RevenueImpactSection from './RevenueImpactSection';
+import BeatTheAIRewriteBadge from './BeatTheAIRewriteBadge';
+import ComplianceBanner from './ComplianceBanner';
+import ComplianceViolationsTable from './ComplianceViolationsTable';
+import ItemHighlightSection from './ItemHighlightSection';
+import BackendFieldsSection from './BackendFieldsSection';
 
 const GRADE_COLORS: Record<string, string> = {
   A: '#22C55E',
@@ -12,11 +17,23 @@ const GRADE_COLORS: Record<string, string> = {
 
 const SHARE_BASE_URL = 'https://www.ravingfans.ai/tools/report';
 
+// v3.7.5 QA fix: TitleSectionResult (app/models/report_models.py) does NOT carry
+// currentTitle or characterCount at all — those fields never existed on the real
+// backend model (it only has score/grade/issues/optimizedContent/sectionHeading
+// plus these 3 item-highlight fields). The title text + char count come from
+// productTitle, which the extension already scraped and is sent back down as a prop.
+interface TitleSectionExtras {
+  currentItemHighlight?: string | null;
+  optimizedItemHighlight?: string;
+  itemHighlightCharCount?: number;
+}
+
 interface ReportDownloadDialogProps {
   isOpen: boolean;
   onClose: () => void;
   report: GenerateReportResponse | null;
   asin: string;
+  productTitle: string;
 }
 
 /**
@@ -28,6 +45,7 @@ export default function ReportDownloadDialog({
   onClose,
   report,
   asin,
+  productTitle,
 }: ReportDownloadDialogProps) {
   const [linkCopied, setLinkCopied] = useState(false);
   const [showPasswordToggle, setShowPasswordToggle] = useState(false);
@@ -112,6 +130,14 @@ export default function ReportDownloadDialog({
   const gradeColor = GRADE_COLORS[report.overallGrade] || '#6B7280';
   const hasPdf = report.pdfBase64 != null;
 
+  // v3.7.5 QA fix — the backend's TitleSectionResult has no currentTitle/characterCount
+  // field; title text + length come from productTitle (the extension's own scrape),
+  // not from the report response. Item Highlight fields DO live on sections.title.
+  const titleSection = report.sections?.title as TitleSectionExtras | undefined;
+  const displayTitle = productTitle;
+  const displayItemHighlight = titleSection?.optimizedItemHighlight ?? titleSection?.currentItemHighlight ?? null;
+  const titleCharCount = displayTitle.length;
+
   return (
     <div
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
@@ -153,6 +179,54 @@ export default function ReportDownloadDialog({
           <div className="bg-gray-50 rounded-lg p-3 mb-4 text-xs text-gray-600 leading-relaxed">
             <p className="font-semibold text-gray-700 mb-1">Key Finding:</p>
             <p>{report.executiveSummary.biggestWeakness}</p>
+          </div>
+        )}
+
+        {/* v3.7.5 Feature 5 — Beat the AI Rewrite badge, top of report.
+            Driven entirely by the extension's own scraped title length — the
+            backend's title section carries no character count to depend on. */}
+        {displayTitle && (
+          <div className="mb-4">
+            <BeatTheAIRewriteBadge characterCount={titleCharCount} />
+          </div>
+        )}
+
+        {/* v3.7.5 Feature 4 — Compliance banner, separate from letter grade */}
+        {report.compliance && (
+          <div className="mb-4">
+            <ComplianceBanner compliance={report.compliance} />
+          </div>
+        )}
+
+        {/* v3.7.5 Feature 2 — Item Name (Title) + Item Highlight directly under it */}
+        {displayTitle && (
+          <div className="mb-4">
+            <ItemHighlightSection
+              title={displayTitle}
+              itemHighlight={displayItemHighlight}
+              itemHighlightCharCount={titleSection?.itemHighlightCharCount}
+            />
+          </div>
+        )}
+
+        {/* v3.7.5 Feature 3 — Backend Fields report section. Design decision (Dan,
+            v3.7.5 QA): on backend failure the whole backendFields key is ABSENT
+            (matches every other section's existing failure pattern) — no
+            status:'error' partial-object path exists in practice. Render "absent"
+            as "don't render the section" rather than branching on data.status. */}
+        {report.backendFields && report.backendFields.status !== 'error' && (
+          <div className="mb-4">
+            <BackendFieldsSection data={report.backendFields} />
+          </div>
+        )}
+
+        {/* v3.7.5 Feature 4 — flagged-violations table */}
+        {report.compliance && report.compliance.violations.length > 0 && (
+          <div className="mb-4">
+            <ComplianceViolationsTable
+              violations={report.compliance.violations}
+              disclaimer={report.compliance.disclaimer}
+            />
           </div>
         )}
 

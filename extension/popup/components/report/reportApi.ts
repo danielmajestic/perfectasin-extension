@@ -27,7 +27,40 @@ export interface ReportSection {
   error?: string;
   score: number;
   grade: string;
+  // v3.7.5 Feature 2 — Item Highlight rendered directly under Item Name (Title) in the title section
+  currentItemHighlight?: string | null;
+  optimizedItemHighlight?: string;
+  itemHighlightCharCount?: number;
   [key: string]: unknown;
+}
+
+// v3.7.5 Feature 3 — "Backend Fields" report section (Amazon field names verbatim)
+export interface BackendFieldsSection {
+  status: 'success' | 'error';
+  error?: string;
+  genericKeywords: string;             // optimized string, hard-capped 249 bytes
+  genericKeywordsByteCount: number;
+  seasonalSwapString: string;          // secondary row — replaces, not adds to, genericKeywords
+  seasonalSwapByteCount: number;
+  bullets: string[];                   // min 5 per ASIN, guaranteed by backend
+  productDescription: string;
+}
+
+// v3.7.5 Feature 4 — Compliance gate, pass/fail independent of letter grade
+export type ComplianceRiskTier = 'banned' | 'high_risk' | 'caution';
+
+export interface ComplianceViolation {
+  term: string;
+  field: string;          // one of: Item Name (Title), Item Highlight, Bullet Point, Product Description, Generic Keywords (Search Terms)
+  riskTier: ComplianceRiskTier;
+  agency: string;
+  context: string;
+}
+
+export interface ComplianceResult {
+  status: 'compliant' | 'violations_found';
+  violations: ComplianceViolation[];
+  disclaimer: string;
 }
 
 export interface RevenueImpact {
@@ -80,6 +113,9 @@ export interface GenerateReportResponse {
   revenueImpact?: RevenueImpact;
   disclaimer?: Record<string, unknown>;
   disclaimerFooter?: string;
+  // v3.7.5 additions — see docs/report-api-contract.md for wire shape
+  backendFields?: BackendFieldsSection;
+  compliance?: ComplianceResult;
   generatedAt: string;
   processingTimeMs: number;
   modulesCompleted: number;
@@ -135,6 +171,12 @@ export async function generateReport(
     if (rj.actionPlan && !raw.actionPlan) raw.actionPlan = rj.actionPlan;
     if (rj.copyBlocks && !raw.copyBlocks) raw.copyBlocks = rj.copyBlocks;
     if (rj.revenueImpact && !raw.revenueImpact) raw.revenueImpact = rj.revenueImpact;
+    // v3.7.5 QA fix: backendFields is a field on ReportSections (app/models/report_models.py),
+    // a sibling of title/bullets/etc — NOT a top-level ReportJson field. Path is
+    // reportJson.sections.backendFields, not reportJson.backendFields.
+    const sections = rj.sections as Record<string, unknown> | undefined;
+    if (sections?.backendFields && !raw.backendFields) raw.backendFields = sections.backendFields;
+    if (rj.compliance && !raw.compliance) raw.compliance = rj.compliance;
   }
 
   return raw as GenerateReportResponse;

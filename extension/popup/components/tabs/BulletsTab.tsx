@@ -56,7 +56,7 @@ function BulletScoreCard({ bulletScore, index }: { bulletScore: BulletScoreData;
         <ScoreBar label="Keyword Opt" score={bulletScore.keyword_optimization} />
         <ScoreBar label="Benefit Clarity" score={bulletScore.benefit_clarity} />
         <ScoreBar label="Readability" score={bulletScore.readability} />
-        <ScoreBar label="Rufus AI" score={bulletScore.rufus_compat} />
+        <ScoreBar label="Alexa for Shopping (formerly Rufus) AI" score={bulletScore.rufus_compat} />
       </div>
 
       {bulletScore.feedback && (
@@ -102,7 +102,12 @@ function VariationSetCard({
   const [copiedSC, setCopiedSC] = useState(false);
 
   const strategyKey = variation.strategy.toLowerCase();
-  const strategyLabel = variation.strategy.charAt(0).toUpperCase() + variation.strategy.slice(1);
+  // v3.7.5: 'rufus' strategy key stays internal (matches backend); display name renamed per Rufus -> Alexa for Shopping sweep
+  const STRATEGY_DISPLAY_LABEL: Record<string, string> = {
+    rufus: 'Alexa for Shopping (formerly Rufus)',
+  };
+  const strategyLabel = STRATEGY_DISPLAY_LABEL[strategyKey]
+    ?? (variation.strategy.charAt(0).toUpperCase() + variation.strategy.slice(1));
 
   const strategyColor: Record<string, string> = {
     balanced: 'bg-blue-100 text-blue-800',
@@ -207,19 +212,19 @@ function VariationSetCard({
       {/* B15: Avg char count */}
       <p className="text-[10px] text-gray-400 mb-2 ml-0.5">Avg. {avgCharCount} chars/bullet</p>
 
-      {/* W3: show 3-pillar scores (Conv/Rufus/SEO) when backend returns them, else fall back */}
+      {/* W3: show 3-pillar scores (Conv/Alexa-formerly-Rufus/SEO) when backend returns them, else fall back */}
       <div className="flex gap-3 text-xs text-gray-500 mb-3">
         {variation.conversion_score !== undefined ? (
           <>
             <span title="Conversion (40%)">Conv <span className="font-medium text-gray-700">{Math.round(variation.conversion_score)}</span> <span className="text-[10px] text-gray-400">40%</span></span>
-            <span title="Rufus AI (30%)">Rufus <span className="font-medium text-gray-700">{Math.round(variation.rufus_score)}</span> <span className="text-[10px] text-gray-400">30%</span></span>
+            <span title="Alexa for Shopping (formerly Rufus) AI (30%)">Alexa (formerly Rufus) <span className="font-medium text-gray-700">{Math.round(variation.rufus_score)}</span> <span className="text-[10px] text-gray-400">30%</span></span>
             <span title="SEO (30%)">SEO <span className="font-medium text-gray-700">{Math.round(variation.seo_score ?? 0)}</span> <span className="text-[10px] text-gray-400">30%</span></span>
           </>
         ) : (
           <>
             <span>KW: <span className="font-medium text-gray-700">{Math.round(variation.keyword_score)}</span></span>
             <span>Benefit: <span className="font-medium text-gray-700">{Math.round(variation.benefit_score)}</span></span>
-            <span>Rufus: <span className="font-medium text-gray-700">{Math.round(variation.rufus_score)}</span></span>
+            <span>Alexa (formerly Rufus): <span className="font-medium text-gray-700">{Math.round(variation.rufus_score)}</span></span>
           </>
         )}
       </div>
@@ -363,7 +368,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
           'Keyword Optimization',
           'Benefit Clarity',
           'Readability',
-          'Rufus AI',
+          'Alexa for Shopping (formerly Rufus) AI',
         ]}
         estimatedSeconds={60}
         timeEstimate="This typically takes 60-120 seconds"
@@ -530,7 +535,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
               <h3 className="text-sm font-semibold text-gray-700">Per-Bullet Scores</h3>
               <span
                 className="text-gray-400 cursor-help"
-                title="Each bullet is scored on 4 dimensions: Keyword Optimization (search visibility), Benefit Clarity (buyer motivation), Readability (scan-ability), and Rufus AI (voice/AI compatibility). These map to 3 pillars: SEO, Conversion, and Rufus."
+                title="Each bullet is scored on 4 dimensions: Keyword Optimization (search visibility), Benefit Clarity (buyer motivation), Readability (scan-ability), and Alexa for Shopping (formerly Rufus) AI (voice/AI compatibility). These map to 3 pillars: SEO, Conversion, and Alexa for Shopping (formerly Rufus)."
               >
                 <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
@@ -624,7 +629,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
               <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2.5 flex items-start gap-2">
                 <span className="text-base leading-none mt-0.5 flex-shrink-0">💡</span>
                 <p className="text-xs text-amber-800 leading-relaxed">
-                  <span className="font-semibold">Pro tip:</span> Mix bullets from different strategies. Take your best Conversion bullets for features, and Rufus bullets for benefits.
+                  <span className="font-semibold">Pro tip:</span> Mix bullets from different strategies. Take your best Conversion bullets for features, and Alexa for Shopping (formerly Rufus) bullets for benefits.
                 </p>
               </div>
 
@@ -647,7 +652,7 @@ export default function BulletsTab({ onUpgradeClick }: BulletsTabProps) {
                 </div>
                 <p className="text-sm font-semibold text-gray-800 mb-1">🔒 AI Bullet Variations [Pro]</p>
                 <p className="text-xs text-gray-500 mb-3 max-w-[200px] mx-auto">
-                  Get 5 complete sets of AI-optimized bullets — Balanced, Conversion, SEO, Rufus, and Mobile strategies.
+                  Get 5 complete sets of AI-optimized bullets — Balanced, Conversion, SEO, Alexa for Shopping (formerly Rufus), and Mobile strategies.
                 </p>
                 <button
                   onClick={onUpgradeClick}

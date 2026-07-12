@@ -20,7 +20,7 @@ const CHAR_LIMIT = 2000;
 const STRATEGY_META: Record<string, { label: string; badge: string }> = {
   seo_focused:         { label: 'SEO-Optimized',    badge: 'bg-green-100 text-green-800' },
   conversion_focused:  { label: 'Conversion',        badge: 'bg-orange-100 text-orange-800' },
-  rufus_optimized:     { label: 'Rufus-Ready',       badge: 'bg-purple-100 text-purple-800' },
+  rufus_optimized:     { label: 'Alexa (formerly Rufus)-Ready', badge: 'bg-purple-100 text-purple-800' },
 };
 
 function DescVariationCard({ variations }: { variations: DescVariationResult[] }) {
@@ -102,7 +102,7 @@ function DescVariationCard({ variations }: { variations: DescVariationResult[] }
         <div className="flex gap-3 text-xs text-gray-500">
           <span>SEO: <span className="font-medium text-gray-700">{Math.round(active.seoScore)}</span></span>
           <span>Conv: <span className="font-medium text-gray-700">{Math.round(active.conversionScore)}</span></span>
-          <span>Rufus: <span className="font-medium text-gray-700">{Math.round(active.rufusScore)}</span></span>
+          <span>Alexa (formerly Rufus): <span className="font-medium text-gray-700">{Math.round(active.rufusScore)}</span></span>
         </div>
       </div>
 
@@ -318,7 +318,7 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
           'Keyword Relevance',
           'Benefit Clarity',
           'Readability',
-          'Rufus AI Compatibility',
+          'Alexa for Shopping (formerly Rufus) AI Compatibility',
           'ICP Alignment',
         ]}
         estimatedSeconds={90}
@@ -525,7 +525,7 @@ export default function DescriptionTab({ onUpgradeClick }: DescriptionTabProps) 
                 </div>
                 <p className="text-sm font-semibold text-gray-800 mb-1">🔒 AI Rewrites [Pro]</p>
                 <p className="text-xs text-gray-500 mb-3 max-w-[220px] mx-auto">
-                  Get 3 complete rewrites — SEO-Optimized, Conversion-Focused, and Rufus-Ready — each with plain text and HTML versions.
+                  Get 3 complete rewrites — SEO-Optimized, Conversion-Focused, and Alexa for Shopping (formerly Rufus)-Ready — each with plain text and HTML versions.
                 </p>
                 <button
                   onClick={onUpgradeClick}

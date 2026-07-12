@@ -188,7 +188,7 @@ export default function HistoryPanel({ isOpen, onClose }: HistoryPanelProps) {
                         <p className="text-sm font-bold text-gray-700">{entry.seo_score}</p>
                       </div>
                       <div className="text-center">
-                        <p className="text-[10px] text-gray-400 uppercase">Rufus</p>
+                        <p className="text-[10px] text-gray-400 uppercase">Alexa</p>
                         <p className="text-sm font-bold text-gray-700">{entry.rufus_score}</p>
                       </div>
                       <div className="text-center">

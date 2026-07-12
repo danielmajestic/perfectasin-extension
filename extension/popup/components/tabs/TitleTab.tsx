@@ -17,7 +17,7 @@ interface TitleTabProps {
 
 const getLoadingMessage = (elapsed: number, tier: 'full' | 'free'): string => {
   if (elapsed < 5) return 'Analyzing title structure...';
-  if (elapsed < 15) return 'Scoring for Conversion, Rufus AI, and SEO...';
+  if (elapsed < 15) return 'Scoring for Conversion, Alexa for Shopping (formerly Rufus) AI, and SEO...';
   if (elapsed < 30 && tier === 'full') return 'Generating optimized variations...';
   return 'Almost done — Claude is crafting your recommendations...';
 };

@@ -356,6 +356,7 @@ function AppContent() {
         onClose={() => setShowReportDownload(false)}
         report={reportData}
         asin={asinData?.product?.asin || ''}
+        productTitle={asinData?.product?.title || ''}
       />
       <MyReportsPanel
         isOpen={showMyReports}

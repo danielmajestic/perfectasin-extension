@@ -62,7 +62,7 @@ function ScoreDisplay({ label, subtitle, score, icon }: ScoreDisplayProps) {
 }
 
 export default function ScoreCard({ seoScore, rufusScore, conversionScore }: ScoreCardProps) {
-  // Calculate weighted overall score: SEO 30%, Rufus 30%, Conversion 40%
+  // Calculate weighted overall score: SEO 30%, Alexa for Shopping (formerly Rufus) 30%, Conversion 40%
   const overallScore = Math.round((seoScore * 0.3) + (rufusScore * 0.3) + (conversionScore * 0.4));
 
   return (
@@ -91,9 +91,9 @@ export default function ScoreCard({ seoScore, rufusScore, conversionScore }: Sco
         />
         </div>
 
-        {/* Rufus AI Score - Second */}
+        {/* Alexa for Shopping (formerly Rufus) AI Score - Second */}
         <ScoreDisplay
-          label="Rufus AI Score"
+          label="Alexa for Shopping (formerly Rufus) AI Score"
           subtitle="Amazon AI optimization"
           score={rufusScore}
           icon={
@@ -136,7 +136,7 @@ export default function ScoreCard({ seoScore, rufusScore, conversionScore }: Sco
             />
           </svg>
           <p>
-            Overall score weighted: Conversion 40%, Rufus 30%, SEO 30%
+            Overall score weighted: Conversion 40%, Alexa for Shopping (formerly Rufus) 30%, SEO 30%
           </p>
         </div>
       </div>

@@ -57,7 +57,7 @@ function getStrategyLabel(variation: TitleVariation): string {
   // "Balanced" when no single pillar dominates by more than 4 points
   if (max - min <= 4) return 'Balanced';
   if (max === conversion_score) return 'Conversion Leader';
-  if (max === rufus_score) return 'Rufus Optimized';
+  if (max === rufus_score) return 'Alexa (formerly Rufus) Optimized';
   return 'SEO Maximizer';
 }
 
@@ -65,13 +65,13 @@ function getHighestPillarName(variation: TitleVariation): string {
   const { conversion_score = 0, rufus_score = 0, seo_score = 0 } = variation;
   const max = Math.max(conversion_score, rufus_score, seo_score);
   if (max === conversion_score) return 'Conversion';
-  if (max === rufus_score) return 'Rufus AI';
+  if (max === rufus_score) return 'Alexa for Shopping (formerly Rufus) AI';
   return 'SEO';
 }
 
 const STRATEGY_BADGE_COLORS: Record<string, string> = {
   'Conversion Leader': 'bg-purple-100 text-purple-800',
-  'Rufus Optimized':   'bg-blue-100 text-blue-800',
+  'Alexa (formerly Rufus) Optimized': 'bg-blue-100 text-blue-800',
   'SEO Maximizer':     'bg-green-100 text-green-800',
   'Balanced':          'bg-gray-100 text-gray-700',
 };
@@ -204,7 +204,7 @@ function VariationItem({
         <div className="mb-2 flex flex-wrap items-center gap-1.5 sm:gap-2 text-xs font-medium">
           <span className={getScoreColor(variation.conversion_score)}>Conv: {variation.conversion_score}</span>
           <span className="text-gray-400">|</span>
-          <span className={getScoreColor(variation.rufus_score)}>Rufus: {variation.rufus_score}</span>
+          <span className={getScoreColor(variation.rufus_score)}>Alexa (formerly Rufus): {variation.rufus_score}</span>
           <span className="text-gray-400">|</span>
           <span className={getScoreColor(variation.seo_score)}>SEO: {variation.seo_score}</span>
         </div>
@@ -320,7 +320,7 @@ export default function VariationList({
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
       text += 'ORIGINAL TITLE:\n';
       text += `${originalTitle}\n\n`;
-      text += `Overall: ${originalScores.overall} | Conv: ${originalScores.conversion} | Rufus: ${originalScores.rufus} | SEO: ${originalScores.seo} | ${originalCharCount} chars\n\n`;
+      text += `Overall: ${originalScores.overall} | Conv: ${originalScores.conversion} | Alexa for Shopping (formerly Rufus): ${originalScores.rufus} | SEO: ${originalScores.seo} | ${originalCharCount} chars\n\n`;
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
       text += 'AI-GENERATED VARIATIONS\n';
       text += '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n';
@@ -331,7 +331,7 @@ export default function VariationList({
         const convScore = variation.conversion_score ?? variation.score;
         const rufusScore = variation.rufus_score ?? variation.score;
         const seoScore = variation.seo_score ?? variation.score;
-        text += `Overall: ${variation.score} | Conv: ${convScore} | Rufus: ${rufusScore} | SEO: ${seoScore} | ${variation.title.length} chars\n\n`;
+        text += `Overall: ${variation.score} | Conv: ${convScore} | Alexa for Shopping (formerly Rufus): ${rufusScore} | SEO: ${seoScore} | ${variation.title.length} chars\n\n`;
         if (index < sortedVariations.length - 1) {
           text += '──────────────────────────────────────\n\n';
         }
@@ -354,7 +354,7 @@ export default function VariationList({
     { id: 'p1', title: 'Unlock this AI-optimized variation by upgrading to Pro — scores, reasoning, and copy included', score: 94, seo_score: 96, rufus_score: 93, conversion_score: 94 },
     { id: 'p2', title: 'Go Pro to reveal this high-converting title variation crafted by Claude AI for your product', score: 91, seo_score: 90, rufus_score: 92, conversion_score: 91 },
     { id: 'p3', title: 'Pro variation hidden — upgrade to see all optimized titles ranked by conversion potential', score: 88, seo_score: 87, rufus_score: 89, conversion_score: 88 },
-    { id: 'p4', title: 'This variation targets Rufus AI and mobile shoppers — available exclusively for Pro users', score: 85, seo_score: 84, rufus_score: 87, conversion_score: 85 },
+    { id: 'p4', title: 'This variation targets Alexa for Shopping (formerly Rufus) AI and mobile shoppers — available exclusively for Pro users', score: 85, seo_score: 84, rufus_score: 87, conversion_score: 85 },
     { id: 'p5', title: 'Fifth AI variation locked — Go Pro for unlimited analyses and all title variations every month', score: 82, seo_score: 81, rufus_score: 83, conversion_score: 82 },
   ];
 
