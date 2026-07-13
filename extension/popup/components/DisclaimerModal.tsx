@@ -37,7 +37,7 @@ export default function DisclaimerModal({ isOpen, onAccept }: DisclaimerModalPro
               AI-Powered Analysis
             </h3>
             <p className="mt-1 text-gray-600">
-              PerfectASIN is powered by Claude Opus, Anthropic's most advanced AI.
+              PerfectASIN is powered by Claude, Anthropic's most advanced AI.
               AI-generated analysis can contain errors. Always verify recommendations
               before implementing changes to your Amazon listings.
             </p>
